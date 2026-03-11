@@ -1,0 +1,122 @@
+﻿
+
+@{
+    var InfoJson = ViewBag.JsonData;
+}
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formEvent" class="text-sm">
+        <div class="row">
+            <div class="form-group col-md-3">
+                <Name for="txtContact1">Contact (Whatsapp No) <i class="text-red" title="Required">*</i></Name>
+                <input type="text" class="form-control  form-control-sm" id="txtContact1" name="txtContact1" placeholder="Enter Contact" data-error="Please Fill Up Contact" maxlength="12" pattern="[0-9]{10,12}" required>
+            </div>
+            <div class="form-group col-md-6">
+                <Name for="txtContact1">Person Name<i class="text-red" title="Required">*</i></Name>
+                <input type="text" class="form-control  form-control-sm" id="txtPersonName" name="txtPersonName" placeholder="Enter Person Name" data-error="Please Fill Up Person Name" required>
+            </div>
+            <div class="form-group col-md-3">
+                <span for="ddProfile">Profile <i class="text-red" title="Required">*</i></span>
+                <select class="form-control form-control-sm select3 column_filter" id="ddProfile" name="ddProfile" title="Please Selected Profile">
+                    <option value="" selected="selected">---Selected Profile---</option>
+                    <option value="DEALER">DEALER</option>
+                    <option value="ELECTRICIAN">ELECTRICIAN</option>
+                    <option value="CONTRACTORS">CONTRACTORS</option>
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <Name for="txtDistributor">Firm <i class="text-red" title="Required">*</i></Name>
+                <input type="text" class="form-control form-control-sm" id="txtDistributor" name="txtDistributor" placeholder="Search Firm" required>
+            </div>
+            <div class="form-group col-md-8">
+                <Name for="txtAddress">Address <i class="text-red" title="Required">*</i></Name>
+                <textarea rows="1" class="form-control  form-control-sm" id="txtAddress" name="txtAddress" placeholder="Enter Address" data-error="Please Fill Up Address" required></textarea>
+            </div>
+            <div class="form-group col-md-4">
+                <Name for="txtArea">Area <i class="text-red" title="Required">*</i></Name>
+                <input class="form-control  form-control-sm" id="txtArea" name="txtArea" placeholder="Enter Area" data-error="Please Fill Up Area" required>
+            </div>
+            <div class="form-group col-md-4">
+                <Name for="txtPincode">Pincode <i class="text-red" title="Required">*</i></Name>
+                <input rows="2" class="form-control  form-control-sm" id="txtPincode" name="txtPincode" placeholder="Enter Pincode" data-error="Please Fill Up Pincode" required>
+            </div>
+
+            <div class="form-group col-md-4">
+                <Name for="txtStateName">State <i class="text-red" title="Required">*</i></Name>
+                <input type="text" class="form-control form-control-sm input-sm" id="txtStateName" name="txtStateName" placeholder="Enter type State" readonly>
+                <input type="hidden" value="" id="hdStateId" name="hdStateId" />
+            </div>
+            <div class="form-group col-md-4">
+                <Name for="txtCityName">City <i class="text-red" title="Required">*</i></Name>
+                <input type="text" class="form-control form-control-sm input-sm" id="txtCityName" name="txtCityName" placeholder="Enter type City" readonly>
+                <input type="hidden" value="" id="hdCityId" name="hdCityId" />
+            </div>
+            <div class="form-group col-md-4">
+                <Name for="txtEmail">Email <i class="text-red" title="Required">*</i></Name>
+                <input rows="2" class="form-control  form-control-sm" id="txtEmail" name="txtEmail" placeholder="Enter Email" data-error="Please Fill Up Email" required>
+            </div>
+        </div>
+        <div class="col-md-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <input type="hidden" value="" id="hdEventId" name="hdEventId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+
+        /* Bind State */
+        bindDropDownList($('#ddState'), 'State');
+
+        /* Bind State */
+        bindDropDownList($('#ddCity'), 'City');
+
+
+         /*Edit Record */
+            var jInfo = @Html.Raw(InfoJson);
+            console.log(jInfo);
+            if (jInfo != null) {
+                $("#hdId").val(jInfo[0].EventParticipantId);
+                $("#hdEventId").val(jInfo[0].EventId);
+                $("#ddProfile").val(jInfo[0].Profile);
+                $("#txtDistributor").val(jInfo[0].Name);
+                $("#txtAddress").val(jInfo[0].Address);
+                $("#txtArea").val(jInfo[0].Area);
+                $("#ddCity").val(jInfo[0].CityId);
+                $("#ddState").val(jInfo[0].StateId);
+                $("#txtPincode").val(jInfo[0].Pincode);
+                $("#txtPersonName").val(jInfo[0].PersonName);
+                $("#txtContact1").val(jInfo[0].Contact);
+                $("#txtEmail").val(jInfo[0].Email);
+                $("#txtStateName").val(jInfo[0].StateName);
+                $("#txtCityName").val(jInfo[0].CityName);
+            }
+            /* end:Edit Record */
+
+
+        /* start Form validation & save data */
+        var f = $('#formEvent');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = ''; // Eg /Distributor/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/Event/InsertEvent", button, button.text(), redirectUrl).then(function (res) {
+                    $('#myNestedModalPartialView').modal('hide');
+                    BindTableEventParticipant();
+                });
+            }
+        });
+        /* end Form */
+
+
+    });
+
+</script>

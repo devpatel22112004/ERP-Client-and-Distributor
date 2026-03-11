@@ -1,0 +1,85 @@
+﻿
+@{
+    var InfoJsonDistributorId = ViewBag.JsonDistributorId;
+}
+
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-4 p-2">
+            <span>List of Discount Structure</span>
+            <div class="small-box bg-white p-2">
+                <div class="table-responsive" style="height: 60vh;">
+                    <table class="table table-striped table-sm small no-footer table-borderless table-hover table-head-fixed" id="myTablebDiscountItem">
+                        <thead>
+                            <tr>
+                                <th>Discount Structure</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <span>Actived of discount structure</span>
+            <div class="small-box bg-white p-2">
+                <div class="table-responsive" style="height: 60vh;">
+                    <table class="table table-striped table-sm small no-footer table-borderless table-hover table-head-fixed table-responsive-card" id="myTablebDistributorDiscountStructure">
+                        <thead>
+                            <tr>
+                                <th>Discount Structure</th>
+                                <th>Effected Date</th>
+                                <th>Over Date</th>
+                                <th>Remark</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var oTableDiscountItem;
+    var distributorId = "";
+    $(function () {
+
+        distributorId = '@Html.Raw(InfoJsonDistributorId)';
+
+        BindTableDiscountItem();// Bind table
+        BindTableDistributorDiscountStructure();
+    });
+
+    function BindTableDiscountItem() {
+        //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+        //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+        var activeButtonClass = "View";
+        oTableDiscountItem = bindTableWithoutPagination($('#myTablebDiscountItem'), activeButtonClass, "/Distributor/LoadDataDiscount"); //Bind Table
+
+        //"edit-record,delete-record,view-record,info-record"
+        oTableDiscountItem.on('click', '.view-record', function () {
+            //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+            var recordId = $(this).attr('data-id');
+            var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+            viewNestedModalPartialView(recordTitle, "/DistributorDiscountStructure/Form?did=" + distributorId +"&sid="+ recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+        });
+    }
+
+    function BindTableDistributorDiscountStructure() {
+        //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+        //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+        var activeButtonClass = "Edit";
+        oTableDiscountItem = bindTableWithoutPagination($('#myTablebDistributorDiscountStructure'), activeButtonClass, "/Distributor/LoadDataDistributorDiscountStructure?id=" + distributorId); //Bind Table
+
+        //"edit-record,delete-record,view-record,info-record"
+        oTableDiscountItem.on('click', '.edit-record', function () {
+            //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+            var recordId = $(this).attr('data-id');
+            var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+            viewNestedModalPartialView(recordTitle, "/DistributorDiscountStructure/Edit?id=" + recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+        });
+    }
+</script>

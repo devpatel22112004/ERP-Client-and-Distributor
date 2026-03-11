@@ -1,0 +1,160 @@
+﻿@{
+    ViewBag.Title = "Return Order List";
+    Layout = Session["Layout"].ToString();
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_ReturnOrder">
+            <div class="row">
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm" id="txtSearchDistributorName" name="txtSearchDistributorName" placeholder="Enter type Dealer" data-error="Please fill up Dealer">
+                    <input type="hidden" value="" id="hdSearchDistributorId" name="hdSearchDistributorId" data-column="2" />
+                </div>
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="0" id="txtSearchDate" name="txtSearchDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Search Date">
+                </div>
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="1" id="txtSearchReturnOrderNumber" name="txtSearchReturnOrderNumber" placeholder="Search Return Order Number">
+                </div>
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="3" id="txtSearchCreditNumber" name="txtSearchCreditNumber" placeholder="Search Credit Note Number">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="btnListRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header border-0">
+                <h3 class="card-title">Sales Return List</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <button type="button" id="btnFormOrder" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body table-responsive small p-2" style="height: 70vh;">
+                <table id="myTableturnOrder" class="table table-sm  table-striped table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Return No</th>
+                            <th>Dealer</th>
+                            <th>Remark</th>
+                            <th>Lead Person</th>
+                            <th>Amount</th>
+                            <th>Ref. No</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section footer{
+
+    <script>
+        var oTableReturnOrder;
+        function filterColumn(i, tag) {
+            oTableReturnOrder.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+        $(function () {
+            $(".Sales,.Sales-return").addClass('active');
+
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            BindTableturnOrder();// Bind table
+
+            //Date picker
+            $('#txtSearchDate').datepicker({
+                format: "dd-mm-yyyy",
+                todayHighlight: true,
+                autoclose: true
+            });
+            //Datemask dd/mm/yyyy
+            $('#txtSearchDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
+
+
+            //refresh button
+            $('#btnListRefresh').click(function () {
+                oTableReturnOrder.DataTable().state.clear();
+                location.reload();
+            });
+
+            //Item AutoComplete
+            customAutoCompleteDynamic($('#txtSearchDistributorName'), $('#hdSearchDistributorId'), "Distributor", AutoCompleteDistributorResult);
+
+            $('#btnFormOrder').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                window.location = "/SalesReturn/Form";
+            });
+        });
+
+        /*start : Custom AutoComplete result*/
+        function AutoCompleteDistributorResult(e, u) {
+            //console("auto complete");
+            if (u.item == null) {
+                console.log(u.item);
+                $("#txtSearchDistributorName,#hdSearchDistributorId").val("");
+            }
+            else {
+                var searchCustomerId = $('#hdSearchDistributorId');
+                filterColumn(searchCustomerId.attr('data-column'), searchCustomerId);
+            }
+        }
+
+        function BindTableturnOrder() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit,View:Return Invoice,Print";
+            oTableReturnOrder = bindTableSmart($('#myTableturnOrder'), activeButtonClass, "/SalesReturn/LoadData", "null", $("#filter_ReturnOrder")); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableReturnOrder.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                window.location = "/SalesReturn/Edit?id=" + recordId;// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableReturnOrder.on('click', '.view-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordDate = $(this).closest("tr").find("td").eq(0).text();
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                viewPartialViewModal(recordDate + ' - ' + recordTitle, "/SalesReturn/ReturnInvoice?salesReturnId=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            oTableReturnOrder.on('click', '.print-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(4).text();
+                var recordSubTitle = $(this).closest("tr").find("td").eq(3).text();
+                var recordOrder = $(this).closest("tr").find("td").eq(1).text();
+                if (recordOrder.length === 0) {
+                    toastMessage('warning', ' First order map with client.');
+                }
+                else {
+                    modalPrint("Print " + recordTitle + ' ' + recordSubTitle, "/SalesReturn/Print?id=" + recordId);
+                    //window.open("/SalesReturn/TermCondition?id=" + recordId);
+                    //   viewPartialViewModal(recordTitle + ' ' + recordSubTitle, "TermCondition?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+                }
+                //viewPartialViewModal(recordTitle + ' ' + recordSubTitle, "TermCondition?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+            });
+        }
+
+    </script>
+
+}
+
+
+

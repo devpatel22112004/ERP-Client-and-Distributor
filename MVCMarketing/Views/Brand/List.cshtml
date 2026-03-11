@@ -1,0 +1,98 @@
+﻿@{
+    ViewBag.Title = "Brand List";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_Brand">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="0" id="txtSearchBrand" name="txtSearchBrand" placeholder="Search Brand">
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <select class="form-control form-control-sm select3 column_filter" data-column="1" id="ddSearchStatus" name="ddSearchStatus" title="Please Selected Status">
+                        <option value="" selected="selected">---Selected Status---</option>
+                        <option value="True">Active</option>
+                        <option value="False">Deactive</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="btnListRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header border-0">
+                <h3 class="card-title">Brand List</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <button type="button" id="btnFormBrand" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body table-responsive small p-2" style="height: 70vh;">
+                <table id="myTableBrand" class="table table-sm table-striped table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Brand</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footer{
+    <script>
+        var oTableBrand;
+        function filterColumn(i, tag) {
+            oTableBrand.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+        $(function () {
+            $(".master,.master-product,.master-product-Brand").addClass('active');
+
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            BindTableBrand(); // Bind table
+
+            //refresh button
+            $('#btnListRefresh').click(function () {
+                oTableBrand.DataTable().state.clear();
+                location.reload();
+            });
+
+            $('#btnFormBrand').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("New Brand", "/Brand/Form", "modal-md");
+            });
+        });
+
+        function BindTableBrand() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit";
+            oTableBrand = bindTableSmart($('#myTableBrand'), activeButtonClass, "/Brand/LoadData", "null", $("#filter_Brand")); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableBrand.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+                viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+            });
+
+        }
+    </script>
+}

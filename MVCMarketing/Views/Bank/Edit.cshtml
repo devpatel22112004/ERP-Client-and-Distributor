@@ -1,0 +1,122 @@
+﻿@{
+    var InfoJson = ViewBag.JsonData;
+}
+
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formBank" class="text-sm">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="txtCompanyName">BankName<i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control" id="txtCompanyName" name="txtCompanyName" placeholder="Enter Company Name" data-error="Please Fill Up Company Name" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtBankName">NameOfHolder<i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control" id="txtBankName" name="txtBankName" placeholder="Enter Bank Name" data-error="Please Fill Up Bank Name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="ddAccountType">Account Type<i class="text-red" title="Required">*</i></label>
+                            <select class="form-control select3" id="ddAccountType" name="ddAccountType" data-error="Please Select Account Type" required>
+                                <option selected="selected" value="">-- Select Account Type ---</option>
+                                <option value="Saving">Saving</option>
+                                <option value="Current">Current</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtAccountNo">Account No<i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control" id="txtAccountNo" name="txtAccountNo" placeholder="Account No" data-error="Please Fill Up AccountNo" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtOpeningDate"> Opening Date <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control form-control-sm" id="txtOpeningDate" name="txtOpeningDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Search Opening Date">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtOpeningBalance">Opening Balance<i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control" id="txtOpeningBalance" name="txtOpeningBalance" placeholder="Enter OpeningBalance" data-error="Please Fill Up OpeningBalance" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtRemark">Remark</label>
+                        <input type="text" class="form-control" id="txtRemark" name="txtRemark" placeholder="Enter Remark" data-error="Please Fill Up Remark">
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="ddStatus">Status <i class="text-red" title="Required">*</i></label>
+                            <select class="form-control select3" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                                <option selected="selected" value="">-- Select Status ---</option>
+                                <option value="TRUE">Active</option>
+                                <option value="FALSE">Deactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+
+
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].BankId);
+            $("#txtCompanyName").val(jInfo[0].CompanyName);
+            $("#txtBankName").val(jInfo[0].BankName);
+            $("#txtAccountNo").val(jInfo[0].AccountNo);
+            $("#ddAccountType").val(jInfo[0].AccountType);
+            $("#txtOpeningDate").val(jInfo[0].OpeningDate);
+            $("#txtOpeningBalance").val(jInfo[0].OpeningBalance);
+            $("#txtRemark").val(jInfo[0].Remark);
+            $("#ddStatus").val(jInfo[0].Status);
+        }
+        /* end:Edit Record */
+
+        //Date picker
+        $('#txtOpeningDate').datepicker({
+            format: "dd-mm-yyyy",
+            todayHighlight: true,
+            autoclose: true
+        });
+        //Datemask dd/mm/yyyy
+        $('#txtOpeningDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
+
+        /* start Form validation & save data */
+        var f = $('#formBank');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Bank/List'; // Eg /Client/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                /*var returnValue = sendData(f, "/Client/Insert", button, button.text(), redirectUrl);
+                console.log(returnValue);*/
+                sendData(f, "/Bank/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+
+</script>
+
+

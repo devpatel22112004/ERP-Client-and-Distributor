@@ -1,0 +1,227 @@
+﻿@{
+
+    var JsonData = ViewBag.JSONData;
+}
+
+<div class="p-0">
+    <div class="row">
+        <div class="col-md-12">
+            <input type="hidden" value="" id="hdDistributorAmountId" name="hdDistributorAmountId" />
+            <div class="row">
+                <div class="form-group col-md-3">
+                    <span for="txtOpeningBal">Opening Balance</span>
+                    <input type="text" class="form-control form-control-sm" id="txtOpeningBal" name="txtOpeningBal" placeholder="Enter Opening Balance" data-error="Please Fill Up Opening Balance" readonly>
+                </div>
+                <div class="form-group col-md-3">
+                    <span for="txtDealerAmount">Total Amount</span>
+                    <input type="text" class="form-control form-control-sm" id="txtDealerAmount" name="txtDealerAmount" placeholder="Enter Amount" data-error="Please Fill Amount" readonly>
+                </div>
+                <div class="form-group col-md-3">
+                    <span for="txtDealerBalance">Balance</span>
+                    <input type="text" class="form-control form-control-sm" id="txtDealerBalance" name="txtDealerBalance" placeholder="Enter Balance" data-error="Please Balance" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form role="form" data-toggle="validator" id="formDealeAdjustment">
+        <div class="row">
+            <div class="form-group col-md-6">
+                <span for="txtDate"> Date <i class="text-red" title="Required">*</i></span>
+                <input type="text" class="form-control form-control-sm" id="txtDate" name="txtDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Search Date">
+            </div>
+            <div class="form-group col-md-6">
+                <span for="ddType">Type <i class="text-red" title="Required">*</i></span>
+                <input type="text" class="form-control form-control-sm" id="ddType" name="ddType" placeholder="Enter Type" data-error="Please Fill Up Type" autofocus>
+            </div>
+            <div class="form-group col-md-6">
+                <span for="ddPaymentType">Payment Type <i class="text-red" title="Required">*</i></span>
+                <select class="form-control select3  form-control-sm" id="ddPaymentType" name="ddPaymentType" data-error="Please Select payment Type" required>
+                    <option value="">-- Select Payment ---</option>
+                    <option value="Credit">Credit</option>
+                    <option value="Debit">Debit</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <span for="txtRefNo">Reference No <i class="text-red" title="Required">*</i></span>
+                <input type="text" class="form-control form-control-sm" id="txtRefNo" name="txtRefNo" placeholder="Enter Reference No" data-error="Please Fill Up Reference No" autofocus required>
+            </div>
+            <div class="form-group col-md-6">
+                <span for="txtDetails">Details <i class="text-red" title="Required">*</i></span>
+                <input type="text" class="form-control form-control-sm" id="txtDetails" name="txtDetails" placeholder="Enter Details" data-error="Please Fill Up Details" required>
+            </div>
+            <div class="form-group col-md-6">
+                <span for="txtAmount">Amount<i class="text-red" title="Required">*</i></span>
+                <input type="text" class="form-control form-control-sm" id="txtAmount" name="txtAmount" placeholder="Enter Amount" required>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <input type="hidden" value="" id="hdDistributorId" name="hdDistributorId" />
+            <button type="submit" class="col-md-3 btn btn-default btn-sm col-4">Save</button>
+        </div>
+    </form>
+    <small>Amount Settelement List</small>
+    <div class="col-md-12 small-box">
+        <div class="p-1">
+            <div class="table-responsive" style="height: 25vh;">
+                <table class="table table-striped table-sm small no-footer table-borderless table-hover table-head-fixed nowrap" id="myTableDealeAmount">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Payment Type</th>
+                            <th>Ref. No</th>
+                            <th>Details</th>
+                            <th>Amount</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var distributorId = "";
+    $(function () {
+
+        var JsonData = @Html.Raw(JsonData);
+        console.log(JsonData);
+        $("#hdDistributorAmountId").val(JsonData[0].DistributorId);
+        $("#txtOpeningBal").val(JsonData[0].OpeningBalance);
+        $("#txtDealerAmount").val(JsonData[0].Amount);
+        $("#txtDealerBalance").val(JsonData[0].Balance);
+
+        //Datepicker
+        $('#txtDate').datepicker({
+           format: "dd-mm-yyyy",
+           todayHighlight: true,
+           autoclose: true
+        }).datepicker("setDate", "0");
+        //Datemask dd/mm/yyyy
+        $('#txtDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' });
+
+        BindTableDealerAmount();
+
+        /* start Form validation & save data */
+        var f = $('#formDealeAdjustment');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            $('#hdDistributorId').val($("#hdDistributorAmountId").val());
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = ''; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                $("#hdId").val();
+                sendData(f, "/Distributor/InsertAmount", button, button.text(), redirectUrl).then(function (res) {
+                    BindTableDealerAmount();
+                     $('#formDealeAdjustment')[0].reset();
+                });
+            }
+        });
+        /* end Form */
+
+        $("#txtAmount").focusout(function () {
+            if (parseFloat($("#txtAmount").val()) > parseFloat($("#txtDealerBalance").val()) || parseFloat($("#txtAmount").val()) < 0  || parseFloat($("#txtAmount").val()) < parseFloat($("#txtOpeningBal").val())) {
+                $("#txtAmount").val("");
+                $("#txtAmount").focus();
+                toastMessage('warning', 'Amount should be less than Balance.');
+            }
+        });
+
+        //"edit-record,delete-record,view-record,info-record"
+        $("#myTableDealeAmount").on('click', 'tbody tr .edit-record', function () {
+             var recordId = $(this).closest("td").find("input[type='hidden']").val();
+             singleRecordEdit(recordId);
+        });
+    });
+
+        //Edit Function
+        function singleRecordEdit(id) {
+            //clearData('#form2');
+            $.ajax(
+                {
+                    type: "POST", //HTTP POST Method
+                    url: "/Distributor/EditItem", // Controller/View
+                    data: { //Passing data
+                        id: id
+                    },
+                    success: function (obj) {
+                        console.log(obj);
+                        var data = JSON.parse(obj);
+                        console.log(data);
+                        if (data != null) {
+                            $("#hdId").val(data[0].DistributorOpeningAdjustmentId);
+                            $("#txtDate").val(data[0].Date);
+                            $("#ddType").val(data[0].Type);
+                            $("#ddPaymentType").val(data[0].PaymentType);
+                            $("#txtRefNo").val(data[0].ReferenceNo);
+                            $("#txtDetails").val(data[0].Detail);
+                            $("#txtAmount").val(data[0].Amount);
+                            BindTableDealerAmount();//Fill Client Qty Information
+                        }
+                        /* end:Edit Record */
+                    },
+                    error: function () {
+                    }
+                });
+        }
+
+    function BindTableDealerAmount() {
+        $("#myTableDealeAmount > tbody").html("");
+            $.ajax(
+                {
+                    type: "POST", //HTTP POST Method
+                    url: "/Distributor/LoadDataAmount?id=" + $("#hdDistributorAmountId").val(),
+                    //data: formData,
+                    success: function (data) {
+                        console.log(data);
+                        var d = JSON.parse(data.data);
+                        console.log(d);
+                        for (var i = 0; i < d.length; i++) {
+                            var row = "";
+                            row += "<tr>";
+                            row += "<td>" + d[i].Date + "</td>";
+                            row += "<td>" + d[i].Type + "</td>";
+                            row += "<td>" + d[i].PaymentType + "</td>";
+                            row += "<td>" + d[i].ReferenceNo + "</td>";
+                            row += "<td>" + d[i].Detail + "</td>";
+                            row += "<td>" + d[i].Amount + "</td>";
+                            row += "<td  width=\"40px\">";
+                            row += "<span type=\"button\" class=\"fas fa-edit edit-record\" title=\"Edit Record\"></span> <input type=\"hidden\" value='" + d[i].DistributorOpeningAdjustmentId + "'>";
+                            row += "</td>"
+                             row += "<td  width=\"40px\">";
+                            row += "<span type=\"button\" class=\"fas fa-trash-alt delete-record\" title=\"Delete Record\"></span> <input type=\"hidden\" value='" + d[i].DistributorOpeningAdjustmentId + "'>";
+                            row += "</td>"
+                            row += "</td>"
+                            row += "</tr>";
+                            $('#myTableDealeAmount').find("tbody").append(row);
+                        }
+                    },
+                    error: function () {
+
+                    }
+                });
+
+                //"edit-record,delete-record,view-record,info-record"
+                $("#myTableDealeAmount").on('click', '.delete-record', function () {
+                    var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                    console.log(recordId);
+                    confirmDialog('Are you sure to delete record ?', function () {
+                        sendData(null, "/Distributor/DeletePayment?id=" + recordId, $(this), $(this).text(), "").then(function (res) {
+                            BindTableDealerAmount();
+                        });
+                    });
+                });
+    }
+
+</script>
+
+
+

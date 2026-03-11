@@ -1,0 +1,139 @@
+﻿@{
+    ViewBag.Title = "E Way List";
+    Layout = Session["Layout"].ToString();
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_Invoice">
+            <div class="row">
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm" id="txtSearchDistributorName" name="txtSearchDistributorName" placeholder="Enter type Dealer" data-error="Please fill up Dealer">
+                    <input type="hidden" value="" id="hdSearchDistributorId" name="hdSearchDistributorId" data-column="3" />
+                </div>
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="0" id="txtSearchDate" name="txtSearchDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Search Date">
+                </div>
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="1" id="txtInvoiceNumber" name="txtInvoiceNumber" placeholder="Search Invoice Number">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="btnListRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header border-0">
+                <h3 class="card-title">Invoice List</h3>
+            </div>
+            <div class="card-body table-responsive small p-2" style="height: 70vh;">
+                <table id="myTableEway" class="table table-sm  table-striped table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Invoice No</th>
+                            <th>Dealer</th>
+                            <th>Remark</th>
+                            <th>Amount</th>
+                            <th>Creat By</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section footer{
+
+    <script>
+        var oTableEWay;
+        function filterColumn(i, tag) {
+            oTableEWay.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+        $(function () {
+            $(".transport,.transport-ewayBill").addClass('active');
+
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            BindTableEway();// Bind table
+
+            //Date picker
+            $('#txtSearchDate').datepicker({
+                format: "dd-mm-yyyy",
+                todayHighlight: true,
+                autoclose: true
+            });
+            //Datemask dd/mm/yyyy
+            $('#txtSearchDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
+
+
+            //refresh button
+            $('#btnListRefresh').click(function () {
+                oTableEWay.DataTable().state.clear();
+                location.reload();
+            });
+
+            //Item AutoComplete
+            customAutoCompleteDynamic($('#txtSearchDistributorName'), $('#hdSearchDistributorId'), "Distributor", AutoCompleteDistributorResult);
+        });
+
+        /*start : Custom AutoComplete result*/
+        function AutoCompleteDistributorResult(e, u) {
+            //console("auto complete");
+            if (u.item == null) {
+                console.log(u.item);
+                $("#txtSearchDistributorName,#hdSearchDistributorId").val("");
+            }
+            else {
+                var searchCustomerId = $('#hdSearchDistributorId');
+                filterColumn(searchCustomerId.attr('data-column'), searchCustomerId);
+            }
+        }
+
+        function BindTableEway() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit,Print,Attachment";
+            oTableEWay = bindTableSmart($('#myTableEway'), activeButtonClass, "/EWayBill/LoadData", "null", $("#filter_Invoice")); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableEWay.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                var recordTitle1 = $(this).closest("tr").find("td").eq(2).text();
+                viewPartialViewModal(recordTitle +" - "+ recordTitle1, "Edit?id=" + recordId, "modal-lg");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            oTableEWay.on('click', '.attachment-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                var recordTitle1 = $(this).closest("tr").find("td").eq(3).text();
+                viewPartialViewModal(recordTitle + " - " + recordTitle1, "Attachment?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableEWay.on('click', '.print-record', function () {
+                var recordId = $(this).attr('data-id');
+                //  modalPrint("/Scheme/Print?id=" + recordId);
+
+                modalPrint("Print EWay Bill", "/EWayBill/Print?id=" + recordId);
+
+            });
+        }
+
+    </script>
+
+}
+
+
+

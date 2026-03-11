@@ -1,0 +1,186 @@
+﻿
+@{
+    var InfoJson = ViewBag.JsonData;
+}
+<!--<div class="col-12 text-center bg-transparent">
+    <span class="delete-record-message" id="btnDeleteEmployee"> DELETE PERMANENT RECORDS ? CLICK HERE  <i class="far fa-trash-alt delete-record text-red" title="Delete Record"></i></span>
+</div>-->
+<div class="p-0">
+    <form role="form" data-toggle="validator" id="formEmployee" class="text-sm">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label for="txtService">Employee <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control  form-control-sm" id="txtService" name="txtService" placeholder="Enter Employee" data-error="Please Fill Up Employee" required>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label for="txtPermitAddress">Permanent  Address <i class="text-red" title="Required">*</i></label>
+                        <textarea rows="2" class="form-control  form-control-sm" id="txtPermitAddress" name="txtPermitAddress" placeholder="Enter Permanent  Address" data-error="Please Fill Up Permanent  Address" required></textarea>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label for="txtCurrentAddress">Current Address <i class="text-red" title="Required">*</i></label>
+                        <textarea rows="2" class="form-control  form-control-sm" id="txtCurrentAddress" name="txtCurrentAddress" placeholder="Enter Current Address" data-error="Please Fill Up Current Address" required></textarea>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="ddDesignation">Designation <i class="text-red" title="Required">*</i></label>
+                        <select class="form-control select3  form-control-sm" id="ddDesignation" name="ddDesignation" data-error="Please Select Designation" required>
+                            <option selected="selected" value="">-- Select Designation ---</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="txtDOB">DOB</label>
+                        <input type="text" class="form-control  form-control-sm" id="txtDOB" name="txtDOB" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="ddEducation">Education <i class="text-red" title="Required">*</i></label>
+                        <select class="form-control select3  form-control-sm" id="ddEducation" name="ddEducation" data-error="Please Selected Education" required>
+                            <option value="">-- Select Education ---</option>
+                            <option value="PRIMARY">PRIMARY</option>
+                            <option value="SECONDRY">SECONDRY</option>
+                            <option value="BACHELOR">BACHELOR</option>
+                            <option value="MASTER">MASTER </option>
+                            <option value="DIPLOMA">DIPLOMA </option>
+                            <option value="DEGREE">DEGREE </option>
+                            <option value="ITI">ITI </option>
+                            <option value="B.SC.">B.SC. </option>
+                            <option value="B.E>">ITI </option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="ddStatus">Status <i class="text-red" title="Required">*</i></label>
+                            <select class="form-control select3  form-control-sm" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                                <option selected="selected" value="">-- Select Status ---</option>
+                                <option value="TRUE">Active</option>
+                                <option value="FALSE">Deactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="txtMobile">Mobile</label>
+                        <input type="text" class="form-control  form-control-sm" id="txtMobile" name="txtMobile" placeholder="Enter Mobile" data-error="Please Fill Up Mobile" maxlength="12" pattern="[0-9]{10,12}">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="txtOtherMobile">Other Mobile</label>
+                        <input type="text" class="form-control  form-control-sm" id="txtOtherMobile" name="txtOtherMobile" placeholder="Enter Other Mobile" data-error="Please Fill Up Other Mobile" maxlength="12" pattern="[0-9]{10,12}">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="txtEmail">Email</label>
+                        <input type="text" class="form-control  form-control-sm" id="txtEmail" name="txtEmail" placeholder="Enter Email" data-error="Please Fill Up Email">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="txtMobileCompany">Company Mobile <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control  form-control-sm" id="txtMobileCompany" name="txtMobileCompany" placeholder="Enter Mobile Company" data-error="Please Fill Up Mobile Company" maxlength="12" pattern="[0-9]{10,12}" required>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="txtEmailCompany">Company Email <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control  form-control-sm" id="txtEmailCompany" name="txtEmailCompany" placeholder="Enter Email Company" data-error="Please Fill Up Email Company" required>
+                    </div>
+
+                    <div class="form-group col-md-6" id="divoutside">
+                        <label for="txtJoiningDate">Joining Date</label>
+                        <input type="text" class="form-control  form-control-sm" id="txtJoiningDate" name="txtJoiningDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="txtUserId">User Id <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control  form-control-sm" id="txtUserId" name="txtUserId" placeholder="Enter User Id" data-error="Please Fill Up User Id" required>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="txtPassword">Password <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control  form-control-sm" id="txtPassword" name="txtPassword" placeholder="Enter Password" data-error="Please Fill Up Password" required>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+        /* Bind Designation */
+        bindDropDownList($('#ddDesignation'), 'Designation');
+
+        //Date picker
+        $('#txtJoiningDate,#txtDOB').datepicker({
+            format: "dd-mm-yyyy",
+            todayHighlight: true,
+            autoclose: true,
+            endDate: '+0d',
+        });
+          //Datemask dd/mm/yyyy
+        $('#txtJoiningDate,#txtDOB').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
+
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].EmployeeId);
+            $("#txtService").val(jInfo[0].EmployeeName);
+            $("#txtPermitAddress").val(jInfo[0].PermanentAddress);
+            $("#txtCurrentAddress").val(jInfo[0].CurrentAddress);
+            $("#txtMobile").val(jInfo[0].Mobile);
+            $("#txtOtherMobile").val(jInfo[0].OtherMobile);
+            $("#txtEmail").val(jInfo[0].Email);
+            $("#ddEducation").val(jInfo[0].Education);
+            $("#txtMobileCompany").val(jInfo[0].CompanyMobile);
+            $("#txtEmailCompany").val(jInfo[0].CompanyEmail);
+            $("#txtUserId").val(jInfo[0].UserId);
+            $("#txtPassword").val(jInfo[0].Password);
+            $("#ddDesignation").val(jInfo[0].DesignationId);
+            $("#txtDOB").val(jInfo[0].DOB);
+            $("#txtJoiningDate").val(jInfo[0].JoiningDate);
+            $("#ddStatus").val(jInfo[0].Status);
+        }
+        /* end:Edit Record */
+
+        /*Delete Action*/
+        $('#btnDeleteEmployee').on('click', function(e){
+            confirmDialog('Are you sure to delete record ?', function () {
+                var recordId = $("#hdId").val();
+                sendData($("#formDelete"), "/Employee/Delete?id=" + recordId, $(this), $(this).text(), "/Employee/List");
+            });
+        });
+
+        /* start Form validation & save data */
+        var f = $('#formEmployee');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Employee/List'; // Eg /Vendor/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/Employee/Insert", button, button.text(), redirectUrl).then(function (res) {
+                     console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>
+

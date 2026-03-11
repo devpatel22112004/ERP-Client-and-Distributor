@@ -1,0 +1,171 @@
+﻿@{
+    ViewBag.Title = "Client List";
+    Layout = Session["Layout"].ToString();
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_Client">
+            <span class="text-sm">Search Record</span>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group text-sm">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="0" id="txtSearchCompany" name="txtSearchCompany" placeholder="Type Company">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group text-sm">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="1" id="txtSearchCustomerName" name="txtSearchCustomerName" placeholder="Type Client">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group text-sm">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="7" id="txtSearchCustomerCode" name="txtSearchCustomerCode" placeholder="Type Client Code">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <select class="form-control form-control-sm select3 column_filter" data-column="6" id="ddSearchDealer" name="ddSearchDealer" title="Please Selected Dealer">
+                            <option value="" selected="selected">----Select Dealer ----</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group text-sm">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="2" id="txtSearchPhone" name="txtSearchPhone" placeholder="Type phone">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group text-sm">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="5" id="txtSearchArea" name="txtSearchArea" placeholder="Type Area">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group text-sm">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="3" id="txtSearchCity" name="txtSearchCity" placeholder="Type City">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group text-sm">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="4" id="txtSearchState" name="txtSearchState" placeholder="Type State">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <span id="btnListSearch" class="btn btn-outline-secondary btn-sm" title="Filter"><i class="fas fa-filter"></i></span>
+                    <span id="btnListRefresh" class="btn btn-outline-secondary btn-sm" title="Reset"><i class="fas fa-sync-alt"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Client List</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <button type="button" id="btnFormClient" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body small p-2" style="height: 70vh;">
+                <table class="table table-striped table-sm no-footer table-borderless table-hover table-head-fixed table-responsive-card" id="myTableClient">
+                    <thead>
+                        <tr>
+                            <th>Customer Code</th>
+                            <th>Dealer Code</th>
+                            <th>Company</th>
+                            <th>Client</th>
+                            <th>Area</th>
+                            <th>City</th>
+                            <th>State</th>
+                            <th>Address</th>
+                            <th>Business Profile</th>
+                            <th>Name1</th>
+                            <th>Contact1</th>
+                            <th>Email</th>
+                            <th>Items</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section footer{
+    <script>
+        var oTableClient;
+        function filterColumn(i, tag) {
+            oTableClient.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+        $(function () {
+            $(".master,.master-client").addClass('active');
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            bindDropDownList($('#ddSearchDealer'), 'Distributor');
+
+            BindTableClient();// Bind table
+
+            //refresh button
+            $('#btnListRefresh').click(function () {
+                oTableClient.DataTable().state.clear();
+                location.reload();
+            });
+
+            $('#btnFormClient').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("New Client", "/Client/Form", "modal-xl");
+            });
+        });
+
+        function BindTableClient() {
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit,Copy:Account,View,QR";
+            oTableClient = bindTableSmart($('#myTableClient'), activeButtonClass, "/Client/LoadData", "null", $("#filter_Client")); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableClient.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableClient.on('click', '.copy-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                var recordAmount = $(this).closest("tr").find("td").eq(2).text();
+                viewPartialViewModal(recordTitle + ' - ' + recordAmount, "Adjustment?id=" + recordId, "modal-lg");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableClient.on('click', '.view-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(3).text();
+                viewNestedModalPartialView1(recordTitle, "ItemInfo?id=" + recordId, "modal-lg");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableClient.on('click', '.print-qr', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(3).text();
+                viewNestedModalPartialView1(recordTitle, "MakeQR?id=" + recordId, "modal-lg");// Model Size : modal-sm modal-md modal-lg
+            });
+        }
+    </script>
+}
+
+
+
+
+
+

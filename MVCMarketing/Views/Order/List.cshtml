@@ -1,0 +1,184 @@
+﻿@{
+    ViewBag.Title = "Order List";
+    Layout = Session["Layout"].ToString();
+    //  Layout = Session["Menu"].ToString();
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_Order">
+            <div class="row">
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm" id="txtSearchDistributorName" name="txtSearchDistributorName" placeholder="Enter type Dealer" data-error="Please fill up Dealer">
+                    <input type="hidden" value="" id="hdSearchDistributorId" name="hdSearchDistributorId" data-column="3" />
+                </div>
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="0" id="txtSearchDate" name="txtSearchDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Search Date">
+                </div>
+                <div class="form-group col-md-2">
+                    <select class="form-control form-control-sm select3 column_filter" data-column="1" id="ddSearchPriority" name="ddSearchPriority" title="Please Selected Type">
+                        <option value="" selected="selected">---Selected Priority---</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="2" id="txtOrderNumber" name="txtOrderNumber" placeholder="Search Order Number">
+                </div>
+                <div class="form-group col-md-2">
+                    <select class="form-control form-control-sm select3 column_filter" data-column="4" id="ddSearchStatus" name="ddSearchStatus" title="Please Selected Status">
+                        <option value="" selected="selected">---Selected Order Status---</option>
+                        <option value="Valid">Valid</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="btnListRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header border-0">
+                <h3 class="card-title">Order List</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <button type="button" id="btnFormOrder" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body table-responsive small p-2" style="height: 70vh;">
+                <table id="myTableOrder" class="table table-sm  table-striped table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Trip</th>
+                            <th>Order No</th>
+                            <th>Dealer</th>
+                            <th>Remark</th>
+                            <th>Designation</th>
+                            <th>Order By</th>
+                            <th>Order Qty</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Cancel Remark</th>
+                            <th>Cancel By</th>
+                            <th>Cancel Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section footer{
+
+    <script>
+        var oTableOrder;
+        function filterColumn(i, tag) {
+            oTableOrder.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+        $(function () {
+            $(".Sales,.Sales-Order").addClass('active');
+
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            //bindDropDownList($('#ddDistributor'), 'Distributor');
+
+            BindTableOrder();// Bind table
+
+            //Date picker
+            $('#txtSearchDate').datepicker({
+                format: "dd-mm-yyyy",
+                todayHighlight: true,
+                autoclose: true
+            });
+            //Datemask dd/mm/yyyy
+            $('#txtSearchDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
+
+            //Item AutoComplete
+            customAutoCompleteDynamic($('#txtSearchDistributorName'), $('#hdSearchDistributorId'), "Distributor", AutoCompleteDistributorResult);
+
+            //refresh button
+            $('#btnListRefresh').click(function () {
+                oTableOrder.DataTable().state.clear();
+                location.reload();
+            });
+
+            $('#btnFormOrder').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                window.location = "/Order/Form";
+            });
+        });
+
+        /*start : Custom AutoComplete result*/
+        function AutoCompleteDistributorResult(e, u) {
+            //console("auto complete");
+            if (u.item == null) {
+                console.log(u.item);
+                $("#txtSearchDistributorName,#hdSearchDistributorId").val("");
+            }
+            else {
+                var searchCustomerId = $('#hdSearchDistributorId');
+                filterColumn(searchCustomerId.attr('data-column'), searchCustomerId);
+            }
+        }
+
+        function BindTableOrder() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit,Print";
+            oTableOrder = bindTableSmart($('#myTableOrder'), activeButtonClass, "/Order/LoadData", "null", $("#filter_Order"), 0, 'desc'); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableOrder.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordStatus = $(this).closest("tr").find("td").eq(8).text();
+                window.location = "/Order/Edit?id=" + recordId;// Model Size : modal-sm modal-md modal-lg }
+                /* if (recordStatus == 'Close') {
+                     toastMessage('warning', ' Invoice has been already created!.');
+                 }
+                 else {
+                     window.location = "/Order/Edit?id=" + recordId;// Model Size : modal-sm modal-md modal-lg }
+                 }*/
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableOrder.on('click', '.view-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordDate = $(this).closest("tr").find("td").eq(0).text();
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                viewPartialViewModal(recordDate + ' - ' + recordTitle, "/OrderStatus/Edit?id=" + recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            oTableOrder.on('click', '.print-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(2).text();
+                var recordSubTitle = $(this).closest("tr").find("td").eq(3).text();
+                var recordOrder = $(this).closest("tr").find("td").eq(1).text();
+                if (recordOrder.length === 0) {
+                    toastMessage('warning', ' First order map with client.');
+                }
+                else {
+                    modalPrint("Print " + recordTitle + ' ' + recordSubTitle, "/Order/Print?id=" + recordId);
+                    //viewPartialViewModal(recordTitle + ' ' + recordSubTitle, "Print?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+                }
+            });
+        }
+
+    </script>
+
+}
+
+

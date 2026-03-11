@@ -1,0 +1,283 @@
+﻿@{
+    ViewBag.Title = "Production Form";
+    Layout = Session["Layout"].ToString();
+    var InfoJson = ViewBag.JsonData;
+}
+
+@section containerfluid{
+
+    <div class="col-sm-6">
+        <div class="col-sm-6">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Production/List">List</a></li>
+                <li class="breadcrumb-item active">Production</li>
+            </ol>
+        </div><!-- /.col -->
+    </div>
+}
+<div class="p-0">
+    <div class="row">
+        <div class="col-md-5">
+            <form role="form" data-toggle="validator" id="formProduction" class="text-sm" novalidate="novalidate">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="card-title">Production</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <span for="txtProductionDate">Production Date</span>
+                                <input type="text" class="form-control" id="txtProductionDate" name="txtProductionDate" placeholder="Enter Production Date" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" title="Please Fill Up Production Date ">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <span for="txtStartDate">Start Date</span>
+                                <input type="text" class="form-control form-control-sm" id="txtStartDate" name="txtStartDate" placeholder="Enter Start Date Time" title="Please Fill Up Start Date Time" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <span for="txtEndDate">End Date</span>
+                                <input type="text" class="form-control form-control-sm" id="txtEndDate" name="txtEndDate" placeholder="Enter End Date Time" title="Please Fill Up End Date Time" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="ddEmployee">Incharge <i class="text-red" title="Required">*</i></label>
+                                <select class="form-control  form-control-sm" id="ddEmployee" name="ddEmployee" data-error="Please Selected Incharge" required>
+                                    <option value="" selected="selected">--Selected Incharge--</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <span for="txtRemark">Remark<i class="text-red" title="Required">*</i></span>
+                                <input type="text" class="form-control" id="txtRemark" name="txtRemark" placeholder="Enter Remark" data-error="Please Fill Up Remark">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="col-12 text-center">
+                            <input type="hidden" value="" id="hdProductionId" name="hdProductionId" />
+                            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm" tabindex="12">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-7 hidden" id="hdproductionitem">
+            <div class="card">
+                <div class="card-header border-0">
+                    <h3 class="card-title">Production Item List</h3>
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm" style="width: 100px;">
+                            <a href="#" id="btnLoadItem" class="btn btn-outline-warning btn-sm"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Add Item</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="table-responsive" style="height: 60vh;">
+                            <table class="table table-striped table-sm small no-footer table-borderless table-hover table-head-fixed table-responsive-card" id="myTableProductionItem">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Description</th>
+                                        <th>Unit</th>
+                                        <th>Quantity</th>
+                                        <th>Type</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="myModalItemsForm" class="modal fade" data-backdrop="static" aria-modal="false" style="padding-right: 10px">
+            <div class="modal-dialog modal-lg">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header bg-gradient-gray">
+                        <h3 class="card-title"><label id="lbItemTitle"></label></h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="container"></div>
+                    <!-- /.box-header -->
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="card-body">
+                                <form role="form" data-toggle="validator" id="formProductionItem" class="text-sm" novalidate="novalidate">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="form-group col-md-12">
+                                                <label for="txtDCItems">Item</label>
+                                                <input type="text" class="form-control form-control-sm" id="txtDCItems" name="txtDCItems" placeholder="Search By Items">
+                                                <input type="hidden" value="" id="hdDCItemsId" name="hdDCItemsId" />
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="txtQuantity">Quantity</label>
+                                                <input type="text" class="form-control form-control-sm" id="txtQuantity" name="txtQuantity" placeholder="Quantity">
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="ddType">Type</label>
+                                                <select class="form-control select3 form-control-sm" id="ddType" name="ddType" data-error="Please Select Status" required>
+                                                    <option selected="selected" value="">-- Select Type ---</option>
+                                                    <option value="Finish">Finish</option>
+                                                    <option value="Defective">Defective</option>
+                                                    <option value="Scrap">Scrap</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 text-center">
+                                        <div class="form-group">
+                                            <input type="hidden" value="" id="hdProductionId2" name="hdProductionId2" />
+                                            <input type="hidden" value="" id="hdProductionItemId" name="hdProductionItemId" />
+                                            <button type="submit" class="col-md-3 btn btn-outline-warning btn-sm">Add</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section footer{
+    <script>
+        var oTableQuotationItem;
+        $(function () {
+            const currentDate = new Date();
+            $(".production,.production-product").addClass('active');
+
+            //Assign Empty Table
+            oTableQuotationItem = $('#myTableQuotationItem').dataTable();
+
+            BindTableProductionItem();
+
+            //Datepicker
+            $('#txtProductionDate').datepicker({
+                format: "dd-mm-yyyy",
+                todayHighlight: true,
+                autoclose: true
+            }).datepicker("setDate", "0");
+
+            //Datemask dd/mm/yyyy
+            $('#txtProductionDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
+
+            /* start : Date */
+            $('#txtStartDate,#txtEndDate').daterangepicker({
+                //autoUpdateInput: false,
+                timePicker: true, //<==MAKE THE CHANGE HERE
+                singleDatePicker: true, //<==MAKE THE CHANGE HERE
+                timePickerIncrement: 5,
+                startDate: currentDate,
+                locale: {
+                    format: 'YYYY-MM-DD hh:mm A'
+                }
+            });
+
+            $('#txtStartDate,#txtEndDate').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('YYYY-MM-DD hh:mm A'));
+                $(this).trigger('change');
+            });
+
+            /* Open Model Popup */
+            $("#btnLoadItem").click(function (event) {
+                //clearData('#form3');
+                $("#hdProductionId2").val($("#hdProductionId").val());
+                console.log($("#hdProductionId").val());
+                console.log($("#hdProductionId2").val());
+                $('#myModalItemsForm').modal('show');
+            });
+
+
+            /* start Form validation & save data */
+            var f = $('#formProduction');
+            f.validator();// Call validation function
+            f.attr('autocomplete', 'off');//Auto Complete Off
+            f.submit(function (e) {
+                e.preventDefault();
+                var button = f.find(':submit');
+                var isDisabled = button.is('.btn.disabled');
+                var redirectUrl = ''; // Eg /Category/List
+                if (isDisabled) {
+                    return;
+                }
+                else {
+                    sendData(f, "/Production/Insert", button, button.text(), redirectUrl).then(function (obj) {
+                        $("#hdproductionitem").removeClass("hidden");
+                        $("#hdProductionId").val(obj.idValue);
+                        $("#formProduction").find("input, button, submit, textarea, select").attr("disabled", "disabled");
+                        $('#myModalItemsForm').modal('show');
+                    });
+                }
+            });
+            /* end Form */
+
+            /* start Form validation & save data */
+            var f1 = $('#formProductionItem');
+            f1.validator();// Call validation function
+            f.attr('autocomplete', 'off');//Auto Complete Off
+            f1.submit(function (e) {
+                e.preventDefault();
+                var button = f1.find(':submit');
+                var isDisabled = button.is('.btn.disabled');
+                var redirectUrl = ''; // Eg /Category/List
+                if (isDisabled) {
+                    return;
+                }
+                else {
+                    sendData(f1, "/Production/InsertItem", button, button.text(), redirectUrl).then(function (res) {
+                        $('#myModalItemsForm').modal('hide');
+                        BindTableProductionItem();
+                    });
+                }
+            });
+            /* end Form */
+
+            /* Bind Brand */
+            bindDropDownList($('#ddEmployee'), 'Employee');
+
+            customAutoCompleteDynamic($('#txtDCItems'), $('#hdDCItemsId'), "Item", AutoCompleteItemResult);
+
+            /* function validation qty*/
+            $("#txtDCItemQty").focusout(function () {
+                if (parseFloat($("#txtDCItemQty").val()) > parseFloat($("#txtRemain").val()) || parseFloat($("#txtDCItemQty").val()) <= 0) {
+                    $("#txtDCItemQty").val("");
+                    $("#txtDCItemQty").focus();
+                    toastMessage('warning', 'Quantity should be less than remain quantity.');
+                }
+            });
+        });
+
+        /*start : Custom AutoComplete result*/
+        function AutoCompleteItemResult(e, u) {
+            //console("auto complete");
+            if (u.item == null) {
+                console.log(u.item);
+                $("#txtDCItems,#hdDCItemsId").val("");
+            }
+            else {
+                console.log(u.item);
+            }
+        }
+
+        function BindTableProductionItem() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit,Delete";
+            var oTableProductionItem = bindTableWithoutPagination($('#myTableProductionItem'), activeButtonClass, "/Production/LoadDataItem?id=" + $("#hdProductionId").val()); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableProductionItem.on('click', '.delete-record', function () {
+                var recordId = $(this).attr('data-id');
+                confirmDialog('Are you sure to delete record ?', function () {
+                    sendData($("#formProductionItem"), "/Production/DeleteItem?id=" + recordId, $(this), $(this).text(), "").then(function (res) {
+                        BindTableProductionItem();
+                    });
+                });
+            });
+        }
+    </script>
+}
+

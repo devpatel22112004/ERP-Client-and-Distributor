@@ -1,0 +1,206 @@
+﻿<div class="p-2">
+    <form role="form" data-toggle="validator" id="formClient" class="text-sm">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="txtClientName">Client <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control eachWordFirstLetterUpper" id="txtClientName" name="txtClientName" placeholder="Enter Client Name" data-error="Please Fill Up Client Name" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ddDealer">Dealer</label>
+                        <select class="form-control form-control-sm select3" id="ddDealer" name="ddDealer" data-error="Please Selected Dealer" required>
+                            <option value="" selected="selected">-----Selected Dealer------</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="txtCompany">Company </label>
+                        <input type="text" class="form-control eachWordFirstLetterUpper" id="txtCompany" name="txtCompany" placeholder="Enter Company" data-error="Please Fill Up Company">
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="txtAddress">Address <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control eachWordFirstLetterUpper" id="txtAddress" name="txtAddress" placeholder="Enter Address" data-error="Please Fill Up Street Address" required>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="txtLandMark">LandMark</label>
+                        <input type="text" class="form-control eachWordFirstLetterUpper" id="txtLandMark" name="txtLandMark" placeholder="Enter LandMark" title="Please Fill Up LandMark">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="txtArea">Area</label>
+                        <input type="text" class="form-control eachWordFirstLetterUpper" id="txtArea" name="txtArea" placeholder="Enter Area" title="Please Fill Up Area">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="txtCity">City <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control eachWordFirstLetterUpper" id="txtCity" name="txtCity" placeholder="Enter City" title="Please Fill Up City" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ddState">State <i class="text-red" title="Required">*</i></label>
+                        <select class="form-control select3" id="ddState" name="ddState" data-error="Please Selected State" required>
+                            <option value="">-- select state ---</option>
+                            <option value="ANDAMAN AND NICOBAR ISLANDS">ANDAMAN AND NICOBAR ISLANDS</option>
+                            <option value="ANDHRA PRADESH">ANDHRA PRADESH</option>
+                            <option value="ARUNACHAL PRADESH">ARUNACHAL PRADESH</option>
+                            <option value="ASSAM">ASSAM</option>
+                            <option value="BIHAR">BIHAR</option>
+                            <option value="CHANDIGARH">CHANDIGARH</option>
+                            <option value="CHHATTISGARH">CHHATTISGARH</option>
+                            <option value="DADRA AND NAGAR HAVELI">DADRA AND NAGAR HAVELI</option>
+                            <option value="DAMAN AND DIU">DAMAN AND DIU</option>
+                            <option value="DELHI">DELHI</option>
+                            <option value="GOA">GOA</option>
+                            <option selected="selected" value="GUJARAT">GUJARAT</option>
+                            <option value="HARYANA">HARYANA</option>
+                            <option value="HIMACHAL PRADESH">HIMACHAL PRADESH</option>
+                            <option value="JAMMU AND KASHMIR">JAMMU AND KASHMIR</option>
+                            <option value="JHARKHAND">JHARKHAND</option>
+                            <option value="KARNATAKA">KARNATAKA</option>
+                            <option value="KERALA">KERALA</option>
+                            <option value="LAKSHADWEEP">LAKSHADWEEP</option>
+                            <option value="MADHYA PRADESH">MADHYA PRADESH</option>
+                            <option value="MAHARASHTRA">MAHARASHTRA</option>
+                            <option value="MANIPUR">MANIPUR</option>
+                            <option value="MEGHALAYA">MEGHALAYA</option>
+                            <option value="MIZORAM">MIZORAM</option>
+                            <option value="NAGALAND">NAGALAND</option>
+                            <option value="ORISSA">ORISSA</option>
+                            <option value="PONDICHERRY">PONDICHERRY</option>
+                            <option value="PUNJAB">PUNJAB</option>
+                            <option value="RAJASTHAN">RAJASTHAN</option>
+                            <option value="SIKKIM">SIKKIM</option>
+                            <option value="TAMIL NADU">TAMIL NADU</option>
+                            <option value="TELANGANA">TELANGANA</option>
+                            <option value="TRIPURA">TRIPURA</option>
+                            <option value="UTTARANCHAL">UTTARANCHAL</option>
+                            <option value="UTTAR PRADESH">UTTAR PRADESH</option>
+                            <option value="WEST BENGAL">WEST BENGAL</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="txtPostCode">Postcode</label>
+                        <input type="text" class="form-control" id="txtPostCode" name="txtPostCode" placeholder="Enter Postcode" title="Please Fill Up Postcode" maxlength="6" pattern="\d{6}">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtOpeningBalance">Opening Balance<i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control" id="txtOpeningBalance" name="txtOpeningBalance" placeholder="Enter Opening Balance" title="Please Fill Up Opening Balance" maxlength="15" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="txtName1">Person 1 <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control eachWordFirstLetterUpper" id="txtName1" name="txtName1" placeholder="Enter Person 1" data-error="Please Fill Up Person 1" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtContact1">Contact 1 <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control" id="txtContact1" name="txtContact1" placeholder="Enter Contact" data-error="Please Fill Up Contact" maxlength="12" pattern="[0-9]{10,12}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtName2">Person 2</label>
+                        <input type="text" class="form-control eachWordFirstLetterUpper" id="txtName2" name="txtName2" placeholder="Enter Person 2" data-error="Please Fill Up Person 3">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtContact2">Contact 2 </label>
+                        <input type="text" class="form-control" id="txtContact2" name="txtContact2" placeholder="Enter Contact 2" data-error="Please Fill Up Contact" maxlength="12" pattern="[0-9]{10,12}" >
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtName3">Person 3 </label>
+                        <input type="text" class="form-control eachWordFirstLetterUpper" id="txtName3" name="txtName3" placeholder="Enter Person 3" data-error="Please Fill Up Person 3">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtContact3">Contact 3 </label>
+                        <input type="text" class="form-control" id="txtContact3" name="txtContact3" placeholder="Enter Contact 3" data-error="Please Fill Up Contact" maxlength="12" pattern="[0-9]{10,12}">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtEmail1">Email 1</label>
+                        <input type="text" class="form-control" id="txtEmail1" name="txtEmail1" placeholder="Enter Email 1" title="Please Fill Up Email ">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtEmail2">Email 2</label>
+                        <input type="text" class="form-control" id="txtEmail2" name="txtEmail2" placeholder="Enter Email 2" data-error="Please Fill Up Email">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtGstNo">GST No</label>
+                        <input type="text" class="form-control" id="txtGstNo" name="txtGstNo" placeholder="Enter GST No" data-error="Please Fill Up GST No">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtPAN">PAN No</label>
+                        <input type="text" class="form-control" id="txtPAN" name="txtPAN" placeholder="Enter PAN No" data-error="Please Fill Up PAN No">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="ddStatus">Business Profile  <i class="text-red" title="Required">*</i></label>
+                            <select class="form-control select3" id="ddBusinessProfile" name="ddBusinessProfile" data-error="Please Select Business Profile" required>
+                                <option selected="selected" value="">-- Select Status ---</option>
+                                <option value="MANUFACTURING">Manufacturing</option>
+                                <option value="HOSPITALITY">Hospitality</option>
+                                <option value="JEWELLERY">Jewellery</option>
+                                <option value="CHEMICALS">Chemicals</option>
+                                <option value="AUTOMOBILE">Automobile</option>
+                                <option value="DEVELOPER">Developer</option>
+                                <option value="IT">IT</option>
+                                <option value="BUILDING MATERIALS">Building Materials</option>
+                                <option value="PHARMA">Pharma</option>
+                                <option value="TRANSPORT">Transport</option>
+                                <option value="ARCHITECT AND INTERIOR">Architect And Interior</option>
+                                <option value="CONSULTANT">Consultant</option>
+                                <option value="AUTOMATION INDUSTRY PARTNER">Automation Industry Partner</option>
+                                <option value="OTHER">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="ddStatus">Status</label>
+                            <select class="form-control select3" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                                <option value="">-- Select Status ---</option>
+                                <option selected="selected" value="TRUE">Active</option>
+                                <option value="FALSE">Deactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+
+        /* Bind Cateory */
+        bindDropDownList($('#ddDealer'), 'Distributor');
+
+        /* start Form validation & save data */
+        var f = $('#formClient');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Client/List'; // Eg /Client/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                
+                sendData(f, "/Client/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+
+    });
+
+</script>
+

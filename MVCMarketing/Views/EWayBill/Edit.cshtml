@@ -1,0 +1,141 @@
+﻿
+@{
+    var InfoJson = ViewBag.JsonData;
+}
+
+<div class="p-0">
+    <form role="form" data-toggle="validator" id="formEwayBill">
+        <div class="row">
+            <div class="form-group col-md-5">
+                <label for="ddTransportation">Mode of Transportation <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3  form-control-sm" id="ddTransportation" name="ddTransportation" data-error="Please Select Mode of Transportation" required>
+                    <option value="">-- Select Mode of Transportation --</option>
+                    <option selected="selected" value="Road">Road</option>
+                    <option value="Rail">Rail</option>
+                    <option value="Ship">Ship</option>
+                    <option value="Air">Air</option>
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="ddSubType">Sub Type <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3  form-control-sm" id="ddSubType" name="ddSubType" data-error="Please Select SubType" required>
+                    <option value="">-- Select SubType --</option>
+                    <option selected="selected" value="Supply">Supply</option>
+                    <option value="Export">Export</option>
+                    <option value="Lines Sales">Lines Sales</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="ddDocType">Doc Type <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3  form-control-sm" id="ddDocType" name="ddDocType" data-error="Please Select Doc Type" required>
+                    <option value="">-- Select DocType --</option>
+                    <option selected="selected" value="Tax Invoice">Tax Invoice</option>
+                    <option value="Bill of Supply">Bill of Supply</option>
+                    <option value="Credit Note">Credit Note</option>
+                    <option value="Delivery Challan">Delivery Challan</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-3">
+                <label for="txtInvoiceDate">Date </label>
+                <input type="text" class="form-control  form-control-sm" id="txtInvoiceDate" name="txtInvoiceDate" placeholder="Enter Invoice Date" data-error="Please Fill Up Date" readonly>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="txtGST">GST No </label>
+                <input type="text" class="form-control  form-control-sm" id="txtGST" name="txtGST" placeholder="Enter GST" data-error="Please Fill Up GST" readonly>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="txtDealer">Dealer </label>
+                <input type="text" class="form-control  form-control-sm" id="txtDealer" name="txtDealer" placeholder="Enter Dealer" data-error="Please Fill Up Dealer" readonly>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="txtAmount">Amount </label>
+                <input type="text" class="form-control  form-control-sm" id="txtAmount" name="txtAmount" placeholder="Enter Amount" data-error="Please Fill Up Amount" readonly>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label for="txtTransportName">Transport Name <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control  form-control-sm" id="txtTransportName" name="txtTransportName" placeholder="Enter Transport Name" data-error="Please Fill Up Transport Name" readonly>
+            </div>
+            <div class="form-group col-md-4">
+                <div class="">
+                    <label for="txtRouteName">Route Name <i class="text-red" title="Required">*</i></label>
+                    <input type="text" class="form-control  form-control-sm" id="txtRouteName" name="txtRouteName" placeholder="Enter Route Name" data-error="Please Fill Up Route Name" readonly>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="txtGSTNumber">GST Number/ ID  </label>
+                <input type="text" class="form-control  form-control-sm" id="txtGSTNumber" name="txtGSTNumber" placeholder="Enter GST Number / ID " data-error="Enter GST Number / ID" readonly>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label for="txtVehicleNumber">Vehicle Number <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control  form-control-sm" id="txtVehicleNumber" name="txtVehicleNumber" placeholder="Enter Vehicle Number" data-error="Please Fill Up Vehicle Number" readonly>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="ddVehicleType">Vehicle Type <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3  form-control-sm" id="ddVehicleType" name="ddVehicleType" data-error="Please Select Vehicle Type" required>
+                    <option value="">-- Select Vehicle Type --</option>
+                    <option selected="selected" value="Regular">Regular</option>
+                    <option value="Over Dimensional Cargo">Over Dimensional Cargo</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="txtDistance">Distance - KMs </label>
+                <input type="text" class="form-control  form-control-sm" id="txtDistance" name="txtDistance" placeholder="Enter Distance" data-error="Please Fill Up Distance">
+            </div>
+            <div class="col-12 text-center">
+                <input type="hidden" value="" id="hdId" name="hdId" />
+                <button type="submit" class="col-md-3 btn btn-default btn-sm col-4">Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+
+    $(function () {
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].TransportationId);
+            $("#txtInvoiceDate").val(jInfo[0].Date);
+            $("#txtGST").val(jInfo[0].GST);
+            $("#txtDealer").val(jInfo[0].Name);
+            $("#txtAmount").val(jInfo[0].Amount);
+            $("#txtTransportName").val(jInfo[0].Transport);
+            $("#txtRouteName").val(jInfo[0].RouteName);
+            $("#txtVehicleNumber").val(jInfo[0].VehicleNumber);
+            $("#txtGSTNumber").val(jInfo[0].GSTNumber);
+        }
+        /* end:Edit Record */
+
+
+        /* start Form validation & save data */
+        var f = $('#formEwayBill');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/EWayBill/List'; // Eg /EWayBill/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/EWayBill/Insert", button, button.text(), redirectUrl).then(function (res) {
+                     console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>
+
+

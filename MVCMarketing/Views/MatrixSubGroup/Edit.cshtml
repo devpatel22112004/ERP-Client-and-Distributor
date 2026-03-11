@@ -1,0 +1,84 @@
+﻿@{
+    var InfoJson = ViewBag.JsonData;
+}
+<!--<div class="col-12 text-center bg-transparent">
+    <span class="delete-record-message" id="btnDeleteMatrixSubGroup"> DELETE PERMANENT RECORDS ? CLICK HERE  <i class="far fa-trash-alt delete-record text-red" title="Delete Record"></i></span>
+</div>-->
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formMatrixSubGroup" class="text-sm">
+        <div class="col-12">
+            <div class="form-group">
+                <label for="ddMatrixGroup">Area <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select2-blue" id="ddMatrixGroup" name="ddMatrixGroup" data-error="Please Selected Area" required>
+                    <option value="" selected="selected">--Selected--</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="txtSubGroup">Sub Area <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control eachWordFirstLetterUpper" id="txtSubGroup" name="txtSubGroup" placeholder="Enter Sub Area" data-error="Please Fill Up Sub Area" required>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="ddStatus">Status <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                    <option selected="selected" value="">-- Select Status ---</option>
+                    <option value="TRUE">Active</option>
+                    <option value="FALSE">Deactive</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdMatrixSubGroupId" name="hdMatrixSubGroupId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+        bindDropDownList($('#ddMatrixGroup'), 'MatrixGroup');
+
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdMatrixSubGroupId").val(jInfo[0].MatrixSubGroupId);
+            $("#ddMatrixGroup").val(jInfo[0].MatrixGroupId);
+            $("#txtSubGroup").val(jInfo[0].SubGroupname);
+            $("#ddStatus").val(jInfo[0].Status);
+        }
+        /* end:Edit Record */
+
+    /*Delete Action*/
+        $('#btnDeleteMatrixSubGroup').on('click', function(e){
+            confirmDialog('Are you sure to delete record ?', function () {
+                var recordId = $("#hdMatrixSubGroupId").val();
+                sendData($("#formMatrixSubGroupDelete"), "/MatrixSubGroup/Delete?id=" + recordId, $(this), $(this).text(), "/MatrixSubGroup/List");
+            });
+        });
+
+        /* start Form validation & save data */
+        var f = $('#formMatrixSubGroup');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/MatrixSubGroup/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/MatrixSubGroup/Insert", button, button.text(), redirectUrl).then(function (res) {
+                     console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>
+

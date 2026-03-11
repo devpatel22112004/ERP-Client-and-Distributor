@@ -1,0 +1,133 @@
+﻿<div class="m-1">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="form-group text-sm">
+                    <input id="txtInput" class="form-control form-control-sm" type="text" placeholder="Enter text or URL to encode" readonly />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <select class="form-control form-control-sm select3" id="selSize" name="selSize">
+                        <option value="128">128px</option>
+                        <option value="176">176px</option>
+                        <option value="240" selected>240px</option>
+                        <option value="320">320px</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <button class="btn btn-default btn-sm" id="btnGenerate">Generate</button>
+                <button class="btn btn-default btn-sm" id="btnClear">Clear</button>
+                <button class="btn btn-default btn-sm" id="btnDownload">Download PNG</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="small text-center">Tip: paste a URL then click Generate. Press Enter to generate too.</div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="col-md-12 text-center">
+                <!-- Wrapper with padding and background for download -->
+                <div id="qrWrapper" style="display: inline-block; padding: 20px; background: white; border-radius: 6px;">
+                    <!-- QR Code Container -->
+                    <div id="qrcode" style="width: 240px; height: 240px; margin: 0 auto; display: flex; align-items: center; justify-content: center;"></div>
+                    <!-- Text Below QR -->
+                    <div id="qrText" class="small" style="margin-top: 8px; word-break: break-word; max-width: 240px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Make sure jQuery, QRCode.js and html2canvas are loaded -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+    $(function () {
+        // Replace this line with your actual server-side data (the ViewBag.JsonData must be set server-side)
+        var jInfo = JSON.parse(JSON.stringify(@Html.Raw(ViewBag.JsonData)));
+        var clientCode, customerToken;
+        if (jInfo != null) {
+            clientCode = jInfo[0].CustomerCode;
+            customername = jInfo[0].CustomerName;
+            customerToken = jInfo[0].Token;
+        }
+
+        // Initial QRCode object
+        var qrcode = new QRCode(document.getElementById("qrcode"), {
+            text: "HI",
+            width: 240,
+            height: 240,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        // Construct the URL and set input value
+        var siteFull = window.location.protocol + "//" + window.location.host + "/ClientAccess/" + customerToken;
+        $("#txtInput").val(siteFull);
+
+        // Generate button click event
+        $("#btnGenerate").on("click", generateQR);
+
+        // Enter key triggers generate
+        $("#txtInput").on("keypress", function (e) {
+            if (e.which === 13) {
+                generateQR();
+                e.preventDefault();
+            }
+        });
+
+        // Clear button
+        $("#btnClear").on("click", function () {
+            $("#qrcode").empty();
+            $("#qrText").text("");
+            qrcode = new QRCode(document.getElementById("qrcode"), {
+                text: "",
+                width: 240,
+                height: 240
+            });
+        });
+
+        // Download PNG button: capture qrWrapper including QR + text + padding
+        $("#btnDownload").on("click", function () {
+            html2canvas(document.getElementById("qrWrapper"), { backgroundColor: null }).then(function (canvas) {
+                // Create link and trigger download
+                var link = document.createElement("a");
+                link.download = "qrcode_with_text.png";
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            }).catch(function (err) {
+                alert("Failed to generate image: " + err);
+            });
+        });
+
+        // Auto-generate on load
+        generateQR();
+
+        // Function to generate QR and update text
+        function generateQR() {
+            var text = $.trim($("#txtInput").val());
+            if (!text) {
+                alert("Please enter text or URL to encode.");
+                return;
+            }
+            var size = parseInt($("#selSize").val(), 10) || 240;
+
+            $("#qrcode").empty();
+            $("#qrText").text(clientCode + ' - ' + customername);
+            //$("#qrTextName").text(customername);
+
+            qrcode = new QRCode(document.getElementById("qrcode"), {
+                text: text,
+                width: size,
+                height: size,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+    });
+</script>

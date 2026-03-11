@@ -1,0 +1,73 @@
+﻿@{
+    var InfoJson = ViewBag.JsonData;
+}
+<!--<div class="col-12 text-center bg-transparent">
+     <span class="delete-record-message" id="btnDeleteMatrixFloor"> DELETE PERMANENT RECORDS ? CLICK HERE  <i class="far fa-trash-alt delete-record text-red" title="Delete Record"></i></span>
+</div>-->
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formMatrixFloor" class="text-sm">
+        <div class="col-12">
+            <div class="form-group">
+                <label for="txtFloor">Floor <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control eachWordFirstLetterUpper" id="txtFloor" name="txtFloor" placeholder="Enter Floor" data-error="Please Fill Up Floor" required>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="ddStatus">Status <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                    <option selected="selected" value="">-- Select Status ---</option>
+                    <option value="TRUE">Active</option>
+                    <option value="FALSE">Deactive</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdMatrixFloorId" name="hdMatrixFloorId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdMatrixFloorId").val(jInfo[0].MatrixFloorId);
+            $("#txtFloor").val(jInfo[0].Floorname);
+            $("#ddStatus").val(jInfo[0].Status);
+        }
+        /* end:Edit Record */
+
+    /*Delete Action*/
+        $('#btnDeleteMatrixFloor').on('click', function(e){
+            confirmDialog('Are you sure to delete record ?', function () {
+                var recordId = $("#hdMatrixFloorId").val();
+                sendData($("#formMatrixFloorDelete"), "/MatrixFloor/Delete?id=" + recordId, $(this), $(this).text(), "/MatrixFloor/List");
+            });
+        });
+
+        /* start Form validation & save data */
+        var f = $('#formMatrixFloor');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/MatrixFloor/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/MatrixFloor/Insert", button, button.text(), redirectUrl).then(function (res) {
+                     console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>
+

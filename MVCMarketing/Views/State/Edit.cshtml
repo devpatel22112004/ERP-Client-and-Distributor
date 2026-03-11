@@ -1,0 +1,68 @@
+﻿@{
+    var InfoJson = ViewBag.JsonData;
+}
+
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formState" class="text-sm">
+
+        <div class="form-group col-md-12">
+            <label for="txtStateName">State Name <i class="text-red" title="Required">*</i></label>
+            <input type="text" class="form-control  form-control-sm" id="txtStateName" name="txtStateName" placeholder="Enter State Name" data-error="Please Fill Up State Name" required>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="txtStateCode">State Code <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control  form-control-sm" id="txtStateCode" name="txtStateCode" placeholder="Enter State Code" data-error="Please Fill Up State Code" required>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="ddStatus">Status <i class="text-red" title="Required">*</i></label>
+            <select class="form-control select3  form-control-sm" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                <option selected="selected" value="">-- Select Status ---</option>
+                <option value="TRUE">Active</option>
+                <option value="FALSE">Deactive</option>
+            </select>
+        </div>
+
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+
+         /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].StateId);
+            $("#txtStateName").val(jInfo[0].StateName);
+            $("#txtStateCode").val(jInfo[0].StateCode);
+            $("#ddStatus").val(jInfo[0].Status);
+        }
+        /* end:Edit Record */
+
+
+        /* start Form validation & save data */
+        var f = $('#formState');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/State/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/State/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });</script>

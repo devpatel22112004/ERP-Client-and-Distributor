@@ -1,0 +1,75 @@
+﻿
+@{
+    //ViewBag.Title = "Purchase PO Term & Condition";
+    //Layout = Session["Layout"].ToString();
+    var InfoJson = ViewBag.JsonData;
+}
+
+<div class="p-1">
+    <div class="col-md-12">
+        <form role="form" data-toggle="validator" id="formOrderTerm" class="text-sm" novalidate="novalidate">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <span for="txtTermCondition">Term & Condition <i class="text-red" title="Required">*</i></span>
+                        <textarea type="text" class="form-control" id="txtTermCondition" name="txtTermCondition" placeholder="Enter Term & Condition" rows="13" required></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-center">
+                <input type="hidden" value="" id="hdTermOrderId" name="hdTermOrderId" />
+                <button type="submit" class="btn btn-outline-secondary btn-sm"><i class="fa fa-save"></i> Save & Print</button>
+                <!--<button type="button" class="btn btn-outline-dark btn-sm" id="btnViewPrint"><i class="fa fa-print"></i> View Print</button>-->
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+
+         /* View Print*/
+            $("#btnViewPrint").click(function (event) {
+                if ($("#hdTermOrderId").val().length > 0)
+                   // modalPrint("Print", "/TradersPI/ProformaInvoice?id=" + $("#hdOrderId").val());
+                    window.open("/Order/Print?id=" + $("#hdTermOrderId").val());
+            });
+
+             /*Edit Record */
+            var jInfo = @Html.Raw(InfoJson);
+            console.log(jInfo);
+            if (jInfo != null) {
+              $("#hdTermOrderId").val(jInfo[0].OrderId);
+              $("#txtTermCondition").val(jInfo[0].TermCondition);
+            }
+           /* end:Edit Record */
+
+
+        /* start Form validation & save data */
+        var fTerm = $('#formOrderTerm');
+        fTerm.validator();// Call validation function
+        fTerm.attr('autocomplete', 'off');//Auto Complete Off
+        fTerm.submit(function (e) {
+             $("#hdSalesOrderTermId").val($("#hdSalesOrderId").val());
+            e.preventDefault();
+            var button = fTerm.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = ''; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                /*var returnValue = sendData(f, "/Category/Insert", button, button.text(), redirectUrl);
+                console.log(returnValue);*/
+                sendData(fTerm, "/Order/UpdateTermCondition", button, button.text(), redirectUrl).then(function (res) {
+                    //modalPrint("Print", "/TradersPI/ProformaInvoice?id=" + $("#hdOrderId").val());
+                    window.open("/Order/Print?id=" + $("#hdTermOrderId").val());
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>
+
+

@@ -1,0 +1,51 @@
+﻿<div class="p-2">
+    <form role="form" data-toggle="validator" id="formMatrixFloor" class="text-sm">
+        <div class="col-12">
+            <div class="form-group">
+                <label for="txtFloor">Floor <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control eachWordFirstLetterUpper" id="txtFloor" name="txtFloor" placeholder="Enter Floor" data-error="Please Fill Up Floor" required>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="ddStatus">Status <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                    <option value="">-- Select Status ---</option>
+                    <option selected="selected" value="TRUE">Active</option>
+                    <option value="FALSE">Deactive</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdMatrixFloorId" name="hdMatrixFloorId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+        /* start Form validation & save data */
+        var f = $('#formMatrixFloor');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/MatrixFloor/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                /*var returnValue = sendData(f, "/Category/Insert", button, button.text(), redirectUrl);
+                console.log(returnValue);*/
+                sendData(f, "/MatrixFloor/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>
+

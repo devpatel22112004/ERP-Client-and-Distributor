@@ -1,0 +1,312 @@
+﻿<div class="p-2">
+    <form role="form" data-toggle="validator" id="form1">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label for="txtItemCode">Item Code</label>
+                            <input type="text" class="form-control form-control-sm" id="txtItemCode" name="txtItemCode" placeholder="Enter Item" data-error="Please Fill Up Item" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="ddCategory">Category</label>
+                            <select class="form-control form-control-sm select3" id="ddCategory" name="ddCategory" data-error="Please Selected Category" required>
+                                <option value="" selected="selected">-----Selected------</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="ddSubCategory">Sub Category</label>
+                            <select class="form-control form-control-sm select3" id="ddSubCategory" name="ddSubCategory" data-error="Please Selected Sub Category" required>
+                                <option value="" selected="selected">-----Selected------</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label for="ddBrand">Brand</label>
+                            <select class="form-control form-control-sm select3" id="ddBrand" name="ddBrand" title="Please Selected Brand " required>
+                                <option value="" selected="selected">-----Selected------</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="txtWarranty">Warranty(In Month)</label>
+                            <input type="text" class="form-control form-control-sm" id="txtWarranty" name="txtWarranty" placeholder="Enter Warranty" data-error="Please Fill Up Warranty" required>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="txtHSN">HSN</label>
+                            <input type="text" class="form-control form-control-sm" id="txtHSN" name="txtHSN" placeholder="Enter HSN" title="Please Fill Up HSN">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="txtGST">GST</label>
+                            <input type="text" class="form-control form-control-sm" id="txtGST" name="txtGST" placeholder="Enter GST" data-error="Please Fill Up GST" pattern="[0-9]+(\.[0-9]{0,3})?%?" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="txtDescription">Description</label>
+                            <input type="text" class="form-control form-control-sm" id="txtDescription" name="txtDescription" placeholder="Enter Description" data-error="Please Fill Up Description">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="ddUnit">Packing Unit</label>
+                            <select class="form-control form-control-sm select3" id="ddUnit" name="ddUnit" data-error="Please Selected Unit" required>
+                                <option selected="selected" value="">-- Select Unit ---</option>                                
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="txtPacking">Packing</label>
+                            <input type="text" class="form-control form-control-sm" id="txtPacking" name="txtPacking" placeholder="Enter Packing" title="Please Fill Up Packing">
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group col-md-3">
+                            <label for="txtPurchaseRate"><span class="priceNet"></span> Purchase Rate</label>
+                            <input type="text" class="form-control form-control-sm" id="txtPurchaseRate" name="txtPurchaseRate" placeholder="Enter Price" data-error="Please Fill Up Purchase Rate">
+                        </div>
+                        <div class="form-group col-md-3 divDiscount">
+                            <label for="txtPurchaseDiscount1">Purchase Dis1[%]</label>
+                            <input type="text" class="form-control form-control-sm" id="txtPurchaseDiscount1" name="txtPurchaseDiscount1" placeholder="Enter Purchase Discount 1" data-error="Please Fill Up Purchase Discount1">
+                        </div>
+                        <div class="form-group col-md-3 divDiscount">
+                            <label for="txtPurchaseDiscount2">Purchase Dis2[%]</label>
+                            <input type="text" class="form-control form-control-sm" id="txtPurchaseDiscount2" name="txtPurchaseDiscount2" placeholder="Enter Purchase Discount 2" data-error="Please Fill Up Purchase Discount2">
+                        </div>
+                        <div class="form-group col-md-3 divDiscount">
+                            <label for="txtPurchaseDiscount3">Purchase Dis3[%]</label>
+                            <input type="text" class="form-control form-control-sm" id="txtPurchaseDiscount3" name="txtPurchaseDiscount3" placeholder="Enter Purchase Discount 3" data-error="Please Fill Up Purchase Discount3">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label for="txtSalesRate"><span class="priceNet"></span> Sales Rate</label>
+                            <input type="text" class="form-control form-control-sm" id="txtSalesRate" name="txtSalesRate" placeholder="Enter Price" data-error="Please Fill Up Sales Rate">
+                        </div>
+                        <div class="form-group col-md-3 divDiscount">
+                            <label for="txtSalesDiscount1">Sales Dis1[%]</label>
+                            <input type="text" class="form-control form-control-sm" id="txtSalesDiscount1" name="txtSalesDiscount1" placeholder="Enter Sales Discount 1" data-error="Please Fill Up Sales Discount1">
+                        </div>
+                        <div class="form-group col-md-3 divDiscount">
+                            <label for="txtSalesDiscount2">Sales Dis2[%]</label>
+                            <input type="text" class="form-control form-control-sm" id="txtSalesDiscount2" name="txtSalesDiscount2" placeholder="Enter Sales Discount 2" data-error="Please Fill Up Sales Discount2">
+                        </div>
+                        <div class="form-group col-md-3 divDiscount">
+                            <label for="txtSalesDiscount3">Sales Dis2[%]</label>
+                            <input type="text" class="form-control form-control-sm" id="txtSalesDiscount3" name="txtSalesDiscount3" placeholder="Enter Sales Discount 3" data-error="Please Fill Up Sales Discount3">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label for="txtStockLimit">Stock Limit</label>
+                            <input type="text" class="form-control form-control-sm" id="txtStockLimit" name="txtStockLimit" placeholder="Enter Stock Limit" data-error="Please Fill Up Stock Limit" pattern="[0-9]+(\.[0-9]{0,3})?%?">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="txtOpeningStock">Opening Stock</label>
+                            <input type="text" class="form-control form-control-sm" id="txtOpeningStock" name="txtOpeningStock" placeholder="Enter Opening Stock" data-error="Please Fill Up Opening Stock" pattern="[0-9]+(\.[0-9]{0,3})?%?">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="ddRefilling">Refilling</label>
+                            <select class="form-control form-control-sm select3" id="ddRefilling" name="ddRefilling" data-error="Please Select Status of Refill" required>
+                                <option selected="selected" value="">-- Select Refill Status ---</option>
+                                <option value="NO">NO</option>
+                                <option value="FULL">FULL</option>
+                                <option value="PARTIAL">PARTIAL</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="ddStatus">Status</label>
+                            <select class="form-control form-control-sm select3" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                                <option value="">-- Select Status ---</option>
+                                <option selected="selected" value="TRUE">Active</option>
+                                <option value="FALSE">Deactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 text-center">
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <button type="submit" class="btn btn-default" id="btnsave">Save</button>
+        </div>
+        <!-- /.box-body -->
+    </form>
+</div>
+
+<script>
+
+    $(function () {
+        /* start Form validation & save data */
+        var f = $('#form1');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Item/List'; // Eg /Employee/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/Item/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+                /*
+                 sendData(f, "/Item/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    f.closest(".modal").modal('hide');//Hide modal popup
+                    $("#btnListSearch").trigger("click");
+                     //BindTableItem();//Bind Data table
+                     //console.log(res)
+                });
+                */
+            }
+        });
+        /* end Form */
+
+        /* Bind Paching Unit */
+        bindDropDownList($('#ddUnit'), 'ItemPackingUnit');
+
+        /* Bind Cateory */
+        bindDropDownList($('#ddCategory'), 'Category');
+        console.log('Category');
+
+        /* Bind Sub Cateory */
+        $("#ddCategory").change(function () {
+            //var selectedText = $(this).find("option:selected").text();
+            var selectedValue = $(this).val();
+            bindDropDownList($('#ddSubCategory'), 'SubCategory', selectedValue);/*.then(function (res) {
+            });*/
+        });
+
+        /* Bind Brand */
+        bindDropDownList($('#ddBrand'), 'Brand');
+
+        $("#txtPriceIncGST,#txtPriceExcGST,#txtPriceDiscount,#txtDealerMargin").keyup(function (event) {
+            var result = isNumber(event, this);
+            /*if (!result) {
+                this.value = this.value.replace(/\D/g, '');
+            }*/
+            priceCalculation();
+        });
+
+        $("#ddPriceType").change(function () {
+            var priceType = ($(this).val() != "MRP" ? $(this).val().toLowerCase() : $(this).val());
+            $(".priceNet").html(priceType);
+            $(".priceNet").css('text-transform', 'capitalize');
+            $(".divMargin,.divDiscount").removeClass("hidden");
+            $("#txtPriceDiscount,#txtDealerMargin").removeAttr("required").val("");
+            if ($(this).val() == "MRP") {
+                console.log("Inc");
+                $("#ddGSTType").val("Inc GST");
+                $("#ddGSTType option[value='Exc GST']").attr("disabled", "disabled");
+                $("#ddGSTType").trigger("change");
+            }
+            else {
+                $("#ddGSTType").val("Exc GST");
+                $("#ddGSTType option[value='Exc GST']").removeAttr("disabled");
+                $("#ddGSTType").trigger("change");
+            }
+            if ($(this).val() != "DEALER PRICE") {
+                $(".priceFinal").html("Landing Cost");
+                $(".divMargin").addClass("hidden");
+                $("#txtPriceDiscount").attr("required", "required");
+            }
+            else {
+                $(".priceFinal").html("Client Price");
+                $(".divDiscount").addClass("hidden");
+                $("#txtDealerMargin").attr("required", "required");
+            }
+            clearCalculation(); //Clear old data
+        });
+
+        $("#ddGSTType").change(function () {
+            clearCalculation(); //Clear old data
+            $("#txtPriceIncGST,#txtPriceExcGST").attr("readonly", "readonly");
+            if ($(this).val() === "Inc GST") {
+                $("#txtPriceIncGST").removeAttr("readonly");
+            }
+            else if ($(this).val() === "Exc GST") {
+                $("#txtPriceExcGST").removeAttr("readonly");
+            }
+        });
+    });
+
+    //Clear Calculation
+    function clearCalculation() {
+        $("#txtPriceIncGST,#txtPriceExcGST,#txtDealerMargin,#txtPriceDiscount,#txtPriceDiscountAmount,#txtLandingIncGST,#txtLandingExcGST").val("");
+    }
+
+    //Price Calculation
+    function priceCalculation() {
+
+        var priceType = $("#ddPriceType").val();
+        var txtGST = $("#txtGST");
+        var txtPriceIncGST = $("#txtPriceIncGST");
+        var txtPriceExcGST = $("#txtPriceExcGST");
+        var txtDealerMargin = $("#txtDealerMargin");
+        var txtPriceDiscount = $("#txtPriceDiscount");
+        var txtPriceDiscountAmount = $("#txtPriceDiscountAmount");
+        var txtLandingIncGST = $("#txtLandingIncGST");
+        var txtLandingExcGST = $("#txtLandingExcGST");
+        var GSTType = $("#ddGSTType").val();
+
+        var priceWithOutGST = 0;
+        var priceWithGST = 0;
+        var iGST = txtGST.val();
+
+        if (GSTType == "Inc GST") {
+            priceWithGST = txtPriceIncGST.val(); // Set GST Price ();
+            priceWithOutGST = (priceWithGST / (1 + (iGST / 100))).toFixed(2);
+            txtPriceExcGST.val(priceWithOutGST);
+        }
+        else {
+            priceWithOutGST = txtPriceExcGST.val();
+            console.log(priceWithOutGST);
+            priceWithGST = parseFloat(priceWithOutGST) + (parseFloat(priceWithOutGST) * (iGST / 100));
+            txtPriceIncGST.val(priceWithGST);
+        }
+
+        if (priceWithOutGST == 0 || priceWithGST == 0) {
+            return;
+        }
+
+        var iDiscount = txtPriceDiscount.val();
+        var iDealerMargin = txtDealerMargin.val();
+        var iDiscountAmountIncGST = 0;
+        var iDiscountAmountExcGST = 0;
+
+        if (iDiscount.length != 0) {
+            if ((priceType === 'LIST PRICE') && (GSTType === 'Inc GST')) {
+                iDiscountAmountExcGST = parseFloat(priceWithGST) - (parseFloat(priceWithGST) * iDiscount / 100);
+                iDiscountAmountIncGST = parseFloat(iDiscountAmountExcGST) + (parseFloat(iDiscountAmountExcGST) * iGST / 100);
+                txtLandingIncGST.val(iDiscountAmountIncGST.toFixed(2));
+                txtLandingExcGST.val(iDiscountAmountExcGST.toFixed(2));
+            }
+            else {
+                iDiscountAmountExcGST = parseFloat(priceWithOutGST) - (parseFloat(priceWithOutGST) * iDiscount / 100);
+                iDiscountAmountIncGST = parseFloat(iDiscountAmountExcGST) + (parseFloat(iDiscountAmountExcGST) * iGST / 100);
+                txtLandingIncGST.val(iDiscountAmountIncGST.toFixed(2));
+                txtLandingExcGST.val(iDiscountAmountExcGST.toFixed(2));
+            }
+
+        }
+
+        if (iDealerMargin.length != 0) {
+            iDiscountAmountExcGST = parseFloat(priceWithOutGST) + (parseFloat(priceWithOutGST) * iDealerMargin / 100);
+            iDiscountAmountIncGST = parseFloat(iDiscountAmountExcGST) + (parseFloat(iDiscountAmountExcGST) * iGST / 100);
+            txtLandingIncGST.val(iDiscountAmountIncGST.toFixed(2));
+            txtLandingExcGST.val(iDiscountAmountExcGST.toFixed(2));
+        }
+    }
+
+    // function is number
+    function isNumber(evt, element) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (
+            (charCode != 45 || $(element).val().indexOf('-') != -1) &&      // “-” CHECK MINUS, AND ONLY ONE.
+            (charCode != 46 || $(element).val().indexOf('.') != -1) &&      // “.” CHECK DOT, AND ONLY ONE.
+            (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+</script>

@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = "Production List";
+
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_Production">
+            <span class="text-sm">Search Record</span>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group text-sm">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="0" id="txtSearchProductionDate" name="txtSearchProductionDate" placeholder="Search Production Date" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <span id="btnListSearch" class="btn btn-outline-secondary btn-sm" title="Filter"><i class="fas fa-filter"></i></span>
+                    <span id="btnListRefresh" class="btn btn-outline-secondary btn-sm" title="Reset"><i class="fas fa-sync-alt"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Production List</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <button type="button" id="btnFormProduction" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body small table-responsive p-2" style="height: 70vh;">
+                <table class="table table-striped table-sm no-footer table-borderless table-hover table-head-fixed table-responsive-card" id="myTableProduction">
+                    <!--table table-head-fixed-->
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>Stop Time</th>
+                            <th>Remark</th>
+                            <th>Finish</th>
+                            <th>Scrap</th>
+                            <th>Defective</th>
+                            <th>Incharge</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+@section footer{
+    <script>
+        var oTableProduction;
+        function filterColumn(i, tag) {
+            oTableProduction.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+        $(function () {
+            $(".production,.production-product").addClass('active');
+
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            BindTableProduction(); // Bind table
+
+            //Date picker
+            $('#txtSearchProductionDate').datepicker({
+                format: "dd-mm-yyyy",
+                todayHighlight: true,
+                autoclose: true
+            });
+            //Datemask dd/mm/yyyy
+            $('#txtSearchProductionDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
+
+            //refresh button
+            $('#btnListRefresh').click(function () {
+                oTableProduction.DataTable().state.clear();
+                location.reload();
+            });
+
+            $('#btnFormProduction').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                window.location = "/Production/Form";
+            });
+        });
+
+        function BindTableProduction() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit";
+            oTableProduction = bindTableSmart($('#myTableProduction'), activeButtonClass, "/Production/LoadData", "null", $("#filter_Production")); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableProduction.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                window.location = "/Production/Edit?id=" + recordId;
+            });
+        }
+    </script>
+}
+

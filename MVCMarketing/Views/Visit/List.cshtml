@@ -1,0 +1,122 @@
+﻿@{
+    ViewBag.Title = "Visit List";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_Visit">
+            <div class="row">
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="0" id="txtSearchDate" name="txtSearchDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Search Date">
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group text-sm">
+                        <select class="form-control form-control-sm select3 column_filter" data-column="1" id="ddDistributor" name="ddDistributor" title="Please Selected Type">
+                            <option value="" selected="selected">-- Dealer --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <select class="form-control form-control-sm select3 column_filter" data-column="2" id="ddSearchType" name="ddSearchType" title="Please Selected Type">
+                        <option value="" selected="selected">---Selected Type---</option>
+                        <option value="New">New</option>
+                        <option value="Existing">Existing</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="btnListRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header border-0">
+                <h3 class="card-title">Visit List</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <button type="button" id="btnFormVisit" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body table-responsive small p-2" style="height: 70vh;">
+                <table id="myTableVisit" class="table table-sm  table-striped table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Dealer</th>
+                            <th>Type</th>
+                            <th>Remark</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section footer{
+
+    <script>
+        var oTableVisit;
+        function filterColumn(i, tag) {
+            oTableVisit.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+        $(function () {
+            $(".Sales,.Sales-Visit").addClass('active');
+
+            /* Bind Brand */
+            bindDropDownList($('#ddDistributor'), 'Distributor');
+
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            BindTableVisit();// Bind table
+
+
+            //Date picker
+            $('#txtSearchDate').datepicker({
+                format: "dd-mm-yyyy",
+                todayHighlight: true,
+                autoclose: true
+            });
+            //Datemask dd/mm/yyyy
+            $('#txtSearchDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
+
+
+            //refresh button
+            $('#btnListRefresh').click(function () {
+                oTableVisit.DataTable().state.clear();
+                location.reload();
+            });
+
+            $('#btnFormVisit').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("New Visit", "/Visit/Form", "modal-md");
+            });
+        });
+
+        function BindTableVisit() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit";
+            oTableVisit = bindTableSmart($('#myTableVisit'), activeButtonClass, "/Visit/LoadData", "null", $("#filter_Visit")); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableVisit.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+                viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+            });
+        }
+
+    </script>
+
+}
+
+

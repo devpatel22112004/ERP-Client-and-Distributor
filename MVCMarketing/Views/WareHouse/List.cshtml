@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "Warehouse List";
+    Layout = Session["Layout"].ToString();
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_Warehouse">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="0" id="txtSearchName" name="txtSearchName" placeholder="Search Warehouse">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="1" id="txtSearchNumber" name="txtSearchNumber" placeholder="Search Contact">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="2" id="txtSearchCity" name="txtSearchCity" placeholder="Search City">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <select class="form-control  form-control-sm column_filter" data-column="3" select3" id="ddSearchState" name="ddSearchState" title="Search Selected State" required>
+                            <option value="">-- select state ---</option>
+                            <option value="ANDAMAN AND NICOBAR ISLANDS">ANDAMAN AND NICOBAR ISLANDS</option>
+                            <option value="ANDHRA PRADESH">ANDHRA PRADESH</option>
+                            <option value="ARUNACHAL PRADESH">ARUNACHAL PRADESH</option>
+                            <option value="ASSAM">ASSAM</option>
+                            <option value="BIHAR">BIHAR</option>
+                            <option value="CHANDIGARH">CHANDIGARH</option>
+                            <option value="CHHATTISGARH">CHHATTISGARH</option>
+                            <option value="DADRA AND NAGAR HAVELI">DADRA AND NAGAR HAVELI</option>
+                            <option value="DAMAN AND DIU">DAMAN AND DIU</option>
+                            <option value="DELHI">DELHI</option>
+                            <option value="GOA">GOA</option>
+                            <option value="GUJARAT">GUJARAT</option>
+                            <option value="HARYANA">HARYANA</option>
+                            <option value="HIMACHAL PRADESH">HIMACHAL PRADESH</option>
+                            <option value="JAMMU AND KASHMIR">JAMMU AND KASHMIR</option>
+                            <option value="JHARKHAND">JHARKHAND</option>
+                            <option value="KARNATAKA">KARNATAKA</option>
+                            <option value="KERALA">KERALA</option>
+                            <option value="LAKSHADWEEP">LAKSHADWEEP</option>
+                            <option value="MADHYA PRADESH">MADHYA PRADESH</option>
+                            <option value="MAHARASHTRA">MAHARASHTRA</option>
+                            <option value="MANIPUR">MANIPUR</option>
+                            <option value="MEGHALAYA">MEGHALAYA</option>
+                            <option value="MIZORAM">MIZORAM</option>
+                            <option value="NAGALAND">NAGALAND</option>
+                            <option value="ORISSA">ORISSA</option>
+                            <option value="PONDICHERRY">PONDICHERRY</option>
+                            <option value="PUNJAB">PUNJAB</option>
+                            <option value="RAJASTHAN">RAJASTHAN</option>
+                            <option value="SIKKIM">SIKKIM</option>
+                            <option value="TAMIL NADU">TAMIL NADU</option>
+                            <option value="TRIPURA">TRIPURA</option>
+                            <option value="UTTARANCHAL">UTTARANCHAL</option>
+                            <option value="UTTAR PRADESH">UTTAR PRADESH</option>
+                            <option value="WEST BENGAL">WEST BENGAL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="btnListRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header border-0">
+                    <h3 class="card-title">Warehouse List</h3>
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm" style="width: 150px;">
+                            <button type="button" id="btnFormWareHouse" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-2 small" style="height: 65vh;">
+                    <table id="myTableWareHouse" class="table table-striped table-sm no-footer table-borderless table-hover table-head-fixed table-responsive-card">
+                        <thead>
+                            <tr>
+                                <th>WareHouse Name</th>
+                                <th>Person 1</th>
+                                <th>Contact 1</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footer{
+
+    <script>
+
+        var oTableWareHouse;
+
+        function filterColumn(i, tag) {
+            oTableWareHouse.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+
+        $(function () {
+            $(".master,.master-warehouse").addClass('active');
+
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            BindTableWareHouse();// Bind table
+
+            //refresh button
+            $('#btnListRefresh').click(function () {
+                oTableWareHouse.DataTable().state.clear();
+                location.reload();
+            })
+
+            $('#btnFormWareHouse').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("New WareHouse", "/WareHouse/Form", "modal-xl");
+            });
+        });
+
+        function BindTableWareHouse() {
+
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit";
+            oTableWareHouse = bindTableSmart($('#myTableWareHouse'), activeButtonClass, "/WareHouse/LoadData", "null", $("#filter_Warehouse")); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableWareHouse.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+            });
+
+        }
+    </script>
+
+}
+
+
+
+
+
+

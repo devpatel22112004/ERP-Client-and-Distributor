@@ -1,0 +1,63 @@
+﻿@{
+    var InfoJson = ViewBag.JsonData;
+}
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formEventGroup" class="text-sm">
+        <div class="col-12">
+            <div class="form-group">
+                <label for="txtGroup">Group Name <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control eachWordFirstLetterUpper" id="txtGroup" name="txtGroup" placeholder="Enter Group Name" data-error="Please Fill Up Group Name" required>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="ddStatus">Status <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                    <option value="">-- Select Status ---</option>
+                    <option selected="selected" value="TRUE">Active</option>
+                    <option value="FALSE">Deactive</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdEventGroupId" name="hdEventGroupId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+         /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdEventGroupId").val(jInfo[0].EventGroupId);
+            $("#txtGroup").val(jInfo[0].Groupname);
+            $("#ddStatus").val(jInfo[0].Status);
+        }
+        /* end:Edit Record */
+        /* start Form validation & save data */
+        var f = $('#formEventGroup');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/EventGroup/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                /*var returnValue = sendData(f, "/Category/Insert", button, button.text(), redirectUrl);
+                console.log(returnValue);*/
+                sendData(f, "/EventGroup/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>
+

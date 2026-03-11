@@ -1,0 +1,67 @@
+﻿
+@{
+    var InfoJson = ViewBag.JsonData;
+}
+
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formBrand" class="text-sm" novalidate="novalidate">
+        <div class="col-12">
+            <div class="form-group">
+                <label for="txtBrand">Brand <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control form-control-sm" id="txtBrand" name="txtBrand" placeholder="Enter Brand" data-error="Please Fill Up Brand" required>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="ddStatus">Status <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3 form-control-sm" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                    <option selected="selected" value="">-- Select Status ---</option>
+                    <option value="TRUE">Active</option>
+                    <option value="FALSE">Deactive</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <input type="submit" class="col-md-3 btn btn-outline-secondary btn-sm" value="Save">
+        </div>
+    </form>
+</div>
+<script>
+
+    $(function () {
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].BrandId);
+            $("#txtBrand").val(jInfo[0].Label);
+            $("#ddStatus").val(jInfo[0].Status);
+        }
+        /* end:Edit Record */
+
+    
+
+        /* start Form validation & save data */
+        var f = $('#formBrand');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Brand/List'; // Eg /Brand/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/Brand/Insert", button, button.text(), redirectUrl).then(function (res) {
+                     console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>
+

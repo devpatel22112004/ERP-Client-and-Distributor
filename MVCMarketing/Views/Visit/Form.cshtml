@@ -1,0 +1,92 @@
+﻿
+
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formVisit" class="text-sm" novalidate="novalidate">
+        <div class="form-group col-md-12">
+            <label for="txtDate"> Date <i class="text-red" title="Required">*</i></label>
+            <input type="text" class="form-control form-control-sm" id="txtDate" name="txtDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Search Date">
+        </div>
+        <div class="form-group col-md-12">
+            <label for="txtDistributor">Distributor <i class="text-red" title="Required">*</i></label>
+            <input type="text" class="form-control form-control-sm ui-autocomplete-input" id="txtDistributor" name="txtDistributor" placeholder="Search Distributor" required>
+            <input type="hidden" value="" id="txtDistributorId" name="txtDistributorId" />
+        </div>
+        <div class="form-group col-md-12">
+            <label for="ddType">Type</label>
+            <select class="form-control form-control-sm select3 column_filter" data-column="1" id="ddType" name="ddType" title="Please Selected Type">
+                <option value="" selected="selected">---Selected Type---</option>
+                <option value="New">New</option>
+                <option value="Existing">Existing</option>
+            </select>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="txtRemark">Remark <i class="text-red" title="Required">*</i></label>
+            <input type="text" list="suggestions" class="form-control form-control-sm" id="txtRemark" name="txtRemark" placeholder="Enter Remark" data-error="Please Fill Up Remark" required>
+            <datalist id="suggestions">
+                <option value="New Visit">
+                <option value="No Order">
+                <option value="No Owner Present">
+                <option value="Payment Collection">
+                <option value="Sample Deliver">
+            </datalist>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <input type="submit" class="col-md-3 btn btn-outline-secondary btn-sm" value="Save">
+        </div>
+    </form>
+</div>
+<script>
+
+    $(function () {
+        
+        //Date picker
+        $('#txtDate').datepicker({
+            format: "dd-mm-yyyy",
+            todayHighlight: true,
+            autoclose: true
+        }).datepicker("setDate", "0");
+
+        //Datemask dd/mm/yyyy
+        //$('#txtDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
+
+        /* start Form validation & save data */
+        var f = $('#formVisit');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Visit/List'; // Eg /Visit/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                console.log("Successed");
+                sendData(f, "/Visit/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+
+        //Distributor AutoComplete
+        customAutoCompleteDynamic($('#txtDistributor'), $('#txtDistributorId'), "Distributor", AutoCompleteDistributorResult);
+    });
+
+    /*start : Custom AutoComplete Profile Result*/
+    function AutoCompleteDistributorResult(e, u) {
+        if (u.item == null) {
+            console.log(u.item);
+            $('#txtDistributor,#txtDistributorId').val('');
+        }
+        else {
+            console.log(u.item);
+        }
+    }
+
+</script>
+
+

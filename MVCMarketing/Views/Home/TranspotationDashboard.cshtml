@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "Sales Office Dashboard Page";
+    Layout = Session["Layout"].ToString();
+    var InfoJson = ViewBag.JsonData;
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="../plugins/fullcalendar/main.min.css">
+}
+@section containerfluid{
+    <div class="col-sm-6">
+        <h1 class="m-0 text-dark">Dashboard</h1>
+    </div><!-- /.col -->
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </div><!-- /.col -->
+}
+<!-- Main row -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-8 small">
+                <div class="row">
+                    <div class="col-md-2">
+                        <!-- /.info-box -->
+                        <div class="info-box bg-danger pointer">
+                            <div class="info-box-content">
+                                <span class="info-box-text">Dispatch Pending(O)</span>
+                                <span class="info-box-number dashboard_dispatchpendingother">0</span>
+                            </div>
+                            <a href="/InvoiceDispatch/List" class="small-box-footer"></a>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <div class="col-md-10">
+                        <div class="p-1">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-block btn-info" id="lbAttendanceStart"><i class="fas fa-clock" title="Attendance"></i> ATTENDANCE</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- calendar -->
+                        <div id="viewCalendar">
+                        </div>
+                        <!-- calendar -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div id="viewTodo">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footer{
+
+    <script>
+        $(function () {
+            $(".dashboard").addClass('active');
+
+        //BindTablePendingOrder();
+
+        /*Edit Record */
+            var jInfo = @Html.Raw(InfoJson);
+            console.log(jInfo);
+            if (jInfo != null) {
+                $(".dashboard_followup").html(jInfo[0].Followup);
+                $(".dashboard_provisional").html(jInfo[0].Provisional);
+                $(".dashboard_inquiry").html(jInfo[0].Inquiry);
+                $(".dashboard_order").html(jInfo[0].Order);
+                $(".dashboard_sampleoutward").html(jInfo[0].OutwardSampleReturn);
+                $(".dashboard_assemble").html(jInfo[0].Assemble);
+                $(".dashboard_poinward").html(jInfo[0].POInwardPending);
+                $(".dashboard_delivery").html(jInfo[0].DeliveryPending);
+                $(".dashboard_returnapprovel").html(jInfo[0].ReturnApprovelPending);
+                $(".dashboard_dispatch").html(jInfo[0].DispatchPending);
+                $(".dashboard_stockreserve").html(jInfo[0].StockReserve);
+                $(".dashboard_stocklimit").html(jInfo[0].Stock);
+                $(".dashboard_billfromchallan").html(jInfo[0].BillFromChallen);
+                $(".dashboard_billfromreturn").html(jInfo[0].BillFromReturn);
+                $(".dashboard_billfromtraders").html(jInfo[0].BillFromTraders);
+                $(".dashboard_billfromtradersreturn").html(jInfo[0].BillFromReturnTraders);
+                $(".dashboard_leave").html(jInfo[0].Leave);
+            }
+        /* end:Edit Record */
+
+             /* end:Record  out word*/
+            $(".info-box.pointer").click(function (e) {
+                var href = $(this).find("a").attr("href");
+                console.log(href);
+                window.location = "" + href + "";
+                //e.preventDefault();
+                //window.location = "/Sales/List";
+            });
+
+            /* Bind Todo*/
+            $("#viewTodo").load("/Todo/Info");
+
+             /* Bind Calendar*/
+            $("#viewCalendar").load("/Schedule/Info");
+
+            //$("#lbVisit").click(function () {
+            //    //model size .modal-sm .modal-lg .modal-xl
+            //    viewPartialViewModal("New Visit", "/Visit/Form", "modal-md");
+            //});
+
+            $('#lbAttendanceStart').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("Attendance", "/AttendanceSheet/Quick", "modal-md");
+            });
+        });
+
+    </script>
+}
+<!--
+    bg-navy
+    bg-lime
+    bg-maroon
+    bg-yellow
+    bg-green
+    bg-teal
+    bg-cyan
+    bg-gray
+    bg-gray-dark
+-->

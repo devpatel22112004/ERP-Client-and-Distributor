@@ -1,0 +1,214 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Print</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <!-- Date Picker -->
+    <link href="~/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!---->
+    <link href="~/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="~/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="~/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="~/plugins/toastr/toastr.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> -->
+
+    <style>
+    table.table-child-tr {
+        border: none;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        table.table-child-tr tr td {
+            border-color: #ffffff !important;
+            -webkit-print-color-adjust: exact;
+        }
+
+    /* CSS for printing */
+    @@media print {
+        /* Default @@page settings */
+        @@page {
+            size: A4;
+            margin: 0.5cm;
+
+            @@bottom-right {
+                content: counter(page) " of " counter(pages);
+            }
+        }
+
+
+        /* Define a class to adjust margin dynamically
+            .print-margin {
+                margin-top: 150px; 
+            }
+            
+                .print-margin, .print-margin * {
+                    visibility: visible;
+                }
+
+            table.table-child tr td {
+                border-color: #ffffff !important;
+                -webkit-print-color-adjust: exact;
+            } */
+    }
+
+    .invoicePrintCss {
+        font-family: verdana, sans-serif;
+        page: print;
+        color: #000000;
+        font-size: 75%;
+        page-break-inside: auto;
+    }
+
+    table.invoicePrintCss tbody tr {
+        padding: 0.25rem;
+        word-wrap: break-word;
+        page-break-inside: auto;
+    }
+
+    .before {
+        page-break-before: always;
+        padding-top: .75cm;
+    }
+    /**/
+
+
+
+
+</style>
+</head>
+<body class="layout-top-nav">
+    <div class="wrapper">
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div><!--/. container-fluid -->
+            </section>
+        </div>
+    </div>
+    <!-- ./wrapper -->
+    <!-- REQUIRED SCRIPTS -->
+    <!-- jQuery -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- InputMask -->
+    <script src="~/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <!-- overlayScrollbars -->
+    <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- DataTables -->
+    <script src="~/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+    <!-- bootstrap datepicker -->
+    <script src="~/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <!-- Validation App -->
+    <script src="~/plugins/jquery-validate/validator.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <!-- Toastr -->
+    <script src="~/plugins/toastr/toastr.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/dist/js/adminlte.js"></script>
+
+    <!-- OPTIONAL SCRIPTS -->
+    <script src="~/dist/js/demo.js"></script>
+
+    <!-- PAGE PLUGINS -->
+    <!-- jQuery Mapael -->
+    <script src="~/plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
+    <script src="~/plugins/raphael/raphael.min.js"></script>
+    <script src="~/plugins/jquery-mapael/jquery.mapael.min.js"></script>
+    <script src="~/plugins/jquery-mapael/maps/usa_states.min.js"></script>
+    <!-- ChartJS
+    <script src="~/plugins/chart.js/Chart.min.js"></script> -->
+    <!-- PAGE SCRIPTS
+    <script src="~/dist/js/pages/dashboard2.js"></script> -->
+    <!--<script src="~/dist/0.9.3/html2pdf.bundle.min.js"></script>
+    <script src="~/dist/html2pdf/dist/html2pdf.bundle.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    @RenderSection("footer", false)
+
+    <script>
+        /* start : Download PDF */
+        function makePdf(myTag, myClass) {
+            var element = document.getElementById(myTag);
+            element.classList.add(myClass);
+            console.log(element);
+            html2pdf()
+                .from(element)
+                .set({
+                    margin: [2, 2, 2, 2],
+                    filename: pdfName + ".pdf",
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, logging: true, dpi: 192, letterRendering: true },
+                    jsPDF: { format: 'a4', orientation: 'portrait', compress: true },
+                    pagebreak: { avoid: ['tr', 'img', 'li'], mode: "", before: ".before" }/**/
+                })
+                .toPdf('pdf')
+                .get('pdf').then(function (pdf) {
+                    /*var totalPages = pdf.internal.getNumberOfPages();
+                    for (let i = 1; i <= totalPages; i++) {
+                        pdf.setPage(i);
+                        pdf.text("my header text", 10, 10);
+                        pdf.text(myFooter, 10, 200);
+                        pdf.setFontSize(8);
+                        pdf.setTextColor(150);
+                        pdf.text('Tarikh Cetakan: ' + i + '/' + totalPages + '', pdf.internal.pageSize.getWidth() - 85, pdf.internal.pageSize.getHeight() - 8);
+                    }*/
+                    element.classList.remove(myClass);
+                }).save();
+        }
+        /* stop : Download PDF */
+
+        /* Print Pdf */
+        function printDiv(divId, title) {
+            var contents = $("html").html();
+            var frame1 = document.createElement('iframe');
+            frame1.name = "frame1";
+            frame1.style.position = "absolute";
+            frame1.style.top = "-1000000px";
+            document.body.appendChild(frame1);
+            var frameDoc = frame1.contentWindow ? frame1.contentWindow : frame1.contentDocument.document ? frame1.contentDocument.document : frame1.contentDocument;
+            frameDoc.document.open();
+            frameDoc.document.write('<html><head><title>' + title + '</title>');
+            frameDoc.document.write('</head><body>');
+            frameDoc.document.write(contents);
+            frameDoc.document.write('</body></html>');
+            frameDoc.document.close();
+            setTimeout(function () {
+                var parent_title = window.parent.document.title;
+                window.frames["frame1"].focus();
+                window.parent.document.title = title;
+                window.frames["frame1"].print();
+                window.parent.document.title = parent_title;
+                document.body.removeChild(frame1);
+            }, 500);
+            return false;
+        }
+    </script>
+
+</body>
+</html>

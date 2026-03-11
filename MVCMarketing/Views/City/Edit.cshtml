@@ -1,0 +1,71 @@
+﻿@{
+    var InfoJson = ViewBag.JsonData;
+}
+
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formCity" class="text-sm">
+
+        <div class="form-group col-md-12">
+            <label for="txtCityName">City Name <i class="text-red" title="Required">*</i></label>
+            <input type="text" class="form-control  form-control-sm" id="txtCityName" name="txtCityName" placeholder="Enter City Name" data-error="Please Fill Up City Name" required>
+        </div>
+
+        <div class="form-group col-md-12">
+            <label for="ddState">State <i class="text-red" title="Required">*</i></label>
+            <select class="form-control select3  form-control-sm" id="ddState" name="ddState" data-error="Please Select State" required>
+                <option selected="selected" value="">-- Select State ---</option>
+            </select>
+        </div>
+
+        <div class="form-group col-md-12">
+            <Name for="ddStatus">Status <i class="text-red" title="Required">*</i></Name>
+            <select class="form-control select3  form-control-sm" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                <option selected="selected" value="">-- Select Status ---</option>
+                <option value="TRUE">Active</option>
+                <option value="FALSE">Deactive</option>
+            </select>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+
+        /* Bind State */
+        bindDropDownList($('#ddState'), 'State');
+
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].CityId);
+            $("#txtCityName").val(jInfo[0].CityName);
+            $("#ddState").val(jInfo[0].StateId);
+            $("#ddStatus").val(jInfo[0].Status);
+        }
+        /* end:Edit Record */
+
+        /* start Form validation & save data */
+        var f = $('#formCity');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/City/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/City/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });</script>

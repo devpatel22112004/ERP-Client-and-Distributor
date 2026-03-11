@@ -1,0 +1,73 @@
+﻿@{ var InfoJson = ViewBag.JsonData; }
+<!--<div class="col-12 text-center bg-transparent">
+    <span class="delete-record-message" id="btnDeleteSubCategory"> DELETE PERMANENT RECORDS ? CLICK HERE  <i class="far fa-trash-alt delete-record text-red" title="Delete Record"></i></span>
+</div>-->
+<div class="p-0">
+    <form role="form" data-toggle="validator" id="formSubCategory">
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label for="ddCategory">Category <i class="text-red" title="Required">*</i></label>
+                <select class="form-control form-control-sm" id="ddCategory" name="ddCategory" data-error="Please Selected Category" required>
+                    <option value="" selected="selected">--  Selected Category --</option>
+                </select>
+            </div>
+            <div class="form-group col-md-12">
+                <label for="txtSubCategory">Sub Category <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control form-control-sm" id="txtLabel" name="txtLabel" placeholder="Enter Sub Category" data-error="Please Fill Up SubCategory" required>
+            </div>
+            <div class="form-group col-md-12">
+                <label for="ddStatus">Status <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3 form-control-sm" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                    <option selected="selected" value="">-- Select Status ---</option>
+                    <option value="TRUE">Active</option>
+                    <option value="FALSE">Deactive</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <button type="submit" class="col-md-3 btn btn-default btn-sm col-4">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+
+    $(function () {
+         /* Bind Cateory */
+        bindDropDownList($('#ddCategory'), 'Category');
+
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].SubCategoryId);
+            $("#ddCategory").val(jInfo[0].CategoryId);
+            $("#txtLabel").val(jInfo[0].SubCategoryName);
+            $("#ddStatus").val(jInfo[0].Status);
+        }
+        /* end:Edit Record */
+
+
+
+        /* start Form validation & save data */
+        var f = $('#formSubCategory');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/SubCategory/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/SubCategory/Insert", button, button.text(), redirectUrl).then(function (res) {
+                     console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>

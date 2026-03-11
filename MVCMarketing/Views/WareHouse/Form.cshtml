@@ -1,0 +1,145 @@
+﻿@{
+    //ViewBag.Title = "Customer Form";
+    //Layout = Session["Layout"].ToString();
+}
+<div class="p-2">
+    <form role="form" id="formWareHouse" data-toggle="validator">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <span for="txtName">Ware House Name</span>
+                            <input type="text" class="form-control form-control-sm" id="txtName" name="txtName" placeholder="Enter Ware House Name" data-error="Please Fill Up WareHouse Name" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <span for="txtAddress">Address</span>
+                            <input type="text" class="form-control form-control-sm" id="txtAddress" name="txtAddress" placeholder="Enter Address" data-error="Please Fill Up Address" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <span for="txtLandMark">Land Mark</span>
+                            <input type="text" class="form-control form-control-sm" id="txtLandMark" name="txtLandMark" placeholder="Enter Land Mark" data-error="Please Fill Up Land Mark">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <span for="txtArea">Area</span>
+                            <input type="text" class="form-control form-control-sm" id="txtArea" name="txtArea" placeholder="Enter Area" title="Please Fill Up Area">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <span for="txtPostCode">Postcode</span>
+                            <input type="text" class="form-control form-control-sm" id="txtPostCode" name="txtPostCode" placeholder="Enter Postcode" title="Please Fill Up Postcode" maxlength="6" pattern="\d{6}">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <span for="txtCity">City</span>
+                            <input type="text" class="form-control form-control-sm" id="txtCity" name="txtCity" placeholder="Enter City" title="Please Fill Up City">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <span for="ddState">State</span>
+                            <select class="form-control form-control-sm select3" id="ddState" name="ddState" data-error="Please Selected State" required>
+                                <option value="">-- select state ---</option>
+                                <option value="ANDAMAN AND NICOBAR ISLANDS">ANDAMAN AND NICOBAR ISLANDS</option>
+                                <option value="ANDHRA PRADESH">ANDHRA PRADESH</option>
+                                <option value="ARUNACHAL PRADESH">ARUNACHAL PRADESH</option>
+                                <option value="ASSAM">ASSAM</option>
+                                <option value="BIHAR">BIHAR</option>
+                                <option value="CHANDIGARH">CHANDIGARH</option>
+                                <option value="CHHATTISGARH">CHHATTISGARH</option>
+                                <option value="DADRA AND NAGAR HAVELI">DADRA AND NAGAR HAVELI</option>
+                                <option value="DAMAN AND DIU">DAMAN AND DIU</option>
+                                <option value="DELHI">DELHI</option>
+                                <option value="GOA">GOA</option>
+                                <option value="GUJARAT">GUJARAT</option>
+                                <option value="HARYANA">HARYANA</option>
+                                <option value="HIMACHAL PRADESH">HIMACHAL PRADESH</option>
+                                <option value="JAMMU AND KASHMIR">JAMMU AND KASHMIR</option>
+                                <option value="JHARKHAND">JHARKHAND</option>
+                                <option value="KARNATAKA">KARNATAKA</option>
+                                <option value="KERALA">KERALA</option>
+                                <option value="LAKSHADWEEP">LAKSHADWEEP</option>
+                                <option value="MADHYA PRADESH">MADHYA PRADESH</option>
+                                <option value="MAHARASHTRA">MAHARASHTRA</option>
+                                <option value="MANIPUR">MANIPUR</option>
+                                <option value="MEGHALAYA">MEGHALAYA</option>
+                                <option value="MIZORAM">MIZORAM</option>
+                                <option value="NAGALAND">NAGALAND</option>
+                                <option value="ORISSA">ORISSA</option>
+                                <option value="PONDICHERRY">PONDICHERRY</option>
+                                <option value="PUNJAB">PUNJAB</option>
+                                <option value="RAJASTHAN">RAJASTHAN</option>
+                                <option value="SIKKIM">SIKKIM</option>
+                                <option value="TAMIL NADU">TAMIL NADU</option>
+                                <option value="TRIPURA">TRIPURA</option>
+                                <option value="UTTARANCHAL">UTTARANCHAL</option>
+                                <option value="UTTAR PRADESH">UTTAR PRADESH</option>
+                                <option value="WEST BENGAL">WEST BENGAL</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <span for="txtName1">Person-1</span>
+                            <input type="text" class="form-control form-control-sm" id="txtName1" name="txtName1" placeholder="Enter Person-1" data-error="Please Fill Up Person-1">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <span for="txtContact1">Contact-1</span>
+                            <input type="text" class="form-control form-control-sm" id="txtContact1" name="txtContact1" placeholder="Enter Contact-1" data-error="Please Fill Up Contact-1" maxlength="12" pattern="[0-9]{10,12}" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <span for="ddStatus">Status <i class="text-red" title="Required">*</i></span>
+                            <select class="form-control select3  form-control-sm" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                                <option selected="selected" value="">-- Select Status ---</option>
+                                <option value="TRUE">Active</option>
+                                <option value="FALSE">Deactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group text-center col-md-12">
+            <button type="submit" class="btn btn-default" id="btnsave">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+
+       $(function () {
+        /* start Form validation & save data */
+        var f = $('#formWareHouse');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/WareHouse/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                /*var returnValue = sendData(f, "/Category/Insert", button, button.text(), redirectUrl);
+                console.log(returnValue);*/
+                sendData(f, "/WareHouse/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>

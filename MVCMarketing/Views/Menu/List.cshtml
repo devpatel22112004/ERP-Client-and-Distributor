@@ -1,0 +1,260 @@
+﻿@{
+    ViewBag.Title = "Menu List";
+    Layout = Session["Layout"].ToString();
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" id="txtSearchName" name="txtSearchName" placeholder="Search Label">
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="btnRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="card-title">Browser Menu List</h3>
+                        <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <button type="button" id="btnFormMenu" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-2 small table-responsive" style="height: 65vh;">
+                        <nav class="mt-2">
+                            <div class="dynamic-menu" id="myMenu">
+                                <h6>Load menu ...</h6>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="card-title">Moblie Menu List</h3>
+                        <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <button type="button" id="btnFormMenu" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-2 small" style="height: 65vh;">
+                        <div class="dynamic-menu" id="myMenuApp">
+                            <h6>Load menu ...</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footer{
+    <style>
+
+        .dynamic-menu span {
+            display: block;
+            margin: 5px 20px;
+            vertical-align: middle;
+        }
+
+        .dynamic-menu ul {
+            list-style: none;
+            padding-left: 20px;
+            vertical-align: middle;
+            margin: 0;
+        }
+
+        .dynamic-menu li li {
+            color: #b200ff;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+            .dynamic-menu li li li {
+                color: #0094ff;
+                font-size: 12px;
+            }
+
+        .dynamic-menu .edit-menu-record {
+            color: #78b044;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .dynamic-menu .add-sub-menu {
+            color: #0094ff;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .dynamic-menu .dashboard-menu {
+            color: #9b9595;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $(".master,.master-client").addClass('active');
+
+            //BindTableMenu();// Bind table
+
+            //refresh button
+            $('#btnRefresh').click(function () {
+                location.reload();
+            });
+
+            $('#btnFormMenu').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("New Menu", "/Menu/Form", "modal-md");
+            });
+
+            /* start : Tree View */
+            BindTreeView();
+
+            $('#getCheckedValue').click(function () {
+                var getChecked = $('#myMenu').getChecked();
+                console.log("getChecked:" + getChecked);
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            $('#myMenu').on('click', '.edit-menu-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("span").text();
+                viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            $('#myMenu').on('click', '.add-sub-menu', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("span").text();
+                viewPartialViewModal(recordTitle + " - Sub Menu", "SubMenuForm?id=" + recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            $('#myMenu').on('click', '.dashboard-menu', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("span").text();
+                viewPartialViewModal(recordTitle + " - Dashboard Menu", "/MenuDashboard/List?id=" + recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            /*stop : Tree View */
+        });
+
+        /* Get value from database */
+        function BindTreeView() {
+            $.ajax({
+                type: "POST",
+                url: "/Menu/GetTreeData",
+                data: {},
+                success: function (response) {
+                    var nodes = JSON.parse(response).nodes;//.d
+                    console.log(nodes);
+                    $("#myMenu").html(printMenu(nodes));
+                    //$('#myMenu').checklist();
+                    console.log(printMenu(nodes));
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        /* Bind value to Menu */
+        function menuAssign(menu) {
+            if (!menu) return "";
+            var str = "<ul>";
+            for (var i in menu) {
+                console.log(menu[i].parentid);
+                if (menu[i].nodes)
+                    str += "<li><span><input type=\"checkbox\" name=\"chk" + menu[i].id + "\" " + (menu[i].parentid == null ? '' : 'data-checklist-parent="chk' + menu[i].parentid + '"') + " value=\"" + menu[i].id + "\">" + menu[i].text + "</span><ul>" + printMenu(menu[i].nodes) + "</ul></li>";
+                else
+                    str += "<li> <span><input type=\"checkbox\" name=\"chk" + menu[i].id + "\" " + (menu[i].parentid == null ? '' : 'data-checklist-parent="chk' + menu[i].parentid + '"') + " value=\"" + menu[i].id + "\">" + menu[i].text + "</span></li>";
+            }
+            return str + "</ul>";
+        }
+
+        /* Print value to Menu */
+        function printMenu(menu) {
+            if (!menu) return "";
+            var str = "<ul class=\"nav nav-pills nav-sidebar flex-column nav-child-indent\" data-widget=\"treeview\" role=\"menu\" data-accordion=\"true\">";
+            for (var i in menu) {
+                console.log(menu[i].parentid);
+                if (menu[i].nodes)
+                    str += "<li class=\"nav-item has-treeview \"><a href=\"#\" class=\"nav-link master\"><i class=\"nav-icon " + menu[i].icon + "\"> </i><span>" + menu[i].text + " <i class=\"fas fa-edit edit-menu-record\" title=\"Edit Record\" data-id=\"" + menu[i].id + "\"></i><i class=\"fas fa-tachometer-alt dashboard-menu\" title=\"Dashboard Menu\" data-id=\"" + menu[i].id + "\"></i><i class=\"fas fa-bars add-sub-menu\" title=\"Add Sub Menu\" data-id=\"" + menu[i].id + "\"></i><i class=\"right fas fa-angle-left\"></i></span></a><ul class=\"nav nav-treeview\">" + printMenu(menu[i].nodes) + "</ul></li>";
+                else
+                    str += "<li class=\"nav-item\"> <span> <i class=\"nav-icon " + menu[i].icon + "\"> </i> " + menu[i].text + " <i class=\"fas fa-edit edit-menu-record\" title=\"Edit Record\" data-id=\"" + menu[i].id + "\"></i><i class=\"fas fa-tachometer-alt dashboard-menu\" title=\"Dashboard Menu\" data-id=\"" + menu[i].id + "\"></i><i class=\"fas fa-bars add-sub-menu\" title=\"Add Sub Menu\" data-id=\"" + menu[i].id + "\"></i></span></li>";
+            }
+            return str + "</ul>";
+        }
+                                                            /*
+function BindTableMenu() {
+
+//Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+//action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+var activeButtonClass = "Edit";
+var oTableMenu = bindTable($('#myTableMenu'), activeButtonClass, "/Menu/LoadData"); //Bind Table
+
+//"edit-record,delete-record,view-record,info-record"
+oTableMenu.on('click', '.edit-record', function () {
+//var recordId = $(this).closest("td").find("input[type='hidden']").val();
+var recordId = $(this).attr('data-id');
+var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+});
+
+//"edit-record,delete-record,view-record,info-record"
+oTableMenu.on('click', '.child0', function () {
+var recordId = $(this).closest("tr").find("td:last i").attr("data-id");
+var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+viewPartialViewModal("Child 0 - " + recordTitle, "/Child0/Form?id=" + recordId, "modal-xl");
+});
+
+//"edit-record,delete-record,view-record,info-record"
+oTableMenu.on('click', '.child1', function () {
+var recordId = $(this).closest("tr").find("td:last i").attr("data-id");
+var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+viewPartialViewModal("Child 1 - " + recordTitle, "/Child1/Form?id=" + recordId, "modal-xl");
+});
+
+//Search bar
+$("#txtSearchName").on('keyup change', function (e) {
+var thisId = $(this).attr("Id");
+if (e.which == 13 || thisId.includes("dd")) {
+$('#btnSearch').trigger('click');
+}
+});
+
+//Apply Custom search on jQuery DataTables here
+$('#btnSearch').click(function () {
+oTableMenu.columns(0).search($('#txtSearchName').val().trim().replaceAll(' ', '%'));
+oTableMenu.draw();
+});
+
+}
+*/
+    </script>
+
+}
+
+
+
+
+
+

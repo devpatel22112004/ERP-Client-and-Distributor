@@ -1,0 +1,148 @@
+﻿<div class="p-2">
+    <form role="form" data-toggle="validator" id="formVendor" class="text-sm">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="txtVendorName">Vendor <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control eachWordFirstLetterUpper" id="txtVendorName" name="txtVendorName" placeholder="Enter Vendor Name" data-error="Please Fill Up Vendor Name" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtVendorCode">Vendor Code <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control eachWordFirstLetterUpper" id="txtVendorCode" name="txtVendorCode" placeholder="Enter Vendor Code" data-error="Please Fill Up Vendor Code" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtCity">City <i class="text-red" title="Required">*</i></label>
+                        <select class="form-control select3  form-control" id="txtCity" name="txtCity" data-error="Please Select City" required>
+                            <option selected="selected" value="">-- Select City ---</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ddState">State <i class="text-red" title="Required">*</i></label>
+                        <select class="form-control select3  form-control" id="ddState" name="ddState" data-error="Please Select State" required>
+                            <option selected="selected" value="">-- Select State ---</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtArea">Area <i class="text-red" title="Required">*</i></label>
+                        <input class="form-control  form-control" id="txtArea" name="txtArea" placeholder="Enter Area" data-error="Please Fill Up Area" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtPostCode">Pincode <i class="text-red" title="Required">*</i></label>
+                        <input class="form-control  form-control" id="txtPostCode" name="txtPostCode" placeholder="Enter Pincode" data-error="Please Fill Up Pincode" maxlength="6" pattern="\d{6}" required>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="txtAddress">Address <i class="text-red" title="Required">*</i></label>
+                        <textarea rows="2" class="form-control  form-control-sm" id="txtAddress" name="txtAddress" placeholder="Enter Address" data-error="Please Fill Up Address" required></textarea>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtbankbranchname">Bank Name</label>
+                        <input type="text" class="form-control" id="txtbankbranchname" name="txtbankbranchname" placeholder="Enter Bank Name" data-error="Please Fill Up Bank Name">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtbankAc">Bank A/C</label>
+                        <input type="text" class="form-control" id="txtbankAc" name="txtbankAc" placeholder="Enter Bank Account Number" data-error="Please Fill Up Bank Account" maxlength="17">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtbankIFSC">Bank IFSC</label>
+                        <input type="text" class="form-control" id="txtbankIFSC" name="txtbankIFSC" placeholder="Enter Bank IFSC Number" data-error="Please Fill Up Bank IFSC Number" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="txtName1">Person </label>
+                        <input type="text" class="form-control eachWordFirstLetterUpper" id="txtName1" name="txtName1" placeholder="Enter Person" data-error="Please Fill Up Person Name">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtEmail1">Email </label>
+                        <input type="text" class="form-control" id="txtEmail1" name="txtEmail1" placeholder="Enter Email " title="Please Fill Up Email">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtContact1">Contact 1 </label>
+                        <input type="text" class="form-control" id="txtContact1" name="txtContact1" placeholder="Enter Contact" data-error="Please Fill Up Contact" maxlength="12" pattern="[0-9]{10,12}">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtContact2">Contact 2(Whatsapp)<i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control" id="txtContact2" name="txtContact2" placeholder="Enter Contact" data-error="Please Fill Up Contact" maxlength="12" pattern="[0-9]{10,12}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="ddGSTType">GST Type <i class="text-red" title="Required">*</i></label>
+                            <select class="form-control select3" id="ddGSTType" name="ddGSTType" data-error="Please Select GST Type" required>
+                                <option value="" selected="selected">-- Select GST Type --</option>
+                                <option value="SCST/CGST">SCST/CGST</option>
+                                <option value="IGST">IGST</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtGstNo">GST No</label>
+                        <input type="text" class="form-control" id="txtGstNo" name="txtGstNo" placeholder="Enter GST No" data-error="Please Fill Up GST No">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtPAN">PAN No</label>
+                        <input type="text" class="form-control" id="txtPAN" name="txtPAN" placeholder="Enter PAN No" data-error="Please Fill Up PAN No">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtOpeningBalance">Opening Balance</label>
+                        <input type="text" class="form-control  form-control-sm" id="txtOpeningBalance" name="txtOpeningBalance" placeholder="Enter Opening Balance" data-error="Please Fill Up Opening Balance">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="ddStatus">Status <i class="text-red" title="Required">*</i></label>
+                            <select class="form-control select3" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                                <option value="">-- Select Status ---</option>
+                                <option selected="selected" value="TRUE">Active</option>
+                                <option value="FALSE">Deactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+
+        /* Bind State */
+        bindDropDownList($('#ddState'), 'Traders');
+
+        bindDropDownList($('#txtCity'), 'Supplier');
+
+        /* Bind Employee */
+        bindDropDownList($('#ddVendorAssignTo'), 'Employee');
+
+        /* start Form validation & save data */
+        var f = $('#formVendor');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Vendor/List'; // Eg /Vendor/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                /*var returnValue = sendData(f, "/Vendor/Insert", button, button.text(), redirectUrl);
+                console.log(returnValue);*/
+                sendData(f, "/Vendor/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+
+    });
+
+</script>
+

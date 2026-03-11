@@ -1,0 +1,551 @@
+﻿@{ ViewBag.Title = "Return Order Form";}
+
+@section containerfluid{
+
+    <div class="col-sm-6">
+        <div class="col-sm-6">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/SalesReturn/List">List</a></li>
+                <li class="breadcrumb-item active">Return Order</li>
+            </ol>
+        </div><!-- /.col -->
+    </div>
+}
+<div class="p-0">
+    <div class="row">
+        <div class="col-md-12">
+            <form role="form" data-toggle="validator" id="formReturnOrder" class="text-sm" novalidate="novalidate">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="card-title">Return Order Info</h3>
+                        <div class="card-tools">
+                            <span class="delete-record-message" id="btnDeletePI"> DELETE PERMANENT RECORDS ? CLICK HERE  <i class="far fa-trash-alt delete-record text-red" title="Delete Record"></i></span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-md-2">
+                                <label for="txtDate"> Date <i class="text-red" title="Required">*</i></label>
+                                <input type="text" class="form-control form-control-sm" id="txtDate" name="txtDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Search Date">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="txtDistributor">Dealer <i class="text-red" title="Required">*</i></label>
+                                <input type="text" class="form-control form-control-sm" id="txtDistributor" name="txtDistributor" placeholder="Search Dealer" required autofocus>
+                                <input type="hidden" value="" id="txtDistributorId" name="txtDistributorId" />
+                                <input type="hidden" value="" id="ddTax" name="ddTax" />
+                            </div>
+                            <div class="form-group col-md-5">
+                                <label for="txtRemark">Remark</label>
+                                <input type="text" class="form-control form-control-sm" id="txtRemark" name="txtRemark" placeholder="Enter Remark" data-error="Please Fill Up Remark">
+                            </div>
+                            <div class="col-12 text-center">
+                                <input type="hidden" value="" id="hdReturnId" name="hdReturnId" />
+                                <button type="submit" class="col-md-2 btn btn-outline-secondary btn-sm">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-12" id="hdOrder">
+            <div class="small-box bg-white p-1">
+                <div class="row">
+                    <div class="col-md-12 p-2">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <button type="button" class="btn btn-default btn-xs" id="btnLoadItem" title="Add Row In Matrix"><i class="fas fa-plus"></i> Add Item</button>
+                            </div>
+                            <div class="col-md-7 text-right">
+                                <button type="button" class="btn btn-dark btn-xs" id="btnPrint" title="Add Row In Print"><i class="fas fa-print"></i> Print</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 p-2">
+                        <div class="table-responsive small" id="myItems" style="height: 50vh;">
+                            <form role="form" data-toggle="validator" id="formOrderDiscount" novalidate="novalidate">
+                                <!--class="card-body table-responsive p-0" style="height: 300px;"-->
+                                <table id="tableReturnOrderItems" class="table table-sm table-responsive table-bordered">
+                                    <thead class="text-capitalize text-center">
+                                        <tr>
+                                            <th class="sticky-col top col-head col1" style="width:5%">Sr. No.</th>
+                                            <th class="sticky-col top" style="width:45%">Description</th>
+                                            <th class="sticky-col top" style="width:15%">Item</th>
+                                            <th class="sticky-col top" style="width:5%">HSN</th>
+                                            <th class="sticky-col top" style="width:5%">Qty</th>
+                                            <th class="sticky-col top" style="width:5%">BOX</th>
+                                            <th class="sticky-col top" style="width:5%">Rate</th>
+                                            <th class="sticky-col top" style="width:5%">Dis1[%]</th>
+                                            <th class="sticky-col top" style="width:5%">Dis2[%]</th>
+                                            <th class="sticky-col top" style="width:5%">Dis3[%]</th>
+                                            <th class="sticky-col top" style="width:5%">Dis. Rate</th>
+                                            <th class="sticky-col top" style="width:20%">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th class="sticky-col top col-head col1"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top">Total</th>
+                                            <th class="sticky-col top footer-total"></th>
+                                        </tr>
+                                        <tr>
+                                            <th class="sticky-col top col-head col1"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top">GST</th>
+                                            <th class="sticky-col top footer-gst"></th>
+                                        </tr>
+                                        <tr>
+                                            <th class="sticky-col top col-head col1"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top"></th>
+                                            <th class="sticky-col top">
+                                                Amount
+                                                <input type="hidden" value="" id="hdDiscountOrderId" name="hdDiscountOrderId" />
+                                            </th>
+                                            <th class="sticky-col top footer-fianl"></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </form>
+                        </div>
+                        <div class="table-responsive small hidden" id="tbSummary">
+                            <!--class="card-body table-responsive p-0" style="height: 300px;"-->
+                            <table id="tableSummary" class="table table-sm table-responsive table-bordered">
+                                <thead class="text-capitalize text-center">
+                                    <tr>
+                                        <th class="sticky-col top col-head col1" style="width:5%">#</th>
+                                        <th class="sticky-col top" style="width:40%">Description Of Solutions</th>
+                                        <th class="sticky-col top" style="width:10%">Remark</th>
+                                        <th class="sticky-col top" style="width:5%">Discounted Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3" class="sticky-col top">Total</th>
+                                        <th class="footer-total"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="myModalItemsForm" class="modal fade" data-backdrop="static" aria-modal="true" style="padding-right: 10px; z-index:1052">
+                    <div class="modal-dialog modal-lg">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header bg-gradient-gray">
+                                <h6 class="card-title"><span id="lbItemTitle">Add Item</span></h6>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-12 text-center bg-transparent">
+                                        <span class="delete-record-message" id="btnDeleteItem"> DELETE PERMANENT RECORDS ? CLICK HERE  <i class="far fa-trash-alt delete-record text-red" title="Delete Record"></i></span>
+                                    </div>
+                                    <div class="card-body">
+                                        <form role="form" data-toggle="validator" id="formReturnOrderItem" class="text-sm" novalidate="novalidate">
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="txtItemName">Item <i class="text-red" title="Required">*</i></label>
+                                                        <input type="text" class="form-control form-control-sm" id="txtItemName" name="txtItemName" placeholder="Search Item" tabindex="1" required>
+                                                        <input type="hidden" value="" id="hdItemsId" name="hdItemsId" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtQuantity">Quantity <i class="text-red" title="Required">*</i></label>
+                                                        <input type="text" class="form-control form-control-sm" id="txtQuantity" name="txtQuantity" placeholder="Quantity" tabindex="2" pattern="[0-9]+(\.[0-9]{0,3})?%?" required>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtItemRate">Rate</label>
+                                                        <input type="text" class="form-control form-control-sm" id="txtItemRate" name="txtItemRate" placeholder="Enter Rate" data-error="Please Fill Up Rate" pattern="[0-9]+(\.[0-9]{0,3})?%?" value="0" required>
+                                                        <input type="hidden" id="txtItemRate1" name="txtItemRate1">
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtDiscount1">Discount 1[%]</label>
+                                                        <input type="text" class="form-control form-control-sm" id="txtDiscount1" name="txtDiscount1" placeholder="Enter Discount1" data-error="Please Fill Up Discount 1" pattern="[0-9]+(\.[0-9]{0,4})?%?" value="0">
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtDiscount2">Discount 2[%]</label>
+                                                        <input type="text" class="form-control form-control-sm" id="txtDiscount2" name="txtDiscount2" placeholder="Enter Discount 2" data-error="Please Fill Up Discount 2" pattern="[0-9]+(\.[0-9]{0,3})?%?" value="0">
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtDiscount3">Discount 3[%]</label>
+                                                        <input type="text" class="form-control form-control-sm" id="txtDiscount3" name="txtDiscount3" placeholder="Enter Discount 3" data-error="Please Fill Up Discount 3" pattern="[0-9]+(\.[0-9]{0,3})?%?" value="0">
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtAmount">Total(Exc. GST) <i class="text-red" title="Required">*</i></label>
+                                                        <input type="text" class="form-control form-control-sm" id="txtAmount" name="txtAmount" placeholder="Enter Total Amount" data-error="Please Fill Up Total Amount" readonly required>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtItemGST">GST <i class="text-red" title="Required">*</i></label>
+                                                        <input type="text" class="form-control form-control-sm" id="txtItemGST" name="txtItemGST" readonly required>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtFinalAmount">Final(Inc. GST) <i class="text-red" title="Required">*</i></label>
+                                                        <input type="text" class="form-control form-control-sm" id="txtFinalAmount" name="txtFinalAmount" placeholder="Enter Final Amount" data-error="Please Fill Up Total Amount" readonly required>
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="txtRemarkItem">Remark</label>
+                                                        <input type="text" class="form-control form-control-sm" id="txtRemarkItem" name="txtRemarkItem" placeholder="Enter Remark" data-error="Please Fill Up Remark">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 text-center">
+                                                <div class="form-group">
+                                                    <input type="hidden" value="" id="hdReturnId2" name="hdReturnId2" />
+                                                    <input type="hidden" value="" id="hdReturnItemId" name="hdReturnItemId" />
+                                                    <button type="submit" tabindex="3" class="col-md-3 btn btn-outline-warning btn-sm">Add</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section footer{
+    <script>
+
+        //const ENTER_KEY_CODE = 9;
+        var scrollTo = 0; //scroll To position
+        var editMode = false;
+        var DistributorId = "";
+        $(function () {
+            $(".Sales,.Sales-return").addClass('active');
+
+            //Date picker
+            $('#txtDate').datepicker({
+                format: "dd-mm-yyyy",
+                todayHighlight: true,
+                autoclose: true
+            }).datepicker("setDate", "0");
+
+            //Datemask dd/mm/yyyy
+            $('#txtDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
+
+            //Distributor AutoComplete
+            customAutoCompleteDynamicSort($('#txtDistributor'), $('#txtDistributorId'), "Distributor", AutoCompleteDistributorResult);
+
+            /* Open Model Popup */
+            $("#btnLoadItem").click(function (event) {
+                // get table row position by index
+                scrollTo = $("#tableReturnOrderItems").find("tbody tr").last().index();
+                f1[0].reset();
+                $("#hdReturnId2").val($("#hdReturnId").val());
+                $('#myModalItemsForm').modal('show');
+                $('#lbItemTitle').text($('#txtDistributor').val() + ' ' + $('#txtDate').val());
+                scrollTo = $("#tableReturnOrderItems").find("tbody tr").last().index();
+                editMode = false;
+            });
+
+
+            /*Delete Action*/
+            $('#btnDeleteItem').on('click', function (e) {
+                confirmDialog('Are you sure to delete record ?', function () {
+                    var recordId = $("#hdReturnItemId").val();
+                    sendData($("#formDelete"), "/SalesReturn/DeleteItem?id=" + recordId, $(this), $(this).text(), "");
+                    BindTableOrderItem();
+                });
+            });
+
+            /*start : Item Edit*/
+            $("#tableReturnOrderItems").on('click', '.row-item', function () {
+
+                // get table row position by index
+                scrollTo = $($(this).closest("tr")).index();
+                console.log(scrollTo);
+                var recordId1 = $(this).closest("tr").attr("data-item-id");
+                console.log(recordId1);
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                EditData("/SalesReturn/EditItem?id=" + recordId1, recordTitle);
+            });
+            /*stop*/
+
+            /* View Print*/
+            $("#btnPrint").click(function (event) {
+                viewPartialViewModal('Term & Condition', "/SalesReturn/TermCondition?id=" + $("#hdReturnId").val(), "modal-xl");
+            });
+
+            /* start Form validation & save data */
+            var f = $('#formReturnOrder');
+            f.validator();// Call validation function
+            f.attr('autocomplete', 'off');//Auto Complete Off
+            f.submit(function (e) {
+                e.preventDefault();
+                var button = f.find(':submit');
+                var isDisabled = button.is('.btn.disabled');
+                var redirectUrl = ''; // Eg /Category/List
+                if (isDisabled) {
+                    return;
+                }
+                else {
+                    sendData(f, "/SalesReturn/Insert", button, button.text(), redirectUrl).then(function (obj) {
+                        console.log(obj);
+                        if (obj.status == 'success') {
+                            $('#lbItemTitle').text($('#txtDistributor').val() + ' ' + $('#txtDate').val());
+                            $("#hdOrder").removeClass("hidden");
+                            $("#hdReturnId").val(obj.idValue);
+                            $("#formReturnOrder").find("input, button, submit, textarea, select").attr("disabled", "disabled");
+                            $('#myModalItemsForm').modal('show');
+                            //$('input[name=txtItemName]').focus();
+                            customAutoCompleteDynamic($('#txtItemName'), $('#hdItemsId'), "OrderItem", AutoCompleteOrderItemResult, $("#txtDistributorId").val());
+                        }
+                    });
+                }
+            });
+            /* end Form */
+
+            /*Delete Action*/
+            $('#btnDeletePI').on('click', function (e) {
+                confirmDialog('Are you sure to delete record ?', function () {
+                    var recordId = $("#hdReturnId").val();
+                    sendData($("#formStoreOutwardTraders"), "/SalesReturn/Delete?id=" + recordId, $(this), $(this).text(), "/SalesReturn/List");
+                });
+            });
+
+            /* start Form validation & save data */
+            var f1 = $('#formReturnOrderItem');
+            f1.validator();// Call validation function
+            f1.attr('autocomplete', 'off');//Auto Complete Off
+            f1.submit(function (e) {
+                e.preventDefault();
+                var button = f1.find(':submit');
+                var isDisabled = button.is('.btn.disabled');
+                var redirectUrl = ''; // Eg /Category/List
+                if (isDisabled) {
+                    return;
+                }
+                else {
+                    $("#hdReturnId2").val($("#hdReturnId").val());
+                    sendData(f1, "/SalesReturn/InsertItem", button, button.text(), redirectUrl).then(function (res) {
+                        //  $('#myModalItemsForm').modal('hide');
+                        $('#hdReturnItemId').val("");
+                        f1[0].reset();
+                        BindTableOrderItem();
+                        $('#txtItemName').focus();
+                        if (editMode)
+                            $('#myModalItemsForm').modal('hide');
+
+                    });
+                }
+            });
+
+            var formOrderDiscount = $('#formOrderDiscount');
+            formOrderDiscount.validator();// Call validation function
+            formOrderDiscount.attr('autocomplete', 'off');//Auto Complete Off
+            var formOrderDiscountButton = formOrderDiscount.find(':submit');
+            /* end Form */
+            $("#txtItemGST,#txtQuantity,#txtItemRate,#txtDiscount1,#txtDiscount2").focusout(function () {
+                itemAmount();
+            });
+
+        });
+
+        function itemAmount() {
+            var gst = $("#txtItemGST").val();
+            var qty = $("#txtQuantity").val();
+            var rate = $("#txtItemRate").val();
+            var rate1 = $("#txtItemRate1").val();
+            var discount1 = $("#txtDiscount1").val();
+            var discount2 = $("#txtDiscount2").val();
+            var discount3 = $("#txtDiscount3").val();
+
+            if (gst.length == 0) {
+                gst = 0;
+            }
+
+            if (qty.length == 0) {
+                qty = 1;
+            }
+
+            if (rate.length == 0) {
+                rate = 0;
+            }
+
+            if (discount1.length == 0) {
+                discount1 = 0;
+            }
+
+            if (discount2.length == 0) {
+                discount2 = 0;
+            }
+
+            if (discount3.length == 0) {
+                discount3 = 0;
+            }
+
+
+            var discountRate1 = parseFloat(rate) - ((parseFloat(rate) * parseFloat(discount1)) / 100);
+
+            var discountRate2 = parseFloat(discountRate1) - ((parseFloat(discountRate1) * parseFloat(discount2)) / 100);
+
+            var discountRate3 = parseFloat(discountRate2) - ((parseFloat(discountRate2) * parseFloat(discount3)) / 100);
+
+            var withOutGstAmount = parseFloat(discountRate3) * parseFloat(qty);
+
+            var withgstAmount = (parseFloat(discountRate3) + ((parseFloat(discountRate3) * parseFloat(gst)) / 100)) * parseFloat(qty);
+
+            $("#txtAmount").val(withOutGstAmount.toFixed(2));
+
+            $("#txtFinalAmount").val(withgstAmount.toFixed(2));
+        }
+
+        /*start : Custom AutoComplete Profile Result*/
+        function AutoCompleteDistributorResult(e, u) {
+            if (u.item == null) {
+                console.log(u.item);
+                $('#txtDistributor,#txtDistributorId,#ddTax').val('');
+            }
+            else {
+                $("#ddTax").val(u.item.TaxMode);
+                console.log(u.item);
+            }
+        }
+
+        /*start : Custom AutoComplete Profile Result*/
+        function AutoCompleteOrderItemResult(e, u) {
+            if (u.item == null) {
+                console.log(u.item);
+                $('#txtItemName,#hdItemsId,#txtItemRate,#txtItemGST,#txtDiscount1,#txtDiscount2,#txtDiscount3').val('');
+            }
+            else {
+                $("#txtItemRate").val(u.item.Rate);
+                $("#txtItemGST").val(u.item.GST);
+                $("#txtDiscount1").val(u.item.Discount1);
+                $("#txtDiscount2").val(u.item.Discount2);
+                $("#txtDiscount3").val(u.item.Discount3);
+            }
+        }
+
+        /*start: Bind table*/
+        function BindTableOrderItem() {
+            var mURL = "/SalesReturn/LoadDataItem?id=" + $('#hdReturnId').val();
+            console.log(mURL);
+            $.ajax({
+                url: mURL,
+                type: "POST",
+                success: function (data) {
+
+                    var tableData = JSON.parse(data.body);//(JSON.parse("[" +  data.body + "]"));
+                    var tableFooter = JSON.parse(data.footer);
+                    tableFooter = tableFooter[0];
+                    console.log(tableData);
+                    console.log(tableFooter);
+                    var table = $("#tableReturnOrderItems")
+                    table.find("tbody").html("");
+                    table.find('.footer-total,.footer-gst,.footer-fianl').html("");
+                    $('#txtTotalDiscount,#txtTotalCredit').val("");
+
+                    $.each(tableData, function (i, cells) {
+                        var cell = cells;//[i];
+                        var row = "";
+                        row += "<tr class=\"row-item pointer\" data-item-id=\"" + cell.SalesReturnItemId + "\">";
+                        row += "<td class=\"text-center\">" + (i + 1) + "</td>";//"+rowIndex+"
+                        row += "<td>" + cell.Description + "</td>";
+                        row += "<td>" + cell.Model + "</td>";
+                        row += "<td>" + cell.HSN + "</td>";
+                        row += "<td>" + cell.Qty + "</td>";
+                        row += "<td>" + cell.Box + "</td>";
+                        row += "<td>" + cell.Rate + "</td>";
+                        row += "<td>" + cell.Discount1 + "</td>";
+                        row += "<td>" + cell.Discount2 + "</td>";
+                        row += "<td>" + cell.Discount3 + "</td>";
+                        row += "<td>" + cell.DiscountRate + "</td>";
+                        row += "<td>" + cell.TotalRate + "</td>";
+                        //row += "<td  width=\"80px\"><span type=\"button\" class=\"fas fa-edit edit\" data-supplierid='" + data.TradersPIItemId + "'></span></td>";
+                        row += "</tr>";
+                        table.append(row);
+                    });
+
+                    table.find('.footer-total').html(tableFooter.Total);
+                    //$('#txtTotalDiscount').val(tableFooter.Discount);
+                    // $('#txtTotalCredit').val(tableFooter.Credit);
+                    table.find('.footer-gst').html(tableFooter.GSTAmount);
+                    table.find('.footer-fianl').html(tableFooter.Amount);
+
+                    // set table row scroll position
+                    console.log(scrollTo);
+                    var rowpos = $('#tableReturnOrderItems tr:eq(' + scrollTo + ')').position();
+                    console.log(rowpos);
+                    $('#myItems').scrollTop(rowpos.top);
+                }
+            });
+        }
+        /*stop: Bind table*/
+
+        /* start: Edit item*/
+
+
+        function EditData($Url, $Title) {
+            $.ajax(
+                {
+                    type: "POST", //HTTP POST Method
+                    url: $Url, // Controller/View
+                    success: function (data) {
+
+                        var d = JSON.parse(data)[0];
+                        console.log(d);
+                        $("#hdReturnItemId").val(d.SalesReturnItemId);
+                        $("#hdItemsId").val(d.ItemId);
+                        $("#txtItemName").val(d.Description);
+                        $("#txtItemRate").val(d.Rate);
+                        $("#txtQuantity").val(d.Quantity);
+                        $("#txtDiscount1").val(d.Discount1);
+                        $("#txtDiscount2").val(d.Discount2);
+                        $("#txtDiscount3").val(d.Discount3);
+                        $("#txtAmount").val(d.Total);
+                        $("#txtItemGST").val(d.GST);
+                        $("#txtFinalAmount").val(d.TotalAmount);
+                        $("#txtRemark").val(d.Remark);
+                        $(".divMargin,.divDiscount").removeClass("hidden");
+                        editMode = true;
+                        $(".divDeleteButton").removeClass("hidden");
+                        $('#myModalItemsForm').modal('show');
+                        $('#lbItemTitle').text($('#txtDistributor').val());
+                    },
+                    error: function () {
+                        alert("Error");
+                    }
+                });
+        }
+                        /*stop: Edit item*/
+
+    </script>
+}
+

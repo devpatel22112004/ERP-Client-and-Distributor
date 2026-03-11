@@ -1,0 +1,196 @@
+﻿<div class="row">
+    <div class="col-md-12 p-2">
+        <div class="card">
+            <div class="card-header border-0">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h3 class="card-title">Dealer List</h3>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-sm" id="txtSearchRoute1" name="txtSearchRoute1" placeholder="Search Dealer">
+                        </div>
+                    </div>
+                    <!-- <div class="form-group col-md-2">
+                        <select class="form-control form-control-sm select3" id="ddSearchTransport1" name="ddSearchTransport1" title="Please Selected Transport">
+                            <option value="" selected="selected">---Selected Transport---</option>
+                        </select>
+                    </div>
+                      -->
+                    <div class="form-group col-md-2">
+                        <select class="form-control form-control-sm select3" id="ddSearchCity1" name="ddSearchCity1" title="Please Selected City">
+                            <option value="" selected="selected">---Selected City---</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-default btn-sm" id="btnListSearchModel" title="Search"><i class="fas fa-filter"></i></button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default btn-sm" id="btnListRefreshModel" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body table-responsive small p-2" style="height: 50vh;">
+                <table id="myTableTransportDealer" class="table table-sm  table-striped table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Dealer Name</th>
+                            <th>City</th>
+                            <th>Area</th>
+                            <th>Contact</th>
+                            <th>Address</th>
+                            <th>Transporter</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="small-box bg-white p-2" id="filter_Agencywork">
+            <span class="text-sm">Assigned Dealer List</span>
+            <div class="table-responsive small p-2" style="height: 30vh;">
+                <table id="myTableTransportDealerMap" class="table table-sm  table-striped table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Dealer Name</th>
+                            <th>City</th>
+                            <th>Area</th>
+                            <th>Contact</th>
+                            <th>Address</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <form role="form" id="formAssignTransport">
+        <div class="form-group col-md-12 text-center">
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <input type="hidden" value="" id="hdDealerId" name="hdDealerId" />
+            <input type="hidden" value="" id="hdTransportId" name="hdTransportId" />
+        </div>
+    </form>
+</div>
+<script>
+    var InfoTransportationId = "";
+
+     $(function () {
+
+         InfoTransportationId = '@Html.Raw(ViewBag.JsonTransportationId)';
+
+         console.log(InfoTransportationId);
+         BindTableTransPortDealerMap();
+
+         bindDropDownList($('#ddSearchCity1'), 'City');
+        // bindDropDownList($('#ddSearchTransport1'), 'Transportation');
+
+
+         $("#myTableTransportDealer").on("change", "input[type='checkbox']", function () {
+             $("#hdId").val($(this).attr('data-mapId'));
+             $("#hdTransportId").val(InfoTransportationId);
+             $("#hdDealerId").val($(this).attr('data-distributorId'));
+             /* start : From Submit */
+             var button = $("#formAssignTransport").find(':submit');
+             sendData($("#formAssignTransport"), "/Transportation/InsertDealer", button, button.text(), "").then(function (res) {
+                 BindTableTransPortDealerMap();
+             });
+             /* stop : From Submit */
+         });
+
+         /*Delete Action*/
+        $('#myTableTransportDealerMap').on("change", "input[type='checkbox']", function(){
+            var recordId = $(this).attr('data-mapId');
+            var button = $("#formAssignTransport").find(':submit');
+            sendData($("#formAssignTransport"), "/Transportation/Delete?id=" + recordId, button, button.text(), "").then(function (res) {
+                BindTableTransPortDealerMap();
+            });
+        });
+
+         //refresh button
+         $('#btnListRefreshModel').click(function () {
+             $('#txtSearchRoute1').val('');
+             $('#ddSearchCity1').val('');
+             BindTableTransPortDealerMap();
+         });
+
+         $("#txtSearchRoute1,#ddSearchCity1").on('keyup change', function (e) {
+             var thisId = $(this).attr("Id");
+             if (e.which == 13 || thisId.includes("dd")) {
+                 $('#btnListSearchModel').trigger('click');
+             }
+         });
+
+         //Apply Custom search on jQuery DataTables here
+         $('#btnListSearchModel').click(function () {
+             //oTableVisitSite.columns(0).search($('#txtLabelSearch').val());
+             //oTableVisitSite.draw();
+             BindTableTransPortDealerMap();
+         });
+     });
+
+    function BindTableTransPortDealerMap() {
+        $("#myTableTransportDealer > tbody").html("");
+        $("#myTableTransportDealerMap > tbody").html("");
+        $.ajax(
+            {
+                type: "POST", //HTTP POST Method
+                url: "/Transportation/LoadDataAssignTransport?TransportationId=" + InfoTransportationId +"&Name="+ $("#txtSearchRoute1").val() +"&CityId="+ $("#ddSearchCity1").val(),
+                success: function (data) {
+
+                    var data1 = data.data1;
+                    var data2 = data.data2;
+                    console.log(data1);
+                    console.log(data2);
+                    //var d = JSON.parse(JSON.stringify(data1));
+                    var d = JSON.parse(data1);
+                    for (var i = 0; i < d.length; i++) {
+                        var row = "";
+                        row += "<tr>";
+                        row += "</td>";
+                        row += "<td>" + d[i].Name;
+                        row += "</td>";
+                        row += "<td>" + d[i].City;
+                        row += "</td>";
+                        row += "<td>" + d[i].Area;
+                        row += "</td>";
+                        row += "<td>" + d[i].Contact;
+                        row += "</td>";
+                        row += "<td>" + d[i].Address;
+                        row += "</td>";
+                        row += "<td>" + d[i].Transporter;
+                        row += "</td>";
+                        row += "<td><input type=\"checkbox\" id=\"chkstatus\" name=\"chkstatus\" data-distributorId=\"" + d[i].DistributorId +  "\" data-mapId=\"" + d[i].MapId + "\"" + (d[i].IsCheck == 'true' ? 'checked' : '') + "></td>";
+                        row += "</tr>";
+                        $('#myTableTransportDealer tbody').append(row);
+                    }
+
+                   var d2 = JSON.parse(data2);
+                    for (var i = 0; i < d2.length; i++) {
+                        var row2 = "";
+                        row2 += "<tr>";
+                        row2 += "</td>";
+                        row2 += "<td>" + d2[i].Name;
+                        row2 += "</td>";
+                        row2 += "<td>" + d2[i].City;
+                        row2 += "</td>";
+                        row2 += "<td>" + d2[i].Area;
+                        row2 += "</td>";
+                        row2 += "<td>" + d2[i].Contact;
+                        row2 += "</td>";
+                        row2 += "<td>" + d2[i].Address;
+                        row2 += "</td>";
+                        row2 += "<td><input type=\"checkbox\" id=\"chkstatus\" name=\"chkstatus\" data-mapId=\""+ d2[i].MapId + "\"" + (d2[i].IsCheck == 'true' ? 'checked' : '') + "></td>";
+                        row2 += "</tr>";
+                        $('#myTableTransportDealerMap tbody').append(row2);
+                    }
+                },
+                error: function () {
+                }
+            });
+    }
+</script>
+

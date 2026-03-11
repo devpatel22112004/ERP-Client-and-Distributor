@@ -1,0 +1,109 @@
+﻿@{
+    var InfoJson = ViewBag.JsonData;
+}
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formBranch" class="text-sm">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <span for="txtBranchName">BranchName <i class="text-red" title="Required">*</i></span>
+                        <input type="text" class="form-control" id="txtBranchName" name="txtBranchName" placeholder="Enter BranchName" data-error="Please Fill Up BranchName" required>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <span for="txtAddress">Address <i class="text-red" title="Required">*</i></span>
+                        <textarea type="text" class="form-control" id="txtAddress" name="txtAddress" placeholder="Enter Address" rows="5" data-error="Please Fill Up Street Address" required></textarea>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <span for="txtBankDetail">Bank Detail <i class="text-red" title="Required">*</i></span>
+                        <textarea type="text" class="form-control" id="txtBankDetail" name="txtBankDetail" placeholder="Enter Bank Detail" rows="5" data-error="Please Fill Up Bank Detail" required></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <span for="txtEmail">Email </span>
+                        <input type="text" class="form-control" id="txtEmail" name="txtEmail" placeholder="Enter Email " title="Please Fill Up Email ">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <span for="txtPersonName">Person Name <i class="text-red" title="Required">*</i></span>
+                        <input type="text" class="form-control" id="txtPersonName" name="txtPersonName" placeholder="Enter Person Name" data-error="Please Fill Up Person Name" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <span for="txtContact">Contact <i class="text-red" title="Required">*</i></span>
+                        <input type="text" class="form-control" id="txtContact" name="txtContact" placeholder="Enter Contact" data-error="Please Fill Up Contact" maxlength="12" pattern="[0-9]{10,12}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <span for="txtGSTNumber">GST Number</span>
+                        <input type="text" class="form-control" id="txtGSTNumber" name="txtGSTNumber" placeholder="Enter GST Number" data-error="Please Fill Up GST Number">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <span for="txtPAN">PAN No</span>
+                        <input type="text" class="form-control" id="txtPAN" name="txtPAN" placeholder="Enter PAN No" data-error="Please Fill Up PAN No">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <span for="ddStatus">Status <i class="text-red" title="Required">*</i></span>
+                            <select class="form-control select3" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                                <option selected="selected" value="">-- Select Status ---</option>
+                                <option value="True">Active</option>
+                                <option value="False">Deactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+
+    $(function () {
+
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].BranchId);
+            $("#txtBranchName").val(jInfo[0].BranchName);
+            $("#txtAddress").val(jInfo[0].Address);
+            $("#txtBankDetail").val(jInfo[0].BankDetail);
+            $("#txtEmail").val(jInfo[0].Email);
+            $("#txtPersonName").val(jInfo[0].PersonName);
+            $("#txtContact").val(jInfo[0].Contact);
+            $("#txtGSTNumber").val(jInfo[0].GSTNumber);
+            $("#txtPAN").val(jInfo[0].PAN);
+            $("#ddStatus").val(jInfo[0].Status);
+        }
+        /* end:Edit Record */
+    
+        /* start Form validation & save data */
+        var f = $('#formBranch');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Branch/List'; // Eg /Branch/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/Branch/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+
+</script>
+
+

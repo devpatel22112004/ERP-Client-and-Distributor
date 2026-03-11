@@ -1,0 +1,162 @@
+﻿
+<div class="p-2">
+    <div class="row">
+        <div class="col-md-6">
+            <form role="form" data-toggle="validator" id="formImage" class="text-sm">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="exampleInputFile">Stamp Image<i class="text-red" title="Required">*</i></label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="fileDocument" data-tag="Stamp" required>
+                                    <label class="custom-file-label" for="exampleInputFile">Choose Stamp</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="small-box bg-white text-center">
+                <span class="text-sm">View Image</span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <img id="imgStampView" style="width:300px;height:300px; padding:10px" alt="Stamp Image">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--LOGO-->
+        <div class="col-md-6">
+            <form role="form" data-toggle="validator" id="formLOGO" class="text-sm">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="exampleInputFile">LOGO input <i class="text-red" title="Required">*</i></label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="fileDocumentLOGO" data-tag="Logo" required>
+                                    <label class="custom-file-label" for="exampleInputFile">Choose LOGO</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="small-box bg-white text-center">
+                <span class="text-sm">View LOGO</span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <img id="imgLogoView" style="width:300px;height:300px; padding:10px" alt="LOGO">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--QRCode-->
+        <div class="col-md-6">
+            <form role="form" data-toggle="validator" id="formQR" class="text-sm">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="exampleInputFile">QR input <i class="text-red" title="Required">*</i></label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="fileDocumentQR"  data-tag="QR" required>
+                                    <label class="custom-file-label" for="exampleInputFile">Choose QR</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="small-box bg-white text-center">
+                <span class="text-sm">View QR</span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <img id="imgQrView" style="width:300px;height:300px; padding:10px" alt="QR Code">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var rowCellId ="";
+    var Url = "";
+    $(function () {
+        rowCellId = '@Html.Raw(@ViewBag.JsonId)';
+
+        /*Edit Record */
+        var jInfo = @Html.Raw(@ViewBag.JsonData);
+        Url = '@Html.Raw(@ViewBag.Path)';
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].Id);
+            $("#imgStampView").attr("src", Url+'/'+jInfo[0].StampUrl);
+            $("#imgLogoView").attr("src", Url + '/' +jInfo[0].LogoUrl);
+            $("#imgQrView").attr("src", Url + '/' +jInfo[0].QRUrl);
+        }
+        /* end:Edit Record */
+
+        $("#fileDocument").change(function (e) {
+            validateFile($(this), "/Branch/uploadDocument?id=" + rowCellId, e.target.files[0].name, $("#formImage"), $("#imgStampView"));//, $rowCellText
+       });
+
+        $("#fileDocumentLOGO").change(function (e) {
+            validateFile($(this), "/Branch/uploadDocument?id=" + rowCellId, e.target.files[0].name, $("#formLOGO"), $("#imgLogoView"));//, $rowCellText
+        });
+
+        $("#fileDocumentQR").change(function (e) {
+            validateFile($(this), "/Branch/uploadDocument?id=" + rowCellId, e.target.files[0].name, $("#formQR"), $("#imgQrView"));//, $rowCellText
+        });
+    });
+
+    // start upload
+    function validateFile($this, $url, $title, $form, $Img) {
+        var ext = $this.val().split('.').pop().toLowerCase();
+        if ($.inArray(ext, ['png', 'jpg', 'jpeg']) == -1) {
+            $this.val("");
+            message("alert-warning", "fa-ban", "The file type is invalid! Please upload only png,jpg,jpeg");
+        }
+        else {
+            uploadDataDoument($this, $url, $title.substr(0, $title.lastIndexOf('.')), $form, $Img);
+        }
+    }
+
+    function uploadDataDoument($this, $url, $title, $form, $Img) {
+        $form.find("input, button, submit, textarea, select").attr("disabled", "disabled");
+        /* Start : File Upload Coding */
+        var fileUpload = $this.get(0);
+        var files = fileUpload.files;
+        // Create FormData object
+        var fileData = new FormData();
+        // Looping over all files and add it to FormData object
+        for (var i = 0; i < files.length; i++) {
+            fileData.append(files[i].name, files[i]);
+            console.log("files[i]-" + files[i]);
+        }
+       
+        // Adding one more key to FormData object
+        fileData.append('title', $title);
+        fileData.append('tag', $this.attr("data-tag"));
+        //$form.val('');
+        console.log("fileData" + fileData);
+
+        var redirectUrl = ''; // Eg /Employee/List
+        var button = $form.find('.custom-file-label');
+        /* start Form validation & save data */
+        uploadDocument($form, fileData, $url, button, button.text(), redirectUrl).then(function (res) {
+            console.log(res)
+            $Img.attr("src", Url + '/' + res.fileName);
+        });
+    /* end Form */
+
+    }
+    // End upload
+</script>

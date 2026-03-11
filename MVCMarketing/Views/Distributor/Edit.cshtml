@@ -1,0 +1,190 @@
+﻿@{
+    var InfoJson = ViewBag.JsonData;
+}
+
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formDistributor" class="text-sm">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <Name for="txtName">Firm <i class="text-red" title="Required">*</i></Name>
+                        <input type="text" class="form-control  form-control-sm" id="txtName" name="txtName" placeholder="Enter Name" data-error="Please Fill Up Name" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <Name for="txtArea">Area <i class="text-red" title="Required">*</i></Name>
+                        <input class="form-control  form-control-sm" id="txtArea" name="txtArea" placeholder="Enter Area" data-error="Please Fill Up Area" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <Name for="txtPincode">Pincode <i class="text-red" title="Required">*</i></Name>
+                        <input class="form-control  form-control-sm" id="txtPincode" name="txtPincode" placeholder="Enter Pincode" data-error="Please Fill Up Pincode" required>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <Name for="txtAddress">Address <i class="text-red" title="Required">*</i></Name>
+                        <textarea rows="2" class="form-control  form-control-sm" id="txtAddress" name="txtAddress" placeholder="Enter Address" data-error="Please Fill Up Address" required></textarea>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <Name for="txtShippingAddress"> Shipping Address <i class="text-red" title="Required">*</i></Name>
+                        <textarea rows="2" class="form-control  form-control-sm" id="txtShippingAddress" name="txtShippingAddress" placeholder="Enter Shipping Address" data-error="Please Fill Up Shipping Address" required></textarea>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <Name for="ddCity">City <i class="text-red" title="Required">*</i></Name>
+                        <select class="form-control select3  form-control-sm" id="ddCity" name="ddCity" data-error="Please Select City" required>
+                            <option selected="selected" value="">-- Select City ---</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <Name for="ddState">State <i class="text-red" title="Required">*</i></Name>
+                        <select class="form-control select3  form-control-sm" id="ddState" name="ddState" data-error="Please Select State" required>
+                            <option selected="selected" value="">-- Select State ---</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <Name for="txtEmail">Email <i class="text-red" title="Required">*</i></Name>
+                        <input rows="2" class="form-control  form-control-sm" id="txtEmail" name="txtEmail" placeholder="Enter Email" data-error="Please Fill Up Email" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <Name for="txtCreditLimit">Credit Limit</Name>
+                        <input type="text" class="form-control  form-control-sm" id="txtCreditLimit" name="txtCreditLimit" placeholder="Enter Credit Limit" data-error="Please Fill Up Credit Limit">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <Name for="txtOpeningBalance">Opening Balance</Name>
+                        <input type="text" class="form-control  form-control-sm" id="txtOpeningBalance" name="txtOpeningBalance" placeholder="Enter Opening Balance" data-error="Please Fill Up Opening Balance">
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+
+                    <div class="form-group col-md-12">
+                        <Name for="txtPersonName">Person Name <i class="text-red" title="Required">*</i></Name>
+                        <input type="text" class="form-control  form-control-sm" id="txtPersonName" name="txtPersonName" placeholder="Enter Person Name" data-error="Please Fill Up Person Name" required>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <Name for="txtContact1">Contact1<i class="text-red" title="Required">*</i></Name>
+                        <input type="text" class="form-control  form-control-sm" id="txtContact1" name="txtContact1" placeholder="Enter Contact 1" data-error="Please Fill Up Contact 1" maxlength="12" pattern="[0-9]{10,12}" required>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <Name for="txtContact2">Contact2(Whatsapp)<i class="text-red" title="Required">*</i></Name>
+                        <input type="text" class="form-control  form-control-sm" id="txtContact2" name="txtContact2" placeholder="Enter Contact 2" data-error="Please Fill Up Contact 2" maxlength="12" pattern="[0-9]{10,12}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <Name for="txtGST">GST </Name>
+                        <input class="form-control  form-control-sm" id="txtGST" name="txtGST" placeholder="Enter GST" data-error="Please Fill Up GST">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <Name for="txtPAN">PAN </Name>
+                        <input class="form-control  form-control-sm" id="txtPAN" name="txtPAN" placeholder="Enter PAN" data-error="Please Fill Up PAN">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <Name for="txtDistributor">Tax Type  <i class="text-red" title="Required">*</i></Name>
+                        <select class="form-control form-control-sm" id="ddTax" name="ddTax" title="Please Selected Tax" required>
+                            <option value="" selected="selected">-- Selected --</option>
+                            <option value="CGST-SGST">CGST/SGST</option>
+                            <option value="IGST">IGST</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <Name for="txtDuedays">Due Days <i class="text-red" title="Required">*</i></Name>
+                        <input class="form-control  form-control-sm" id="txtDuedays" name="txtDuedays" placeholder="Enter Due Days" data-error="Please Fill Up Due Days" maxlength="5" required>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <Name for="ddSalesAssignTo">Assign To <i class="text-red" title="Required">*</i></Name>
+                        <select class="form-control select2-blue form-control-sm" id="ddSalesAssignTo" name="ddSalesAssignTo" data-error="Please Select Assign To">
+                            <option value="" selected="selected">-- Assign To --</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <span for="txtUserId">User Id <i class="text-red" title="Required">*</i></span>
+                        <input type="text" class="form-control  form-control-sm" id="txtUserId" name="txtUserId" placeholder="Enter User Id" data-error="Please Fill Up User Id" required>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <span for="txtPassword">Password <i class="text-red" title="Required">*</i></span>
+                        <input type="text" class="form-control  form-control-sm" id="txtPassword" name="txtPassword" placeholder="Enter Password" data-error="Please Fill Up Password" required>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <Name for="ddStatus">Status <i class="text-red" title="Required">*</i></Name>
+                        <select class="form-control select3  form-control-sm" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                            <option selected="selected" value="">-- Select Status ---</option>
+                            <option value="TRUE">Active</option>
+                            <option value="FALSE">Deactive</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    $(function () {
+
+        /* Bind State */
+        bindDropDownList($('#ddState'), 'State');
+
+        bindDropDownList($('#ddCity'), 'City');
+
+        /* Bind Employee */
+        bindDropDownList($('#ddSalesAssignTo'), 'Employee');
+
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].DistributorId);
+            $("#txtName").val(jInfo[0].Name);
+            $("#txtAddress").val(jInfo[0].Address);
+            $("#txtShippingAddress").val(jInfo[0].Shipping);
+            $("#txtPincode").val(jInfo[0].Pincode);
+            $("#ddCity").val(jInfo[0].CityId);
+            $("#ddState").val(jInfo[0].StateId);
+            $("#txtPersonName").val(jInfo[0].PersonName1);
+            $("#txtContact1").val(jInfo[0].Contact1);
+            $("#txtContact2").val(jInfo[0].Contact2);
+            $("#txtEmail").val(jInfo[0].Email);
+            $("#txtGST").val(jInfo[0].GST);
+            $("#txtPAN").val(jInfo[0].PAN);
+            $("#ddStatus").val(jInfo[0].Status);
+            $("#txtArea").val(jInfo[0].Area);
+            $("#ddTax").val(jInfo[0].TaxMode);
+            $("#txtDuedays").val(jInfo[0].DueDays);
+            $("#ddSalesAssignTo").val(jInfo[0].SalesEmployeeId);
+            $("#txtCreditLimit").val(jInfo[0].CreditLimitAmount);
+            $("#txtOpeningBalance").val(jInfo[0].OpeningBalance);
+            $("#txtUserId").val(jInfo[0].UserId);
+            $("#txtPassword").val(jInfo[0].Password);
+            $("#ddState").trigger("change");
+        }
+        /* end:Edit Record */
+
+        /* start Form validation & save data */
+        var f = $('#formDistributor');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Distributor/List'; // Eg /Distributor/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/Distributor/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>

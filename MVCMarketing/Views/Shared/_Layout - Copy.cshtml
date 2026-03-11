@@ -1,0 +1,1321 @@
+﻿@{
+    var userName = "";
+    var userSortName = "";
+    var userDesignation = "";
+    if (Session["User"] == null)
+    {
+        Response.Redirect("~/Login");
+    }
+    else
+    {
+        userName = Session["User"].ToString();
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>@ViewBag.Title - Marketing</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="~/plugins/daterangepicker/daterangepicker.css">
+    <!-- Date Picker -->
+    <link href="~/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!---->
+    <link href="~/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="~/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/plugins/datatables-bs4/css/fixedColumns.dataTables.min.css" />
+    <link rel="stylesheet" href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="~/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="~/plugins/toastr/toastr.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> -->
+    <style>
+        .delete-record {
+            color: #b12c2c;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .edit-record {
+            color: #78b044;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .view-record {
+            color: #4f4a4a;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .info-record {
+            color: #939292;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .image-record {
+            color: #946d95;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .attachment-record {
+            color: #5061be;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .print-record {
+            color: #b12c2c;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .logo-record {
+            color: #5061be;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .todo {
+            color: #b200ff;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .delete-record-message {
+            font-size: 10px;
+            color: #b4b4b4;
+            margin-bottom: -10px;
+        }
+
+        .desc {
+            font-size: 10px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #b4b4b4;
+        }
+
+        /*td:last-child {
+            width: 100px !important;
+            text-align: right;
+        }
+
+            td:last-child i {
+                font-size: 18px;
+            }*/
+    </style>
+</head>
+<body class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+    <!-- sidebar-collapse-->
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-dark">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+                </li>
+                <!--<li class="nav-item d-none d-sm-inline-block">
+                    <a href="index3.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="#" class="nav-link">Contact</a>
+                </li>-->
+            </ul>
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown user-menu">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                        <!--<div class="user-image img-circle elevation-2"></div>-->
+                        <img src="~/dist/img/user2-160x160.jpg" class="user-image img-circle elevation-2" alt="User Image">
+                        <span class="d-none d-md-inline">@Html.Raw(userSortName)</span>
+
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <!-- User image -->
+                        <li class="user-header bg-gray">
+                            <p>
+                                @Html.Raw(userName)
+                                <small>@Html.Raw(userDesignation)</small>
+                            </p>
+                        </li>
+                        <!-- Menu Footer-->
+                        <li class="user-footer text-center">
+                            <!--<a href="#" class="btn btn-default btn-flat">Profile</a>-->
+                            <a href="/Logout" class="btn btn-default btn-flat">Sign out</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a href="#" class="brand-link">
+                <img src="~/dist/img/logo.png" alt="Logo" class="brand-image img-circle elevation-3"
+                     style="opacity: .8">
+                <span class="brand-text font-weight-light">Marketing</span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <!--<ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false"> -->
+                    <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="true">
+                        <!-- Dashboard -->
+                        <li class="nav-item">
+                            <a href="/Home" class="nav-link dashboard">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Dashboard
+                                </p>
+                            </a>
+                        </li>
+
+                        <!-- Master -->
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link master">
+                                <i class="nav-icon fas fa-th"></i>
+                                <p>
+                                    Master
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/State/List" class="nav-link master-State">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>State</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/City/List" class="nav-link master-City">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>City</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/Category/List" class="nav-link master-Category">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Category</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/SubCategory/List" class="nav-link master-SubCategory">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Sub Category</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/Brand/List" class="nav-link master-Brand">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Brand</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/Item/List" class="nav-link master-Item">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Item</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/Employee/List" class="nav-link master-Employee">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Employee</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/Distributor/List" class="nav-link master-Distributor">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Distributor</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/ExpenseType/List" class="nav-link master-ExpenseType">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Expense Type</p>
+                                    </a>
+                                </li>
+                              
+                            </ul>
+                        </li>
+                        <!-- Profile -->
+                        @* <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link Profile">
+                                    <i class="nav-icon fas fa-building"></i>
+                                    <p>
+                                        Profile
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="/EmployeeDistributorProfile/List" class="nav-link Profile-EmployeeDistributorProfile">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Profile</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>*@
+                        <!-- Scheme -->
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link Scheme">
+                                <i class="nav-icon fas fa-gift"></i>
+                                <p>
+                                    Scheme
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/Scheme/List" class="nav-link Scheme-Scheme">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Scheme</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/SchemeTarget/List" class="nav-link Scheme-Target">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Target</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/SchemeTargetProduct/List" class="nav-link Scheme-TargetProduct">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Target Product</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Account -->
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link Account">
+                                <i class="nav-icon fas fa-money-check-alt"></i>
+                                <p>
+                                    Account
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/AccountClientReceipt/List" class="nav-link Account-AccountClientReceipt">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Receipt</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/AccountClientPayment/List" class="nav-link Account-AccountClientPayment">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Payment</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Report -->
+                        <!--<li class="nav-item has-treeview">
+                            <a href="#" class="nav-link Report">
+                                <i class="nav-icon fas fa-file-alt"></i>
+                                <p>
+                                    Report
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">-->
+                        <!-- <li class="nav-item">
+                            <a href="/ReportReferenceIncentive/Report" class="nav-link Report-Incentive">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Incentive</p>
+                            </a>
+                        </li>-->
+                        <!--<li class="nav-item">
+                            <a href="/ReportGift/Report" class="nav-link Report-Gift">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Gift</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/ReportCity/Report" class="nav-link Report-City">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>City</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/ReportClient/Report" class="nav-link Report-Client">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Client</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/ReportState/Report" class="nav-link Report-State">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>State</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/ReportEvent/Report" class="nav-link Report-Event">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Event</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/ReportReference/Report" class="nav-link Report-Reference">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Reference</p>
+                            </a>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link ReportBusiness">-->
+                        <!--<i class="nav-icon far fa-circle"></i>-->
+                        <!--<p>
+                                    Business
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/ReportReferenceIncentive/Report" class="nav-link Report-Incentive">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Incentive</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link ReportAccount">-->
+                        <!-- <i class="nav-icon far fa-circle"></i>-->
+                        <!--<p>
+                                            Account
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="/ReportReferenceAccount/Report" class="nav-link Report-ReportReferenceAccount">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Account</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>-->
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        @RenderSection("containerfluid", false)
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div><!--/. container-fluid -->
+            </section>
+            <!-- /.content -->
+            <!--Partial View-->
+            <div id="myModalPartialView" class="modal fade" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-gradient-gray">
+                            <h5 class="modal-title"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="min-height:40vh;">
+                            <div class="col-12">
+                                Please wait load .....
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.Partial View -->
+            <!--Partial View-->
+            <div id="myNestedModalPartialView" class="modal fade" data-backdrop="static" style="display: none; z-index: 1053;margin-top: 5%;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-gradient-gray">
+                            <h5 class="modal-title"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="min-height:40vh;">
+                            <div class="col-12">
+                                Please wait load .....
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.Partial View -->
+            <div id="myUploadModalPartialView" class="modal fade" data-backdrop="static" style="display: none; z-index: 1053;margin-top: 5%;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-gradient-gray">
+                            <h5 class="modal-title"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="min-height:40vh;">
+                            <div class="col-12">
+                                Please wait load .....
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- Modal confirm -->
+            <div class="modal" id="confirmModal" data-backdrop="static" style="display: none; z-index: 1055;margin-top: 5%;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form role="form" id="formDelete">
+                            <div class="modal-header bg-gradient-red">
+                                <h5 class="modal-title">DELETE RECORD ?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="col-12 text-center confirmMessage">
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default confirmOk">Yes</button>
+                                <button type="button" class="btn btn-default confirmCancel">No</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!--Print Partial View-->
+            <div id="myModalPrint" class="modal fade" data-backdrop="static">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header bg-white">
+                            <h6 class="modal-title"></h6>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="height:100vh">
+                            <iframe src="" id="printDiv" name="printDiv" style="width:100%;height:100%;border:0"></iframe>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.Print Partial View -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Main Footer -->
+        <footer class="main-footer text-sm">
+            <strong>Copyright &copy; 2020-@DateTime.Now.Year <a href="http://EzzWork.in/">EzzWork</a>.</strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+                <b>Version</b> 2.0.0
+            </div>
+        </footer>
+    </div>
+    <!-- ./wrapper -->
+    <!-- REQUIRED SCRIPTS -->
+    <!-- jQuery -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- InputMask -->
+    <script src="~/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <!-- overlayScrollbars -->
+    <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- DataTables -->
+    <script src="~/plugins/datatables/jquery.dataTables.js"></script>
+    <!--<script src="~/plugins/datatables/dataTables.fixedColumns.js"></script>-->
+    <script src="~/plugins/datatables-bs4/js/dataTables.fixedColumns.min.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+    <!-- date-range-picker -->
+    <!---->
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/daterangepicker/daterangepicker.js"></script>
+    <!-- bootstrap datepicker-->
+    <script src="~/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <!-- Validation App -->
+    <script src="~/plugins/jquery-validate/validator.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <!-- Toastr -->
+    <script src="~/plugins/toastr/toastr.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/dist/js/adminlte.js"></script>
+
+    <!-- OPTIONAL SCRIPTS -->
+    <script src="~/dist/js/demo.js"></script>
+
+    <!-- PAGE PLUGINS -->
+    <!-- jQuery Mapael -->
+    <script src="~/plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
+    <script src="~/plugins/raphael/raphael.min.js"></script>
+    <script src="~/plugins/jquery-mapael/jquery.mapael.min.js"></script>
+    <script src="~/plugins/jquery-mapael/maps/usa_states.min.js"></script>
+    <!-- ChartJS
+    <script src="~/plugins/chart.js/Chart.min.js"></script> -->
+    <!-- PAGE SCRIPTS
+    <script src="~/dist/js/pages/dashboard2.js"></script> -->
+    @RenderSection("footer", false)
+    <script>
+        $(document).ready(function () {
+            $("form,input").attr('autocomplete', 'off'); // Switching form autocomplete attribute to off
+            /* The jQuery way */
+            window.setInterval(keepAlive, 300000); /*5 minutes would be 5 * 60 * 1000 = 300000 */
+
+            $(document).on('keyup keypress', 'form input[type="text"]', function (e) {
+                if (e.which == 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+
+        /**/
+        function toastMessage(type, title) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000
+            });
+            Toast.fire({
+                type: type.toLowerCase(),
+                title: title
+            });
+        }
+
+        /*start: View Modal*/
+        function viewModal(divTitle, viewDiv, divUrl) {
+            viewDiv.find('.div-title').html(divTitle);
+            viewDiv.find('.div-body').html('');
+            viewDiv.find('.div-body').load(divUrl);
+            /*partialView.on('shown.bs.modal', function () {
+                partialView.find('input[type="text"]:first,textarea:first').focus();
+            });*/
+        }
+        /*stop*/
+
+        /*start: View Modal*/
+        function viewPartialViewModal(modalTitle, modalUrl, modelSize) {
+            var partialView = $('#myModalPartialView');
+            partialView.modal('show');
+            partialView.find('.modal-title').html(modalTitle);
+            partialView.find('.modal-dialog').addClass(modelSize);
+            partialView.find('.modal-body').html('<div class="text-center p-5">Loading..... Please Wait <p>');
+            partialView.find('.modal-body').load(modalUrl);
+            /*partialView.on('shown.bs.modal', function () {
+                partialView.find('input[type="text"]:first,textarea:first').focus();
+            });*/
+        }
+        /*stop*/
+
+        /**/
+        function viewNestedModalPartialView(modalTitle, modalUrl, modelSize) {
+            var partialView = $('#myNestedModalPartialView');
+            partialView.modal('show');
+            partialView.find('.modal-title').html(modalTitle);
+            partialView.find('.modal-dialog').addClass(modelSize);
+            partialView.find('.modal-body').html('<div class="text-center p-5">Loading..... Please Wait <p>');
+            partialView.find('.modal-body').load(modalUrl);
+        }
+
+        /**/
+        function viewUploadModalPartialView(modalTitle, modalUrl, modelSize) {
+            var partialView = $('#myUploadModalPartialView');
+            partialView.modal('show');
+            partialView.find('.modal-title').html(modalTitle);
+            partialView.find('.modal-dialog').addClass(modelSize);
+            partialView.find('.modal-body').html('<div class="text-center p-5">Loading..... Please Wait <p>');
+            partialView.find('.modal-body').load(modalUrl);
+        }
+
+        /*start: Save data*/
+        //function sendData(myForm, myUrl, myButton, myButtonText, redirectUrl) {
+        //    var data = null;
+        //    if (myForm != null) {
+        //        data = myForm.serialize({ checkboxesAsBools: true });
+        //        myForm.find("input, button, submit, textarea, select").attr("disabled", "disabled");
+        //        myButton.text("Please Wait...");
+        //    }
+        //    return $.ajax(
+        //        {
+        //            type: "POST", //HTTP POST Method
+        //            url: myUrl, // Controller/View
+        //            data: data,
+        //            success: function (obj) {
+        //                if (myForm != null) {
+        //                    myButton.text(myButtonText);
+        //                    myForm.find("input, button, submit, textarea, select").removeAttr("disabled");
+        //                }
+
+        //                if (obj.hasOwnProperty('status')) {
+        //                    console.log(obj);
+        //                    toastMessage(obj.status, obj.message);
+        //                    if (obj.status == 'success') {
+        //                        if (redirectUrl != '')
+        //                            window.location = redirectUrl;
+        //                        else
+        //                            return (obj.idValue);
+        //                    }
+        //                }
+
+        //                if (obj.includes('result')) {
+        //                    obj = JSON.parse(obj);
+        //                    console.log(obj);
+        //                    toastMessage(obj.result, obj.result);
+        //                }
+        //                //Toast message
+        //                //toastMessage(obj.status, obj.message);
+        //                /*if (obj.status == 'success') {
+        //                    if (redirectUrl != '')
+        //                        window.location = redirectUrl;
+        //                    else
+        //                        return (obj.idValue);
+        //                }
+        //                else if (obj.status == 'Duplicate') {
+        //                    return 'Duplicate';
+        //                }
+        //                else {
+        //                    return 'Error';
+        //                }*/
+
+        //            },
+        //            error: function () {
+        //            }
+        //        });
+        //}
+
+        function sendData(myForm, myUrl, myButton, myButtonText, redirectUrl) {
+            var data = null;
+            if (myForm != null) {
+                data = myForm.serialize({ checkboxesAsBools: true });
+                myForm.find("input, button, submit, textarea, select").attr("disabled", "disabled");
+                myButton.text("Please Wait...");
+            }
+            return $.ajax(
+                {
+                    type: "POST", //HTTP POST Method
+                    url: myUrl, // Controller/View
+                    data: data,
+                    success: function (obj) {
+                        if (myForm != null) {
+                            myButton.text(myButtonText);
+                            myForm.find("input, button, submit, textarea, select").removeAttr("disabled");
+                        }
+                        //Toast message
+                        toastMessage(obj.status, obj.message);
+                        if (obj.status == 'success') {
+                            if (redirectUrl != '')
+                                window.location = redirectUrl;
+                            else
+                                return (obj.idValue);
+                        }
+                        /*else if (obj.status == 'Duplicate') {
+                            return 'Duplicate';
+                        }
+                        else {
+                            return 'Error';
+                        }*/
+
+                    },
+                    error: function () {
+                    }
+                });
+        }
+        /*stop*/
+
+        /*start: Save data*/
+        function uploadDocument(myForm, myData, myUrl, myButton, myButtonText, redirectUrl) {
+            myForm.find("input, button, submit, textarea, select").attr("disabled", "disabled");
+            myButton.text("Please Wait...");
+            return $.ajax(
+                {
+                    type: "POST", //HTTP POST Method
+                    url: myUrl, // Controller/View
+                    data: myData,
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    success: function (obj) {
+                        myButton.text(myButtonText);
+                        myForm.find("input, button, submit, textarea, select").removeAttr("disabled");
+                        toastMessage(obj.status, obj.message);
+                        if (obj.status == 'success') {
+                            if (redirectUrl != '')
+                                window.location = redirectUrl;
+                            else
+                                return (obj.idValue);
+                        }
+                        /*else if (obj.status == 'Duplicate') {
+                            return 'Duplicate';
+                        }
+                        else {
+                            return 'Error';
+                        }*/
+
+                    },
+                    error: function () {
+                    }
+                });
+        }
+        /*stop*/
+
+        /*start: Data Bind With Filter*/
+        function bindTableWithFilter($myTable, $myTableButton, $myURL, $myData = "null", $filter) {
+            $myTable.attr("width", "100%");
+            var button = "";
+            var buttonActive = $myTableButton;
+            if (buttonActive.includes("Edit")) {
+                button += "<i class=\"fas fa-edit edit-record\" title=\"Edit Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Delete")) {
+                button += "<i class=\"fas fa-trash-alt delete-record\" title=\"Delete Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("View")) {
+                button += "<i class=\"fas fa-file-alt view-record\" title=\"View Data\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Attachment")) {
+                button += "<i class=\"fas fa-file-archive attachment-record\" title=\"Attachment Documents\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Image")) {
+                button += "<i class=\"fas fa-image image-record\" title=\"Image upload\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Share")) {
+                button += "<i class=\"fas fa-share share-record\" title=\"Share Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Info")) {
+                button += "<i class=\"fas fa-question-circle info-record\" title=\"Info Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Print")) {
+                button += "<i class=\"fas fa-print print-record\" title=\"Print Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Logo")) {
+                button += "<i class=\"fas fa-bullseye logo-record\" title=\"Logo Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Calendar")) {
+                button += "<i class=\"fas fa-calendar-alt calendar-record\" title=\"Calendar Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Todo")) {
+                button += "<i class=\"far fa-clipboard todo\" title=\"Make New Todo\" data-id=\"\"></i>";
+            }
+
+            //jQuery DataTables initialization
+            if ($.fn.dataTable.isDataTable($myTable)) {
+                $myTable.DataTable().clear().destroy();
+            }
+
+            return $myTable.DataTable({
+                /*"deferLoading": true,*/
+                "stateSave": true,
+                "stateDuration": -1,
+                "keepConditions": true,
+                "processing": true, // for show processing bar
+                "serverSide": true, // for process on server side
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": false,
+                "info": true,
+                "dom": "ltipr",
+                "pageLength": "25",
+                "scrollY": "70vh",
+                "scrollX": true,
+                "scrollCollapse": true,
+                "fixedColumns": {
+                    "leftColumns": 1,
+                    "rightColumns": 1
+                },
+                "ajax": {
+                    "url": $myURL,
+                    "type": "POST",
+                    "data": $myData,
+                    "datatype": "json",
+                    "dataSrc": function (json) {
+                        //console.log("Data Table");
+                        $.each(json.data, function (i, row) {
+                            var newDataId = "data-id=\"" + json.data[i][row.length - 1] + "\"";
+                            var rowActionButton = button.replaceAll('data-id=""', newDataId);
+                            json.data[i][row.length - 1] = rowActionButton;
+                        });
+                        return json.data;
+                    }
+                },
+                "stateSaveParams": function (settings, data) {
+                    var temp = {};
+                    $filter.find('input:text, select, textarea').each(function () {
+                        console.log($(this).attr("id"));
+                        temp[$(this).attr("id")] = this.value;
+                    });
+                    debugger;
+                    data.colsFilter = temp;
+                },
+                "stateLoadParams": function (settings, data) { //stateParams
+                    var flag = false;
+                    jQuery.each(data.colsFilter, function (key, val) {
+                        var temp2 = $filter.find("#" + key + "");
+                        temp2.val(val)
+                        if (val != "")
+                            flag = true;
+                    });
+                    if (flag) {
+                        console.log(flag);
+                        $filter.find("#btnListRefresh").addClass("text-danger");
+                    }
+                    debugger;
+                }
+            });
+        }
+        /*stop*/
+
+        /*start: Data Bind*/
+        function bindTable($myTable, $myTableButton, $myURL, $myData = "null") {
+            $myTable.attr("width", "100%");
+            var button = "";
+            var buttonActive = $myTableButton;
+            if (buttonActive.includes("Edit")) {
+                button += "<i class=\"fas fa-edit edit-record\" title=\"Edit Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Delete")) {
+                button += "<i class=\"fas fa-trash-alt delete-record\" title=\"Delete Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("View")) {
+                button += "<i class=\"fas fa-file-alt view-record\" title=\"View Data\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Attachment")) {
+                button += "<i class=\"fas fa-file-archive attachment-record\" title=\"Attachment Documents\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Image")) {
+                button += "<i class=\"fas fa-image image-record\" title=\"Image upload\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Share")) {
+                button += "<i class=\"fas fa-share share-record\" title=\"Share Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Info")) {
+                button += "<i class=\"fas fa-question-circle info-record\" title=\"Info Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Print")) {
+                button += "<i class=\"fas fa-print print-record\" title=\"Print Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Logo")) {
+                button += "<i class=\"fas fa-bullseye logo-record\" title=\"Logo Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Calendar")) {
+                button += "<i class=\"fas fa-calendar-alt calendar-record\" title=\"Calendar Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Todo")) {
+                button += "<i class=\"far fa-clipboard todo\" title=\"Make New Todo\" data-id=\"\"></i>";
+            }
+            /*var strArray = $myTableButton.split(',');
+            for (var i = 0; i < strArray.length; i++) {
+                var css = strArray[i];
+                var title = strArray[i].toUpperCase().replace("-", " ");
+                button += "<i class=\"fas fa-edit " + css + "\" title=\"" + title + "\" data-id=\"\"></i>";
+            }*/
+
+            //jQuery DataTables initialization
+            if ($.fn.dataTable.isDataTable($myTable)) {
+                $myTable.DataTable().clear().destroy();
+            }
+
+            return $myTable.DataTable({
+                "destory": true,
+                "processing": true, // for show processing bar
+                "serverSide": true, // for process on server side
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": false,
+                "info": true,
+                "dom": "ltipr",
+                "pageLength": "25",
+                "scrollY": "45vh",
+                "scrollX": true,
+                "scrollCollapse": true,
+                "fixedColumns": {
+                    "leftColumns": 1,
+                    "rightColumns": 1
+                },
+                "ajax": {
+                    "url": $myURL,
+                    "type": "POST",
+                    "data": $myData,
+                    "datatype": "json",
+                    "dataSrc": function (json) {
+                        $.each(json.data, function (i, row) {
+                            var newDataId = "data-id=\"" + json.data[i][row.length - 1] + "\"";
+                            var rowActionButton = button.replaceAll('data-id=""', newDataId);
+                            json.data[i][row.length - 1] = rowActionButton;
+                        });
+                        return json.data;
+                    }
+                }
+            });//.destroy().clear();
+        }
+        /*stop*/
+        //https://datatables.net/forums/discussion/48038/server-side-searching-in-column-not-working
+        //https://datatables.net/manual/server-side
+
+        //Simple Table Bind
+        /*start: Bind Table Without Pagination*/
+        function bindTableWithoutPagination($myTable, $myTableButton, $myURL) {
+            var button = "";
+            var buttonActive = $myTableButton;
+            if (buttonActive.includes("Edit")) {
+                button += "<i class=\"fas fa-edit edit-record\" title=\"Edit Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Delete")) {
+                button += "<i class=\"fas fa-edit fa-trash-alt delete-record\" title=\"Delete Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("View")) {
+                button += "<i class=\"fas fa-file-alt view-record\" title=\"View Data\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Info")) {
+                button += "<i class=\"fas fa-question-circle info-record\" title=\"Info Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Attachment")) {
+                button += "<i class=\"fas fa-file-archive attachment-record\" title=\"Attachment Documents\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Image")) {
+                button += "<i class=\"fas fa-image image-record\" title=\"Image upload\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Share")) {
+                button += "<i class=\"fas fa-share share-record\" title=\"Share Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Print")) {
+                button += "<i class=\"fas fa-print print-record\" title=\"Print Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Logo")) {
+                button += "<i class=\"fas fa-circle-l logo-record\" title=\"Logo Record\" data-id=\"\"></i>";
+            }
+
+            if (buttonActive.includes("Calendar")) {
+                button += "<i class=\"fas fa-calendar-alt calendar-record\" title=\"Calendar Record\" data-id=\"\"></i>";
+            }
+
+            //jQuery DataTables initialization
+            if ($.fn.dataTable.isDataTable($myTable)) {
+                $myTable.DataTable().clear().destroy();
+
+            }
+            //jQuery DataTables initialization
+            var t = $myTable.DataTable({
+                //"destory": true,
+                "processing": true, // for show processing bar
+                "serverSide": true, // for process on server side
+                "paging": false,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": false,
+                "info": false,
+                "autoWidth": false,
+                "ajax": {
+                    "url": $myURL,
+                    "type": "POST",
+                    "datatype": "json",
+                    "dataSrc": function (json) {
+                        $.each(json.data, function (i, row) {
+                            var newDataId = "data-id=\"" + json.data[i][row.length - 1] + "\"";
+                            var rowActionButton = button.replaceAll('data-id=""', newDataId);
+                            json.data[i][row.length - 1] = rowActionButton;
+                        });
+                        return json.data;
+                    }
+                }
+            });//.destroy().clear()
+            return t;
+
+        }
+        /*stop: Bind Table Without Pagination*/
+
+        /*start: Delete data*/
+        function confirmDialog(message, onConfirm) {
+            var fClose = function () {
+                modal.modal("hide");
+            };
+            var modal = $("#confirmModal");
+            modal.modal("show");
+            $(".confirmMessage").empty().append(message);
+            $(".confirmOk").unbind().one('click', onConfirm).one('click', fClose);
+            $(".confirmCancel").unbind().one("click", fClose);
+        }
+        /*stop*/
+
+        //DropDownClass
+        /*start: DropDown*/
+        async function bindDropDownList($DropDrown, $DropDownUrl, $DropDownRef = 0) {
+            $DropDrown.children('option:not(:first)').remove(); // Remove All Options Except The First
+            var myDrownData = $DropDrown;
+            var Url = "/api/BindList/DropDown?action=" + $DropDownUrl + "&refId=" + $DropDownRef;
+            await $.ajax(
+                {
+                    type: "POST", //HTTP POST Method
+                    url: Url,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        var d = JSON.parse(data);
+                        console.log(d);
+                        $(d).each(function () {
+                            var option = $("<option />");
+                            option.html(this.Text);//Set Text
+                            option.val(this.Value);//Set Value
+                            myDrownData.append(option);//Add the Option element to DropDownList.
+                        });
+                    },
+                    error: function () {
+                    }
+                });
+        }
+        /*stop: DropDown*/
+
+        /*start : AutoComplete*/
+        function customAutoComplete($myAutoComplete, $myAutoCompleteID, $myAutoCompleteAction, $myAutoCompleteRef = 0) {
+            $myAutoComplete.autocomplete({
+                source: function (request, response) {
+                    var URl = "/api/BindList/AutoComplete?prefix=" + request.term.replaceAll(' ', '%20') + "&action=" + $myAutoCompleteAction + "&refId=" + $myAutoCompleteRef;
+                    console.log(URl);
+                    $.ajax({
+                        url: URl,
+                        type: "POST",
+                        success: function (data) {
+                            console.log(data);
+                            var d = JSON.parse(data);
+                            console.log(d);
+                            if (d.length > 0) {
+                                response($.map(d, function (item) {
+                                    return {
+                                        label: item.label,
+                                        val: item.val,
+                                        description: item.description,
+                                        item: item
+                                    };
+                                }))
+                            } else {
+                                //If no records found, set the default "No match found" item with value -1.
+                                response([{ label: 'No results found.', val: '', description: '' }]);
+                            }
+                        }
+                    });
+                },
+                select: function (e, u) {
+                    //If the No match found" item is selected, clear the TextBox.
+                    if (u.item.val == "") {
+                        //Clear the AutoComplete TextBox.
+                        $(this).val("");
+                        $myAutoCompleteID.val("");
+                        return false;
+                    }
+                    else {
+                        $myAutoCompleteID.val(u.item.val);
+                    }
+                    showResult(e, u.item);
+                },
+                //change: showResult,
+                minLength: 3,
+                delay: 500
+            }).keyup(function (e, data, u) {
+                if (e.which == 8 || e.which == 46) {
+                    console.log(data);
+                    showResult(e, "");
+                }
+            }).autocomplete("instance")._renderItem = function (ul, item) {
+                return $("<li>")
+                    .append("<div><span>" +
+                        item.label + "</span><br><span class=\"desc\">" +
+                        item.description + "</span></div>")
+                    .appendTo(ul);
+            };
+            /*END AutoComplete*/
+        }
+        /*stop : */
+
+        /*start : AutoComplete*/
+        function customAutoCompleteDynamic($myAutoComplete, $myAutoCompleteID, $myAutoCompleteAction, func, $myAutoCompleteRef = 0) {
+            $myAutoComplete.autocomplete({
+                source: function (request, response) {
+                    var URl = "/api/BindList/AutoComplete?prefix=" + request.term.replaceAll(' ', '%20') + "&action=" + $myAutoCompleteAction + "&refId=" + $myAutoCompleteRef;
+                    console.log(URl);
+                    $.ajax({
+                        url: URl,
+                        type: "POST",
+                        success: function (data) {
+                            var d = JSON.parse(data);
+                            console.log(d);
+                            if (d.length > 0) {
+                                response($.map(d, function (item) {
+                                    return {
+                                        label: item.label,
+                                        val: item.val,
+                                        description: item.description,
+                                        info: item.info,
+                                        item: item
+                                    };
+                                }))
+                            } else {
+                                //$myAutoComplete.val("");
+                                $myAutoCompleteID.val("");
+                                //If no records found, set the default "No match found" item with value -1.
+                                response([{ label: 'No results found.', val: '', info: '', description: '' }]);
+                            }
+                        }
+                    });
+                },
+                change: function (e, u) {
+                    if (!u.item) {
+                        $myAutoComplete.val("");
+                        $myAutoCompleteID.val("");
+                        func(e, "");
+                    }
+                },
+                select: function (e, u) {
+                    //If the No match found" item is selected, clear the TextBox.
+                    if (u.item.val == "") {
+                        //Clear the AutoComplete TextBox.
+                        $(this).val("");
+                        $myAutoCompleteID.val("");
+                        return false;
+                    }
+                    else {
+                        $myAutoCompleteID.val(u.item.val);
+                    }
+                    //console.log(func);
+                    func(e, u.item);
+                },
+                //change: showResult,
+                minLength: 3,
+                delay: 500
+            }).keyup(function (e, data, u) {
+                if (e.which == 8 || e.which == 46) {
+                    $myAutoCompleteID.val("");
+                }
+            }).autocomplete("instance")._renderItem = function (ul, item) {
+                return $("<li>")
+                    .append("<div><span>" + item.label + "</span><br><small class=\"small\">" + item.info + "</span><br><span class=\"desc\">" + item.description + "</span></div>")
+                    .appendTo(ul);
+            };
+            /*END AutoComplete*/
+        }
+        /*stop : */
+
+        // function is number
+        function isNumber(evt, element) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (
+                (charCode != 45 || $(element).val().indexOf('-') != -1) &&      // “-” CHECK MINUS, AND ONLY ONE.
+                (charCode != 46 || $(element).val().indexOf('.') != -1) &&      // “.” CHECK DOT, AND ONLY ONE.
+                (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+
+        function keepAlive() {
+            var d = new Date($.now());
+            //console.log("IN");
+            console.log(d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+            $.ajax({
+                url: "./../mysession.html",
+                cache: false,
+                success: function () { }
+            });
+        }
+
+        function modalPrint(titel, url) {
+            $('#printDiv').prop('src', url)
+            var partialView = $('#myModalPrint');
+            partialView.modal('show');
+            partialView.find('.modal-title').html(titel);
+        }
+
+    </script>
+</body>
+</html>

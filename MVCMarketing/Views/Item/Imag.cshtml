@@ -1,0 +1,105 @@
+﻿@{
+    //ViewBag.Title = "Accountant Form";
+    //Layout = Session["Layout"].ToString();
+    var InfoJson = ViewBag.JsonData;
+    var JsonId = ViewBag.JsonId;
+}
+
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formImage" class="text-sm">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="form-group">
+                    <label for="exampleInputFile">File input <i class="text-red" title="Required">*</i></label>
+                    <div class="input-group">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="fileDocument" required>
+                            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="small-box bg-white text-center">
+        <span class="text-sm">View Image</span>
+        <div class="col-md-12">
+            <div class="img-responsive">
+                <img id="imgView" class="" src="~/Images/NO_IMG.png" style="width:300px;height:300px; padding:10px">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>   
+    var rowCellId ="";
+    $(function () {
+        $(".Master,.Item").addClass('active');
+
+        rowCellId = @Html.Raw(JsonId);  
+
+        $("#fileDocument").change(function (e) {
+            validateFile($(this), "/Item/uploadDocumentAttachment?id=" + rowCellId, e.target.files[0].name);//, $rowCellText
+        });
+
+        /*Edit Record */
+         var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].Id);
+            if(jInfo[0].Image!=null && jInfo[0].Image!=''){
+                viewImage(jInfo[0].Image);
+            }
+        }
+        /* end:Edit Record */
+    });
+
+    //Image View
+    function viewImage(imgname){
+        var eUrl = "../DOCUMENT/IMAGES-ITEM/" + imgname;    
+        $("#imgView").attr("src", eUrl);
+    }
+
+    // start upload
+    function validateFile($this, $url, $title) {
+        var ext = $this.val().split('.').pop().toLowerCase();
+        if ($.inArray(ext, ['png', 'jpg', 'jpeg']) == -1) {
+            $this.val("");
+            message("alert-warning", "fa-ban", "The file type is invalid! Please upload only png,jpg,jpeg");
+        }
+        else {
+            uploadDataDoument($this, $url, $title.substr(0, $title.lastIndexOf('.')));
+        }
+    }
+
+    function uploadDataDoument($this, $url, $title) {
+        $(".row").find("input, button, submit, textarea, select").attr("disabled", "disabled");
+        /* Start : File Upload Coding */
+        var fileUpload = $this.get(0);
+        var files = fileUpload.files;
+        // Create FormData object
+        var fileData = new FormData();
+        // Looping over all files and add it to FormData object
+        for (var i = 0; i < files.length; i++) {
+            fileData.append(files[i].name, files[i]);
+            console.log("files[i]-" + files[i]);
+        }
+        console.log("fileData" + fileData);
+        // Adding one more key to FormData object
+        fileData.append('title', $title);
+        $("#fileDocument").val('');
+
+        var redirectUrl = '/Item/List'; // Eg /Item/List
+        var f = $('#formImage');
+        var button = f.find('.custom-file-label');
+        /* start Form validation & save data */
+        uploadDocument(f, fileData, $url, button, button.text(), redirectUrl).then(function (res) {
+            console.log(res)
+            viewImage(res.fileName);
+        });
+    /* end Form */
+    }
+    // End upload
+
+</script>

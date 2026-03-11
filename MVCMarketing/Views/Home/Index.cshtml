@@ -1,0 +1,178 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = Session["Layout"].ToString();
+    var InfoJson = ViewBag.JsonData;
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="../plugins/fullcalendar/main.min.css">
+}
+@section containerfluid{
+    <div class="col-sm-6">
+        <h1 class="m-0 text-dark">Dashboard</h1>
+    </div><!-- /.col -->
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </div><!-- /.col -->
+}
+<!-- Main row -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-8 small">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="info-box bg-gradient-fuchsia pointer">
+                            <div class="info-box-content">
+                                <span class="info-box-text">Today Order</span>
+                                <span class="info-box-number dashboard_Todayorder"></span>
+                            </div>
+                            <a href="/Order/List" class="small-box-footer"></a>
+                            <!-- /.info-box-content -->
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="info-box bg-gradient-gray-dark pointer">
+                            <div class="info-box-content">
+                                <span class="info-box-text">Open Order</span>
+                                <span class="info-box-number dashboard_orderopen">0</span>
+                            </div>
+                            <a href="/OrdertoInvoice/List" class="small-box-footer"></a>
+                            <!-- /.info-box-content -->
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="info-box bg-gradient-lime pointer">
+                            <div class="info-box-content">
+                                <span class="info-box-text">Today Invoice</span>
+                                <span class="info-box-number dashboard_invoice"></span>
+                            </div>
+                            <a href="/Invoice/List" class="small-box-footer"></a>
+                            <!-- /.info-box-content -->
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="info-box bg-gradient-info pointer">
+                            <div class="info-box-content">
+                                <span class="info-box-text">Assign Route Pending</span>
+                                <span class="info-box-number dashboard_routeassign">0</span>
+                            </div>
+                            <a href="/DeliverClient/List" class="small-box-footer"></a>
+                            <!-- /.info-box-content -->
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="info-box bg-danger pointer">
+                            <div class="info-box-content">
+                                <span class="info-box-text">Client Route Pending</span>
+                                <span class="info-box-number dashboard_pendingassign">0</span>
+                            </div>
+                            <a href="/DeliverClient/List" class="small-box-footer"></a>
+                            <!-- /.info-box-content -->
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="info-box bg-gradient-olive pointer">
+                            <div class="info-box-content">
+                                <span class="info-box-text">Today Collection</span>
+                                <span class="info-box-number dashboard_todaycollection">0</span>
+                            </div>
+                            <a href="/AccountDayBook/List" class="small-box-footer"></a>
+                            <!-- /.info-box-content -->
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+</div>
+
+@section footer{
+
+    <script>
+        var oTableItem;
+        $(function () {
+            $(".dashboard").addClass('active');
+
+            /*Edit Record */
+            var jInfo = @Html.Raw(InfoJson);
+            console.log(jInfo);
+            if (jInfo != null) {
+                $(".dashboard_Visit").html(jInfo[0].Visit);
+                $(".dashboard_poinward").html(jInfo[0].PoInward);
+                $(".dashboard_ActiveScheme").html(jInfo[0].ActiveScheme);
+                $(".dashboard_Todayorder").html(jInfo[0].TodayOrder);
+                $(".dashboard_orderopen").html(jInfo[0].OrderOpen);
+                $(".dashboard_invoice").html(jInfo[0].OrderInvoice);
+                $(".dashboard_routeassign").html(jInfo[0].AssignRoute);
+                $(".dashboard_pendingassign").html(jInfo[0].AssignClient);
+                $(".dashboard_todaycollection").html(jInfo[0].TodayCollection);
+                $(".dashboard_Event").html(jInfo[0].TodayOrder);
+                $(".dashboard_returninvoice").html(jInfo[0].RetrunCreditNotePending);
+                $(".dashboard_cdpending").html(jInfo[0].CDPending);
+                $(".dashboard_dispatchpendingcompany").html(jInfo[0].DispatchPendingCompany);
+                $(".dashboard_dispatchpendingother").html(jInfo[0].DispatchPendingOther);
+                BindTableItem();
+            }
+            /* end:Edit Record */
+
+            $("#lbVisit").click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+               window.location = "/Order/Form";
+            });
+
+            $("#lbQuickOrder").click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                  window.location = "/DirectOrder/List";
+            });
+
+            $('#lbAttendanceStart').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("Attendance", "/AttendanceSheet/Quick", "modal-md");
+            });
+
+            /* Bind Dealer */
+            $("#viewDealer").load("/DeliverClient/InfoView");
+
+            /* Bind Client */
+            $("#viewClient").load("/DeliverClient/InfoViewClient");
+
+            /* Bind Account Day Book */
+            $("#viewAccountDayBook").load("/AccountDayBook/Dashboard");
+
+             /* end:Record  out word*/
+            $(".info-box.pointer").click(function (e) {
+                var href = $(this).find("a").attr("href");
+                console.log(href);
+                window.location = "" + href + "";
+                //e.preventDefault();
+                //window.location = "/Sales/List";
+            });
+
+            /* Bind Calendar*/
+            $("#viewCalendar").load("/Schedule/Info");
+        });
+
+        function BindTableItem() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "";
+            oTableItem = bindTableWithoutPagination($('#myTableItem'), activeButtonClass, "/Home/LoadDataItem"); //Bind Table
+        }
+    </script>
+}
+<!--
+    bg-navy
+    bg-lime
+    bg-maroon
+    bg-yellow
+    bg-green
+    bg-teal
+    bg-cyan
+    bg-gray
+    bg-gray-dark
+-->

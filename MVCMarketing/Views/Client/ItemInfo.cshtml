@@ -1,0 +1,167 @@
+﻿<div class="p-1">
+    <div class="row">
+        <div class="col-md-12">
+            <small>Client Item Price</small>
+            <div class="small-box bg-white p-2">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <select class="form-control form-control-sm select3" id="ddSearchCategory" name="ddSearchCategory" title="Please Selected Category">
+                                    <option value="" selected="selected">----Select Category ----</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <select class="form-control form-control-sm select3" id="ddSearchSubCategory" name="ddSearchSubCategory" title="Please Selected Sub Category">
+                                    <option value="" selected="selected">-----Select Sub Category------</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-sm" id="txtSearchItem" name="txtSearchItem" placeholder="Search Item">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-default btn-sm" id="btnListSearchModel" title="Search"><i class="fas fa-filter"></i></button>
+                            &nbsp;
+                            <button type="button" class="btn btn-default btn-sm" id="btnListRefreshModel" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="table-responsive small" style="height: 30vh;">
+                            <table class="table table-sm table-striped table-borderless table-hover table-head-fixed table-responsive-card" id="myTablebInvoiceItems">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Category</th>
+                                        <th>Sub Category</th>
+                                        <th>Item</th>
+                                        <th>Price</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <form role="form" id="formClientOrderItem">
+                            <div class="col-12 text-center">
+                                <input type="hidden" value="" id="hdCustomerId" name="hdCustomerId" />
+                                <input type="hidden" value="" id="hdCustomerItemPriceId" name="hdCustomerItemPriceId" />
+                                <input type="hidden" value="" id="hdItemId" name="hdItemId" />
+                                <input type="hidden" value="" id="hdPrice" name="hdPrice" />
+                                <button type="submit" class="btn btn-default hidden">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    var tempClientId;
+    $(function () {
+        tempClientId = '@Html.Raw(ViewBag.JsonClientId)';
+
+        console.log(tempClientId);
+
+        bindDropDownList($('#ddSearchCategory'), 'Category');
+
+        BindTableClientItemDiscount();
+
+        /* Bind Sub Cateory */
+        $("#ddSearchCategory").change(function () {
+            //var selectedText = $(this).find("option:selected").text();
+            var selectedValue = $(this).val();
+            bindDropDownList($('#ddSearchSubCategory'), 'SubCategory', selectedValue);
+            //alert("Selected Text: " + selectedText + " Value: " + selectedValue);
+        });
+
+        //refresh button
+        $('#btnListRefreshModel').click(function () {
+            $('#ddSearchCategory,#ddSearchSubCategory,#txtSearchItem').val('');
+            $('#btnListSearchModel').trigger('click');
+        });
+
+        //Edit Part
+        $("#myTablebInvoiceItems tbody").on("click", ".save-record", function () {
+            var recordId = $(this).attr('data-id');
+            var CustomerId = $(this).attr('data-customerid');
+            var ItemId = $(this).attr('data-itemid');
+            var Price = $(this).closest("tr").find('.Price').val();
+
+            $("#hdCustomerItemPriceId").val(recordId);
+            $("#hdCustomerId").val(CustomerId);
+            $("#hdItemId").val(ItemId);
+            $("#hdPrice").val(Price);
+            /* start : From Submit*/
+            var button = $("#formClientOrderItem").find(':submit');
+            sendData($("#formClientOrderItem"), "/Client/InsertItem", button, button.text(), "").then(function (res) {
+                BindTableClientItemDiscount();
+            });
+            /* stop : From Submit */
+        });
+
+        //Set search trigger
+        $("#ddSearchCategory,#ddSearchSubCategory,#txtSearchItem").on('keyup change', function (e) {
+            var thisId = $(this).attr("Id");
+            if (e.which == 13 || thisId.includes("dd")) {
+                $('#btnListSearchModel').trigger('click');
+            }
+        });
+
+        //Apply Custom search on jQuery DataTables here
+        $('#btnListSearchModel').click(function () {
+            BindTableClientItemDiscount();
+        });
+    });
+
+    function BindTableClientItemDiscount() {
+        $("#myTablebInvoiceItems > tbody").html("");
+        $.ajax(
+            {
+                type: "POST",
+                url: "/Client/LoadDataItem?ClientId=" + tempClientId + "&SubcategoryId=" + $("#ddSearchSubCategory").val() + "&ItemCode=" + $("#txtSearchItem").val() + "&CategoryId=" + $("#ddSearchCategory").val(),
+                success: function (data) {
+                    var d = JSON.parse(data.data)
+                    for (var i = 0; i < d.length; i++) {
+                        var row = "";
+                        row += "<tr>";
+                        row += "<td data-label=\"Code:\">" + d[i].ItemCode;
+                        row += "</td>";
+                        row += "<td data-label=\"Item:\">" + d[i].CategoryName;
+                        row += "</td>";
+                        row += "<td data-label=\"Code:\">" + d[i].SubCategoryName;
+                        row += "</td>";
+                        row += "<td data-label=\"Code:\">" + d[i].Description;
+                        row += "</td>";
+                        row += "<td data-label=\"Deliverd Item:\"><input type=\"number\" class=\"Price\" style=\"width:50px\" value=\"" + d[i].Price + "\"></td>";
+                        row += "<td><button type=\"button\" class=\"btn btn-sm btn-default save-record\" data-id=\"" + d[i].CustomerItemPriceId + "\" data-itemid=\"" + d[i].ItemId + "\" data-customerid=\"" + d[i].CustomerId + "\">Save</button></td>";
+                        row += "</tr>";
+                        $('#myTablebInvoiceItems tbody').append(row);
+                    }
+
+                 // Bind the focusout event to InvoiceQty
+                    $("#myTablebInvoiceItems tbody").on("focusout", ".Price", function () {
+                    var $input = $(this);
+                    var $row = $input.closest('tr');
+                    var itemQty = parseFloat($row.find(".item-qty").text());
+                    var deliveredQty = parseFloat($input.val());
+                    if (deliveredQty > itemQty) {
+                        $input.val("");
+                        $input.focus();
+                        toastMessage('warning', 'Delivered Item should be less than or equal to Qty.');
+                    }
+                    });
+
+                },
+                error: function () {
+                }
+            });
+    }
+</script>
+
+
+

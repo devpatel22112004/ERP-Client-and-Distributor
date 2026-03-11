@@ -1,0 +1,229 @@
+﻿
+
+@{
+    var InfoJsonDataImage = ViewBag.JsonDataImage;
+    var InfoJsonWordUploadDataId = ViewBag.JsonWordUploadDataId;
+    var InfoJsonWordUploadVideoId = ViewBag.JsonWordUploadVideoId;
+    var InfoJsonWordUploadAudioId = ViewBag.JsonWordUploadAudioId;
+    var InfoJsonDataVideo = ViewBag.JsonDataVideo;
+    var InfoJsonDataAudio = ViewBag.JsonDataAudio;
+}
+
+<div class="p-2">
+    <div class="row">
+        <div class="col-md-6">
+            <form role="form" data-toggle="validator" id="formImage" class="text-sm">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="exampleInputFile">Stamp Image <i class="text-red" title="Required">*</i></label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="fileDocument" required>
+                                    <label class="custom-file-label" for="exampleInputFile">Choose Image</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="small-box bg-white text-center">
+                <span class="text-sm">View Image</span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <img id="imgView" style="width:300px;height:300px; padding:10px" alt="Stamp Image">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <form role="form" data-toggle="validator" id="formLogo" class="text-sm">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="exampleInputFile">LOGO input <i class="text-red" title="Required">*</i></label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="fileDocumentLogo" required>
+                                    <label class="custom-file-label" for="exampleInputFile">Choose Logo</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="small-box bg-white text-center">
+                <span class="text-sm">View LOGO</span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <img id="LogoView" style="width:300px;height:300px; padding:10px" alt="LOGO View">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <form role="form" data-toggle="validator" id="formQR" class="text-sm">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="exampleInputFile">QR Code <i class="text-red" title="Required">*</i></label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="fileQR" required>
+                                    <label class="custom-file-label" for="exampleInputFile">Choose QR</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="small-box bg-white text-center">
+                <span class="text-sm">View Qr</span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <img id="imgViewQr" style="width:300px;height:300px; padding:10px" alt="QR Code">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(function () {
+
+        rowCellId = @Html.Raw(InfoJsonWordUploadDataId);
+        rowCellId1 = @Html.Raw(InfoJsonWordUploadVideoId);
+        rowCellId2 = @Html.Raw(InfoJsonWordUploadAudioId);
+
+        /*Edit Record */
+        var jInfo1 = @Html.Raw(InfoJsonDataImage);
+        console.log(jInfo1);
+        if (jInfo1 != null) {
+            $("#hdId").val(jInfo1[0].Id);
+            if (jInfo1[0].Stamp_Image !=null){
+                viewImage(jInfo1[0].Stamp_Image);
+            }
+        }
+        /* end:Edit Record */
+
+         /*Edit Record */
+         var jInfo2 = @Html.Raw(InfoJsonDataVideo);
+        console.log(jInfo2);
+        if (jInfo2 != null) {
+            $("#hdId").val(jInfo2[0].Id);
+            if (jInfo2[0].Logo !=null){
+                viewLogo(jInfo2[0].Logo);
+            }
+        }
+        /* end:Edit Record */
+
+         /*Edit Record */
+         var jInfo3 = @Html.Raw(InfoJsonDataAudio);
+        console.log(jInfo2);
+        if (jInfo3 != null) {
+            $("#hdId").val(jInfo3[0].Id);
+            if (jInfo3[0].QRUrl !=null){
+                viewQR(jInfo3[0].QRUrl);
+            }
+        }
+         /* end:Edit Record */
+
+        $("#fileDocument").change(function (e) {
+            validateFile($(this), "/Branch/uploadStamp?id=" + rowCellId, e.target.files[0].name);//, $rowCellText
+        });
+
+        $("#fileDocumentLogo").change(function (e) {
+            validateFile($(this), "/Branch/uploadLogo?id=" + rowCellId1, e.target.files[0].name);//, $rowCellText
+        });
+
+        $("#fileQR").change(function (e) {
+            validateFile($(this), "/Branch/uploadQR?id=" + rowCellId2, e.target.files[0].name);//, $rowCellText
+        });
+    });
+
+        //Image View
+        function viewImage(stamp){
+            var eUrl = "../DOCUMENT/BRANCH-STAMP/" + stamp;
+            $("#imgView").attr("src", eUrl);
+        }
+
+        //Video View
+        function viewLogo(logo) {
+            var eUrl = "../DOCUMENT/LOGO-ITEM/" + logo;
+            $("#LogoView").attr("src", eUrl);
+        }
+
+        //Video View
+        function viewQR(QR) {
+            var eUrl = "../DOCUMENT/QR-ITEM/" + QR;
+            $("#imgViewQr").attr("src", eUrl);
+        }
+
+        // start upload
+        function validateFile($this, $url, $title) {
+            var ext = $this.val().split('.').pop().toLowerCase();
+            if ($.inArray(ext, ['png', 'jpg', 'jpeg']) == -1) {
+                $this.val("");
+                message("alert-warning", "fa-ban", "The file type is invalid! Please upload only png,jpg,jpeg");
+            }
+            else {
+                uploadDataDocument($this, $url, $title.substr(0, $title.lastIndexOf('.')));
+            }
+        }
+
+    function uploadDataDocument($this, $url, $title) {
+        $(".row").find("input, button, submit, textarea, select").attr("disabled", "disabled");
+        /* Start : File Upload Coding */
+        var fileUpload = $this.get(0);
+        var files = fileUpload.files;
+        // Create FormData object
+        var fileData = new FormData();
+        // Looping over all files and add it to FormData object
+        for (var i = 0; i < files.length; i++) {
+            fileData.append(files[i].name, files[i]);
+            console.log("files[i]-" + files[i]);
+        }
+        console.log("fileData" + fileData);
+        // Adding one more key to FormData object
+        fileData.append('title', $title);
+        $("#fileDocument").val('');
+
+        var redirectUrl = ''; 
+
+        var f = $('#formImage');
+        var f1 = $('#formLogo');
+        var f2 = $('#formQR');
+        var button = f.find('.custom-file-label');
+        var button = f1.find('.custom-file-label');
+        var button = f2.find('.custom-file-label');
+
+        /* start Form validation & save data*/
+        uploadStamp(f, fileData, $url, button, button.text(), redirectUrl).then(function (res) {
+            console.log(res)
+            viewImage(res.fileName);
+        });
+        /* end Form */
+
+        /* start Form validation & save data */
+        uploadLogo(f1, fileData, $url, button, button.text(), redirectUrl).then(function (res) {
+            console.log(res)
+            viewLogo(res.fileName);
+        });
+        /* end Form */
+
+        /* start Form validation & save data*/
+        uploadQR(f2, fileData, $url, button, button.text(), redirectUrl).then(function (res) {
+            console.log(res)
+            viewQR(res.fileName);
+        });
+        /* end Form */
+    }
+
+</script>

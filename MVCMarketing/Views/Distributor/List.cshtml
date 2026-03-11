@@ -1,0 +1,183 @@
+﻿@{
+    ViewBag.Title = "Dealer List";
+    Layout = Session["Layout"].ToString();
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_Distributor">
+            <div class="row">
+                <div class="form-group col-xl-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="0" id="txtSearchDistributor" name="txtSearchDistributor" placeholder="Search Dealer / Address / Contact">
+                </div>
+                <div class="form-group col-xl-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="4" id="txtSearchArea" name="txtSearchArea" placeholder="Search Area ">
+                </div>
+                <div class="form-group col-xl-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="5" id="txtsearchcode" name="txtsearchcode" placeholder="Search Code ">
+                </div>
+                <div class="form-group col-md-2">
+                    <select class="form-control form-control-sm select3 column_filter" data-column="1" id="ddSearchCity" name="ddSearchCity" title="Please Selected City">
+                        <option value="" selected="selected">---Selected City---</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <select class="form-control form-control-sm select3 column_filter" data-column="2" id="ddSearchState" name="ddSearchState" title="Please Selected State">
+                        <option value="" selected="selected">---Selected State---</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <select class="form-control form-control-sm select3 column_filter" data-column="3" id="ddSearchStatus" name="ddSearchStatus" title="Please Selected Status">
+                        <option value="" selected="selected">---Selected Status---</option>
+                        <option value="True">Active</option>
+                        <option value="False">Deactive</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-12 text-center">
+                    <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="btnListRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+
+        </div>
+        <div class="card">
+            <div class="card-header border-0">
+                <h3 class="card-title">Dealer List</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <button type="button" id="btnFormDistributor" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body table-responsive small p-2" style="height: 70vh;">
+                <table id="myTableDistributor" class="table table-sm table-striped table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Firm</th>
+                            <th>Area</th>
+                            <th>Office Address</th>
+                            <th>Shipping Address</th>
+                            <th>City</th>
+                            <th>State</th>
+                            <th>Opening Balance</th>
+                            <th>Person Name</th>
+                            <th>Contact</th>
+                            <th>Dis. Structure</th>
+                            <th>Transport</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footer{
+    <script>
+        var oTableDistributor;
+        function filterColumn(i, tag) {
+            oTableDistributor.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+        $(function () {
+            $(".master,.master-Distributor").addClass('active');
+
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            /* Bind State */
+            bindDropDownList($('#ddSearchState'), 'State');
+            bindDropDownList($('#ddSearchCity'), 'City');
+
+            BindTableDistributor(); // Bind table
+
+            //refresh button
+            $('#btnListRefresh').click(function () {
+                oTableDistributor.DataTable().state.clear();
+                location.reload();
+            });
+
+            $('#btnFormDistributor').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("New Distributor", "/Distributor/Form", "modal-lg");
+            });
+
+        });
+
+
+        function BindTableDistributor() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit,View,Copy:Account,Car,Info";
+            oTableDistributor = bindTableSmart($('#myTableDistributor'), activeButtonClass, "/Distributor/LoadData", "null", $("#filter_Distributor")); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableDistributor.on('click', '.view-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordDate = $(this).closest("tr").find("td").eq(0).text();
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                viewPartialViewModal(recordDate + ' - ' + recordTitle, "/Distributor/Info?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableDistributor.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+                viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-lg");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableDistributor.on('click', '.car-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+                viewPartialViewModal(recordTitle, "/DealerTransportation/Info?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+                //  viewPartialViewModal(recordTitle, "DealerTransportation?id=" + recordId, "modal-lg");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableDistributor.on('click', '.copy-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                var recordAmount = $(this).closest("tr").find("td").eq(7).text();
+                viewPartialViewModal(recordTitle + ' - ' + recordAmount, "Adjustment?id=" + recordId, "modal-lg");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableDistributor.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+                viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-lg");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableDistributor.on('click', '.info-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+                viewPartialViewModal(recordTitle, "/DistributorItemStock/Form?id=" + recordId, "modal-lg");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableDistributor.on('click', '.rupee-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+                viewPartialViewModal(recordTitle, "/ClientPriceTag/ClientPriceForm?id=" + recordId, "modal-lg");// Model Size : modal-sm modal-md modal-lg
+            });
+        }
+    </script>
+}

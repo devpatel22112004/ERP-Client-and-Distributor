@@ -1,0 +1,110 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = Session["Layout"].ToString();
+    var InfoJson = ViewBag.JsonData;
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="../plugins/fullcalendar/main.min.css">
+}
+@section containerfluid{
+    <div class="col-sm-6">
+        <h1 class="m-0 text-dark">Dashboard</h1>
+    </div><!-- /.col -->
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </div><!-- /.col -->
+}
+<!-- Main row -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-8 small">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="info-box bg-gradient-fuchsia pointer">
+                            <div class="info-box-content">
+                                <span class="info-box-text">Today Order</span>
+                                <span class="info-box-number dashboard_Todayorder">0</span>
+                            </div>
+                            <a href="/DistributorOrder/List" class="small-box-footer"></a>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <div class="info-box bg-gradient-gray-dark pointer">
+                            <div class="info-box-content">
+                                <span class="info-box-text">Order Open</span>
+                                <span class="info-box-number dashboard_orderopen">0</span>
+                            </div>
+                            <a href="/DistributorReportOrderOpen/Report" class="small-box-footer"></a>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <div class="info-box bg-gradient-danger pointer">
+                            <div class="info-box-content">
+                                <span class="info-box-text">Active Scheme</span>
+                                <span class="info-box-number dashboard_ActiveScheme">0</span>
+                            </div>
+                            <a href="/SchemeAchive/List" class="small-box-footer"></a>
+                            <!-- /.info-box-content -->
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="p-1">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-block btn-info" id="lbVisit"><i class="fas fa-visit" title="New Add Visit"></i> Take Order </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Scheme -->
+                        <div id="viewScheme">
+                        </div>
+                        <!-- Scheme-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footer{
+
+    <script>
+          $(function () {
+             $(".dashboard").addClass('active');
+
+                /*Edit Record */
+                var jInfo = @Html.Raw(InfoJson);
+                if (jInfo != null) {
+                    $(".dashboard_Todayorder").html(jInfo[0].Todayorder);
+                    $(".dashboard_orderopen").html(jInfo[0].orderopen);
+                }
+                /* end:Edit Record */
+
+                /* end:Record  out word*/
+                $(".info-box.pointer").click(function (e) {
+                 var href = $(this).find("a").attr("href");
+                 window.location = "" + href + "";
+                });
+
+                $("#lbVisit").click(function () {
+                 window.location = "/DistributorOrder/Form";
+                });
+
+              /* Bind Calendar*/
+             $("#viewScheme").load("/Scheme/InfoScheme");
+
+            });
+    </script>
+}
+<!--
+    bg-navy
+    bg-lime
+    bg-maroon
+    bg-yellow
+    bg-green
+    bg-teal
+    bg-cyan
+    bg-gray
+    bg-gray-dark
+-->

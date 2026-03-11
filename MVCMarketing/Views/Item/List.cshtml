@@ -1,0 +1,146 @@
+﻿@{
+    ViewBag.Title = "Items List";
+
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_Items">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="0" id="txtSearchItem" name="txtSearchItem" placeholder="Search Item / Description">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <select class="form-control form-control-sm select3 column_filter" data-column="3" id="ddSearchBrand" name="ddSearchBrand" title="Please Selected Brand">
+                            <option value="" selected="selected">----Select Brand ----</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <select class="form-control form-control-sm select3 column_filter" data-column="1" id="ddSearchCategory" name="ddSearchCategory" title="Please Selected Category">
+                            <option value="" selected="selected">----Select Category ----</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <select class="form-control form-control-sm select3 column_filter" data-column="2" id="ddSearchSubCategory" name="ddSearchSubCategory" title="Please Selected Sub Category">
+                            <option value="" selected="selected">-----Select Sub Category------</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-default btn-sm" id="btnListSearch" title="Search"><i class="fas fa-filter"></i></button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="btnListRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header border-0">
+                <h3 class="card-title">Item List</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <button type="button" id="btnFormItem" class="btn btn-block btn-outline-secondary btn-xs"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-2 small" style="height: 60vh;">
+                <table id="myTableItem" class="table-sm  table-striped table-borderless table-hover table-head-fixed table-responsive-card nowrap">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Item Code</th>
+                            <th>Category</th>
+                            <th>Sub Category</th>
+                            <th>Brand</th>
+                            <th>Description</th>
+                            <th>Packing Unit</th>
+                            <th>Packing Qty.</th>
+                            <th>S.Limit</th>
+                            <th>O.Stock</th>
+                            <th>Refilling</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footer{
+    <script>
+        var oTableItem;
+        function filterColumn(i, tag) {
+            oTableItem.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+        $(function () {
+            $(".master,.master-product,.master-product-Item").addClass('active');
+
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            /* Bind Brand */
+            bindDropDownList($('#ddSearchBrand'), 'Brand');
+
+            bindDropDownList($('#ddSearchCategory'), 'Category');
+
+           /* Bind Sub Cateory */
+            $("#ddSearchCategory").change(function () {
+                //var selectedText = $(this).find("option:selected").text();
+                var selectedValue = $(this).val();
+                bindDropDownList($('#ddSearchSubCategory'), 'SubCategory', selectedValue);
+                //alert("Selected Text: " + selectedText + " Value: " + selectedValue);
+            });
+
+            BindTableItem();// Bind table
+            });
+
+            //refresh button
+            $('#btnListRefresh').click(function () {
+                oTableItem.DataTable().state.clear();
+                location.reload();
+            });
+
+            $('#btnFormItem').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("New Item", "/Item/Form", "modal-xl");
+            });
+
+        function BindTableItem() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit,Image";
+            oTableItem = bindTableSmart($('#myTableItem'), activeButtonClass, "/Item/LoadData", "null", $("#filter_Items")); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableItem.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableItem.on('click', '.image-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                viewPartialViewModal(recordTitle, "Imag?id=" + recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+            });
+
+        }
+
+    </script>
+
+}

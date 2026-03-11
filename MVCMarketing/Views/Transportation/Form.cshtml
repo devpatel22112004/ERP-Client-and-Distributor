@@ -1,0 +1,126 @@
+﻿<div class="p-2">
+    <form role="form" data-toggle="validator" id="formTransportation" class="text-sm">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="txtTransportName">Transport Name <i class="text-red" title="Required">*</i></label>
+                    <input type="text" class="form-control  form-control-sm" id="txtTransportName" name="txtTransportName" placeholder="Enter Transport Name" data-error="Please Fill Up Transport Name" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="txtRouteName">Route Name <i class="text-red" title="Required">*</i></label>
+                    <input type="text" class="form-control  form-control-sm" id="txtRouteName" name="txtRouteName" placeholder="Enter Route Name" data-error="Please Fill Up Route Name" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="txtVehicleNumber">Vehicle Number <i class="text-red" title="Required">*</i></label>
+                    <input type="text" class="form-control  form-control-sm" id="txtVehicleNumber" name="txtVehicleNumber" placeholder="Enter Vehicle Number" data-error="Please Fill Up Vehicle Number" required>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="ddType">Type <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3" id="ddType" name="ddType" title="Please Selected Type" required>
+                    <option value="" selected="selected">-- Selected Type --</option>
+                    <option value="COMPANY">COMPANY</option>
+                    <option value="OTHER">OTHER</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="txtTransportName1">Transport Name 1  <i class="text-red" title="Required">*</i></label>
+                    <input type="text" class="form-control  form-control-sm" id="txtTransportName1" name="txtTransportName1" placeholder="Enter Transport Name" data-error="Please Fill Up Transport Name" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="txtContact1">Contact 1 <i class="text-red" title="Required">*</i></label>
+                    <input type="text" class="form-control  form-control-sm" id="txtContact1" name="txtContact1" placeholder="Enter Contact Number" data-error="Please Fill Up Contact Number" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="txtAddress">Address <i class="text-red" title="Required">*</i></label>
+                    <textarea type="text" rows="2" class="form-control  form-control-sm" id="txtAddress" name="txtAddress" placeholder="Enter Address" data-error="Please Fill Up Enter Address"></textarea>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="ddCity">City <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3  form-control-sm" id="ddCity" name="ddCity" data-error="Please Select City" required>
+                    <option selected="selected" value="">-- Select City ---</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="txtGSTNumber">GST Number/ ID  </label>
+                    <input type="text" class="form-control  form-control-sm" id="txtGSTNumber" name="txtGSTNumber" placeholder="Enter GST Number / ID " data-error="Enter GST Number / ID">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="txtRemark">Remark </label>
+                    <textarea type="text" rows="1" class="form-control  form-control-sm" id="txtRemark" name="txtRemark" placeholder="Enter Remark" data-error="Please Fill Up Enter Remark"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="txtTransportName2">Transport Name 2 </label>
+                    <input type="text" class="form-control  form-control-sm" id="txtTransportName2" name="txtTransportName2" placeholder="Enter Transport Name 1" data-error="Please Fill Up Transport Name 1">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="txtContact2">Contact 2 </label>
+                    <input type="text" class="form-control  form-control-sm" id="txtContact2" name="txtContact2" placeholder="Enter Contact Number 2" data-error="Please Fill Up Contact Number">
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+
+        bindDropDownList($('#ddCity'), 'City');
+
+        /* start Form validation & save data */
+        var f = $('#formTransportation');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Transportation/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                /*var returnValue = sendData(f, "/Category/Insert", button, button.text(), redirectUrl);
+                console.log(returnValue);*/
+                sendData(f, "/Transportation/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>
+
+
+

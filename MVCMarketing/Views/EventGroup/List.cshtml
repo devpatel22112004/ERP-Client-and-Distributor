@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewBag.Title = "EventGroup List";
+    Layout = Session["Layout"].ToString();
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_EventGroup">
+            <span class="text-sm">Search Record</span>
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="form-group text-sm">
+                        <input type="text" class="form-control form-control-sm column_filter" data-column="0" id="txtSearchEventGroup" name="txtSearchEventGroup" placeholder="Type Group Name">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <span id="btnListSearch" class="btn btn-outline-secondary btn-sm" title="Filter"><i class="fas fa-filter"></i></span>
+                    <span id="btnListRefresh" class="btn btn-outline-secondary btn-sm" title="Reset"><i class="fas fa-sync-alt"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-0">
+                <h3 class="card-title">Group List</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <button type="button" id="btnFormEventGroup" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body small p-2" style="height: 70vh;">
+                <!--class="card-body table-responsive p-0" style="height: 300px;"-->
+                <table class="table table-striped table-sm no-footer table-borderless table-hover table-head-fixed table-responsive-card" id="myTableEventGroup">
+                    <!--table table-head-fixed-->
+                    <thead>
+                        <tr>
+                            <th>Event Group</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+@section footer{
+    <script>
+        var oTableEventGroup;
+        function filterColumn(i, tag) {
+            oTableEventGroup.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+        $(function () {
+            $(".Event,.Event-EventGroup").addClass('active');
+
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            BindTableEventGroup();// Bind table
+
+            //refresh button
+            $('#btnListRefresh').click(function () {
+                oTableEventGroup.DataTable().state.clear();
+                location.reload();
+            });
+
+            $('#btnFormEventGroup').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("New Matrix Group", "/EventGroup/Form", "modal-md");
+            });
+        });
+
+        function BindTableEventGroup() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit";
+            oTableEventGroup = bindTableSmart($('#myTableEventGroup'), activeButtonClass, "/EventGroup/LoadData", "null", $("#filter_EventGroup")); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableEventGroup.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+                viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+            });
+
+        }
+
+    </script>
+
+}
+
+
+
+
+
+

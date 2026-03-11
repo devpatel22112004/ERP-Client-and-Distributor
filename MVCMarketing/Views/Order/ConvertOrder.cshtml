@@ -1,0 +1,55 @@
+﻿@{
+    var InfoJson1 = ViewBag.JsonData1;
+}
+<div class="p-0">
+    <form role="form" data-toggle="validator" id="formConvertOrder">
+        <div class="form-group col-md-12">
+            <label for="ddStatus">Convert To Invoice</label>
+            <select class="form-control select3 form-control-sm" id="ddStatus" name="ddStatus" title="Please Selected Status" required>
+                <option value="" selected="selected">-- Selected Status --</option>
+                <option value="Convert To Invoice">Convert To Invoice</option>
+            </select>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdOrderId" name="hdOrderId" />
+            <button type="submit" class="col-md-3 btn btn-default btn-sm col-4">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+
+
+    $(function () {
+
+        /*Edit Record */
+            var jInfo = @Html.Raw(InfoJson1);
+            console.log(jInfo);
+            if (jInfo != null) {
+                $("#hdOrderId").val(jInfo[0].OrderId);
+                $("#ddStatus").val(jInfo[0].ConvertStatus);
+            }
+            /* end:Edit Record */
+
+        /* start Form validation & save data */
+        var f1 = $('#formConvertOrder');
+        f1.validator();// Call validation function
+        f1.submit(function (e) {
+            e.preventDefault();
+            var button = f1.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Demo/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f1, "/Order/ConvertInvoice", button, button.text(), redirectUrl).then(function (res) {
+                    location.reload();
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+
+    });
+</script>

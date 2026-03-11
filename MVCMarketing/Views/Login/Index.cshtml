@@ -1,0 +1,108 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <title>SAHAJANAND BEVERAGES | Log in</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <!-- /.login-logo -->
+        <div class="card">
+            <div class="card-body login-card-body text-center">
+                <div class="col-md-12">
+                    <a href="#">
+                        <img src="~/dist/img/logo_horizontal.png" alt="Logo" class="brand-image" style="width: 300px">
+                    </a>
+                </div>
+                <p class="login-box-msg p-2">Sign in to start your session</p>
+                <form role="form" data-toggle="validator" id="formLogin" class="text-sm">
+                    <div class="row">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="userid" name="userid" placeholder="User ID" autofocus autocomplete="off" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control" id="userpass" name="userpass" placeholder="Password" autocomplete="off" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 text-center p-md-2">
+                        <input type="submit" class="btn btn-primary" id="btnsignin" value="Sign In" />
+                    </div>
+                    <div class="col-md-12 text-center text-warning">
+                        <p class="error-message hide"></p>
+                    </div>
+                </form>
+            </div>
+            <!-- /.login-card-body -->
+        </div>
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <!-- Validation-->
+    <script src="~/plugins/jquery-validate/validator.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("form").submit(function (e) {
+                e.preventDefault();
+                var isDisabled = $('#btnsignin').is('.btn.btn-primary.disabled');
+                console.log("isDisabled " + isDisabled);
+                if (isDisabled) {
+                    return;
+                }
+                $("form").find("input, button, submit,select").attr("disabled", "disabled");
+                $('#btnsignin').val("Please Wait..");
+                $.ajax(
+                    {
+                        type: "POST", //HTTP POST Method
+                        url: "/Login/Loginprocess", // Controller/View
+                        data: { //Passing data
+                            //Type: $("#dduser").val(), //Reading text box values using Jquery
+                            UserId: $("#userid").val(),
+                            Password: $("#userpass").val()
+                        },
+                        success: function (status) {
+                            if (status.success) {
+                                window.location.href = status.url;
+                            }
+                            else {
+                                $("form").find("input, button, submit, select").removeAttr("disabled");
+                                $('#btnsignin').val("Sign In");
+                                $('#userpass').focus();
+                                alert(status.message);
+                            }
+                        },
+                        error: function () {
+                            $("form").find("input, button, submit, select").removeAttr("disabled");
+                        }
+                    });
+            });
+            $("userid").focus();
+        });
+    </script>
+</body>
+</html>
+
+

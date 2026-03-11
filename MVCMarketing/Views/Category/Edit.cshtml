@@ -1,0 +1,73 @@
+﻿
+@{
+    var InfoJson = ViewBag.JsonData;
+}
+
+<div class="p-0">
+    <form role="form" data-toggle="validator" id="formCategory">
+        <div class="col-12">
+            <div class="form-group">
+                <label for="txtCategory">Category <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control form-control-sm" id="txtCategory" name="txtCategory" placeholder="Enter Category" data-error="Please Fill Up Category" required>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="ddStatus">Status <i class="text-red" title="Required">*</i></label>
+                <select class="form-control select3  form-control-sm" id="ddStatus" name="ddStatus" data-error="Please Select Status" required>
+                    <option selected="selected" value="">-- Select Status ---</option>
+                    <option value="TRUE">Active</option>
+                    <option value="FALSE">Deactive</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <button type="submit" class="col-md-3 btn btn-default btn-sm col-4">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+
+    $(function () {
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].CategoryId);
+            $("#txtCategory").val(jInfo[0].CategoryName);
+            $("#ddStatus").val(jInfo[0].Status);
+        }
+        /* end:Edit Record */
+
+    /*Delete Action*/
+        $('#btnDeleteCategory').on('click', function(e){
+            confirmDialog('Are you sure to delete record ?', function () {
+                var recordId = $("#hdId").val();
+                sendData($("#formDelete"), "/Category/Delete?id=" + recordId, $(this), $(this).text(), "/Category/List");
+            });
+        });
+
+        /* start Form validation & save data */
+        var f = $('#formCategory');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Category/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                sendData(f, "/Category/Insert", button, button.text(), redirectUrl).then(function (res) {
+                     console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>
+
