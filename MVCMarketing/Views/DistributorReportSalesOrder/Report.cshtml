@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewBag.Title = "Distributor Sales Order Report";
+     Layout = Session["Layout"].ToString();
+}
+
+<div class="col-md-12">
+    <div class="small-box bg-white p-2">
+        <span class="text-sm">Search Record</span>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" id="txtSearchIN" name="txtSearchIN" placeholder="Search Order Number">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm" id="txtDate" name="txtDate" placeholder="Search Date" onkeypress="return false;">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                &nbsp;
+                <button type="button" class="btn btn-default btn-sm" id="btnRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header border-0">
+            <h3 class="card-title">Order List</h3>
+            <div class="card-tools">
+                <div class="input-group input-group-sm">
+                    <div class="text-left"><a id="exporttoexcel" class="btn  btn-sm  btn-default"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Export to Excel</a></div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="small">
+                <table id="myTableSalesOrder" class="table-striped table-sm no-footer table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Invoice #</th>
+                            <th>Dealer</th>
+                            <th>Priority</th>
+                            <th>Items</th>
+                            <th>Amount</th>
+                            <th>Designation</th>
+                            <th>Created By</th>
+                            <th>Created Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footer{
+
+    <script>
+
+        $(function () {
+            $(".report,.report-sales,.report-distributorsalesorder").addClass('active');
+
+            //Date picker
+            $('#txtDate').datepicker({
+                format: "dd-mm-yyyy",
+                //startDate: '-3d',
+                todayHighlight: true,
+                autoclose: true
+            });
+
+            /* Bind Brand */
+            bindDropDownList($('#ddSearchType'), 'Employee');
+
+            /* Export To Excel */
+            $("#exporttoexcel").click(function (event) {
+                event.preventDefault();
+                var parameters = 'Date=' + $('#txtDate').val() + '&DistributorId=' + $('#hdDistributorId').val() + '&OrderNumber=' + $('#txtSearchIN').val();
+                console.log(parameters);
+                window.open('/ReportSalesOrder/ExportToExcel?' + parameters);
+            });
+
+            BindTableReportSalesOrder();//Bind list data
+
+            //Item AutoComplete
+            //customAutoCompleteDynamic($('#txtDistributorName'), $('#hdDistributorId'), "Distributor", AutoCompleteDistributorResult);
+        });
+
+        ///*start : Custom AutoComplete result*/
+        //function AutoCompleteDistributorResult(e, u) {
+        //    //console("auto complete");
+        //    if (u.item == null) {
+        //        console.log(u.item);
+        //        $("#txtDistributorName,#hdDistributorId").val("");
+        //    }
+        //    else {
+        //        $('#btnSearch').trigger('click');
+        //        console.log(u.item);
+        //    }
+        //}
+
+        //refresh button
+        $('#btnRefresh').click(function () {
+            location.reload();
+        });
+
+        function BindTableReportSalesOrder() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "View";
+            var oTableReportSalesOrder = bindTable($('#myTableSalesOrder'), activeButtonClass, "/DistributorReportSalesOrder/LoadData"); //Bind Table
+
+
+            oTableReportSalesOrder.on('click', '.view-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                viewPartialViewModal(recordTitle, "Info?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            $("#txtDate,#txtSearchIN,#hdDistributorId").on('keyup change', function (e) {
+                var thisId = $(this).attr("Id");
+                if (e.which == 13 || thisId.includes("dd")) {
+                    $('#btnSearch').trigger('click');
+                }
+            });
+            //Apply Custom search on jQuery DataTables here
+            $('#btnSearch').click(function () {
+                oTableReportSalesOrder.columns(0).search($('#txtDate').val().trim().replaceAll(' ', '%'));
+                oTableReportSalesOrder.columns(1).search($('#txtSearchIN').val().trim().replaceAll(' ', '%'));
+                oTableReportSalesOrder.columns(2).search($('#hdDistributorId').val().trim().replaceAll(' ', '%'));
+                oTableReportSalesOrder.draw();
+            });
+        }
+
+    </script>
+}
+
+@*<a href='#' onclick=\"deleteRecord('" + full.col1 + "')\" class=\"btnDelete\"><i class=\"glyphicon glyphicon-trash\"></i></a>*@
+
+

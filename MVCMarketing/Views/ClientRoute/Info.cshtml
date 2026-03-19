@@ -1,0 +1,167 @@
+﻿@{
+    var JsonClientRouteId = ViewBag.JsonClientRouteId;
+}
+<div class="p-1">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="small-box bg-white p-2">
+                <div class="card-header border-0">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <h2 class="text-sm">Unassign Client List</h2>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-sm" id="txtSearchClient" name="txtSearchClient" placeholder="Search Client">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-default btn-sm" id="btnListSearchModel" title="Search"><i class="fas fa-filter"></i></button>
+                            &nbsp;
+                            <button type="button" class="btn btn-default btn-sm" id="btnListRefreshModel" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body table-responsive small p-2" style="height: 50vh;">
+                    <table id="myTableClient" class="table table-sm  table-striped table-borderless table-hover table-head-fixed">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Client</th>
+                                <th>Area</th>
+                                <th>City</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="small-box bg-white p-2">
+                <h2 class="text-sm">Assign Client List</h2>
+                <div class="table-responsive small p-2" style="height: 30vh;">
+                    <table id="myTableAssignClient" class="table table-sm  table-striped table-borderless table-hover table-head-fixed">
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Code</th>
+                                <th>Client</th>
+                                <th>Area</th>
+                                <th>City</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <form role="form" id="formAssignClient">
+            <div class="form-group col-md-6 text-center">
+                <input type="hidden" value="" id="hdId" name="hdId" />
+                <input type="hidden" value="" id="hdClientRouteId" name="hdClientRouteId" />
+                <input type="hidden" value="" id="hdCustomerId" name="hdCustomerId" />
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+
+         $(function () {
+
+             InfoRouteId = '@Html.Raw(ViewBag.JsonClientRouteId)';
+
+             BindTableClientMap();
+
+                $("#myTableClient,#myTableAssignClient").on("change", "input[type='checkbox']", function () {
+                    $("#hdId").val($(this).attr('data-mapId'));
+                    $("#hdCustomerId").val($(this).attr('data-CustomerId'));
+                    $("#hdClientRouteId").val(InfoRouteId);
+                    /* start : From Submit */
+                    var button = $("#formAssignClient").find(':submit');
+                    sendData($("#formAssignClient"), "/ClientRoute/InsertClient", button, button.text(), "").then(function (res) {
+                       BindTableClientMap();
+                    });
+                    /* stop : From Submit */
+               });
+
+                  //refresh button
+                 $('#btnListRefreshModel').click(function () {
+                     $('#txtSearchClient').val('');
+                     BindTableClientMap();
+                 });
+
+                $("#txtSearchClient").on('keyup change', function (e) {
+                    var thisId = $(this).attr("Id");
+                    if (e.which == 13 || thisId.includes("dd")) {
+                        $('#btnListSearchModel').trigger('click');
+                    }
+                });
+
+                  //Apply Custom search on jQuery DataTables here
+                  $('#btnListSearchModel').click(function () {
+
+                      BindTableClientMap();
+                  });
+         });
+
+    function BindTableClientMap() {
+           $("#myTableAssignClient > tbody").html("");
+            $("#myTableClient > tbody").html("");
+           $.ajax(
+              {
+                type: "POST", //HTTP POST Method
+                   url: "/ClientRoute/LoadDataAssignClient?RouteId=" + InfoRouteId + "&Name=" + $("#txtSearchClient").val(),
+                success: function (data) {
+
+                    var data1 = data.data1;
+                    var data2 = data.data2;
+                    console.log(data1);
+                    console.log(data2);
+                    var d = JSON.parse(data1);
+                    for (var i = 0; i < d.length; i++) {
+                        var row = "";
+                        row += "<tr>";
+                        //    row += "<td>" + d[i].Brand;
+                        row += "</td>";
+                        row += "<td>" + d[i].CustomerCode;
+                        row += "</td>";
+                        row += "<td>" + d[i].CustomerName;
+                        row += "</td>";
+                        row += "<td>" + d[i].CustomerArea;
+                        row += "</td>";
+                        row += "<td>" + d[i].City;
+                        row += "</td>";
+                        row += "<td><input type=\"checkbox\" id=\"chkstatus\" name=\"chkstatus\" data-CustomerId=\"" + d[i].CustomerId + "\" data-mapId=\"" + d[i].MapId + "\"" + (d[i].IsCheck == 'true' ? 'checked' : '') + "></td>";
+                        row += "</tr>";
+                        $('#myTableClient tbody').append(row);
+                    }/**/
+                    var d2 = JSON.parse(data2);
+                    for (var i = 0; i < d2.length; i++) {
+                        var row2 = "";
+                        row2 += "<tr>";
+                        row2 += "<td>" + d2[i].Index;
+                        row2 += "</td>";
+                        row2 += "<td>" + d2[i].CustomerCode;
+                        row2 += "</td>";
+                        row2 += "<td>" + d2[i].CustomerName;
+                        row2 += "</td>";
+                        row2 += "<td>" + d2[i].CustomerArea;
+                        row2 += "</td>";
+                        row2 += "<td>" + d2[i].City;
+                        row2 += "</td>";
+                        row2 += "<td><input type=\"checkbox\" id=\"chkstatus\" name=\"chkstatus\" data-CustomerId=\"" + d2[i].CustomerId + "\" data-mapId=\"" + d2[i].MapId + "\"" + (d2[i].IsCheck == 'true' ? 'checked' : '') + "></td>";
+                        row2 += "</tr>";
+                        $('#myTableAssignClient tbody').append(row2);
+                    }
+                },
+                error: function () {
+                }
+         });
+    }
+
+
+</script>
+

@@ -2,8 +2,8 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -11,33 +11,17 @@ using System.Web.Script.Serialization;
 
 namespace MVCMarketing.Controllers
 {
-    public class DistributorOrderController : Controller
+    //[SessionTimeOut]
+    public class CreditNoteController : Controller
     {
-        // GET: DistributorOrder
+        // GET: CreditNote
         public ActionResult List()
         {
             return View();
         }
 
-        /*  public ActionResult Form()
-          {
-              return View();
-          }*/
-
-
         public ActionResult Form()
         {
-            string JSONString = "null";
-            SqlCommand com = new SqlCommand("sp_Order");
-            com.CommandType = CommandType.StoredProcedure;
-            com.Parameters.AddWithValue("@DistributorId", Session["UserId"].ToString());
-            com.Parameters.AddWithValue("@Action", "SELECT-ORDER-FROM");
-            DataTable dt = ConnectionClass.getDataTable(com);
-            if (dt != null)
-            {
-                JSONString = JsonConvert.SerializeObject(dt);
-            }
-            ViewBag.JsonData = JSONString;
             return View();
         }
 
@@ -45,9 +29,9 @@ namespace MVCMarketing.Controllers
         {
             if (id != null)
             {
-                SqlCommand com = new SqlCommand("sp_Order");
+                SqlCommand com = new SqlCommand("sp_CreditNote");
                 com.CommandType = CommandType.StoredProcedure;
-                com.Parameters.AddWithValue("@OrderId", id);
+                com.Parameters.AddWithValue("@CreditNoteId", id);
                 com.Parameters.AddWithValue("@Action", "SELECTSINGLE");
                 DataTable dt = ConnectionClass.getDataTable(com);
                 if (dt != null)
@@ -64,9 +48,9 @@ namespace MVCMarketing.Controllers
         {
             if (id != null)
             {
-                SqlCommand com = new SqlCommand("sp_OrderItem");
+                SqlCommand com = new SqlCommand("sp_CreditNoteItem");
                 com.CommandType = CommandType.StoredProcedure;
-                com.Parameters.AddWithValue("@OrderItemId", id);
+                com.Parameters.AddWithValue("@CreditNoteItemId", id);
                 com.Parameters.AddWithValue("@Action", "SELECTSINGLE");
                 DataTable dt = ConnectionClass.getDataTable(com);
                 if (dt != null)
@@ -79,13 +63,13 @@ namespace MVCMarketing.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ProformaInvoice(string id)
+        public ActionResult Print(string id)
         {
             if (id != null)
             {
-                SqlCommand com = new SqlCommand("sp_Order");
+                SqlCommand com = new SqlCommand("sp_CreditNote");
                 com.CommandType = CommandType.StoredProcedure;
-                com.Parameters.AddWithValue("@OrderId", id);
+                com.Parameters.AddWithValue("@CreditNoteId", id);
                 com.Parameters.AddWithValue("@Action", "PROFORMA-INVOICE");
                 DataSet ds = ConnectionClass.getDataSet(com);
                 if (ds != null)
@@ -121,9 +105,9 @@ namespace MVCMarketing.Controllers
         {
             if (id != null)
             {
-                SqlCommand com = new SqlCommand("sp_Order");
+                SqlCommand com = new SqlCommand("sp_CreditNote");
                 com.CommandType = CommandType.StoredProcedure;
-                com.Parameters.AddWithValue("@OrderId", id);
+                com.Parameters.AddWithValue("@CreditNoteId", id);
                 com.Parameters.AddWithValue("@Action", "PROFORMA-INVOICE");
                 DataTable dt = ConnectionClass.getDataTable(com);
                 if (dt != null)
@@ -139,9 +123,9 @@ namespace MVCMarketing.Controllers
         {
             try
             {
-                SqlCommand com = new SqlCommand("sp_Order");
+                SqlCommand com = new SqlCommand("sp_CreditNote");
                 com.CommandType = CommandType.StoredProcedure;
-                com.Parameters.AddWithValue("@OrderId", formCollection["hdTermOrderId"]);
+                com.Parameters.AddWithValue("@CreditNoteId", formCollection["hdTermOrderId"]);
                 com.Parameters.AddWithValue("@TermCondition", formCollection["txtTermCondition"]);
                 com.Parameters.AddWithValue("@Action", "UPDATE-TERM");
                 return ConnectionClass.DML(com);
@@ -156,9 +140,9 @@ namespace MVCMarketing.Controllers
         {
             try
             {
-                SqlCommand com = new SqlCommand("sp_Order");
+                SqlCommand com = new SqlCommand("sp_CreditNote");
                 com.CommandType = CommandType.StoredProcedure;
-                com.Parameters.AddWithValue("@OrderId", formCollection["hdDiscountOrderId"]);
+                com.Parameters.AddWithValue("@CreditNoteId", formCollection["hdDiscountOrderId"]);
                 com.Parameters.AddWithValue("@Discount", formCollection["txtTotalDiscount"]);
                 com.Parameters.AddWithValue("@Action", "UPDATE-DISCOUNT");
                 return ConnectionClass.DML(com);
@@ -173,9 +157,9 @@ namespace MVCMarketing.Controllers
         {
             try
             {
-                SqlCommand com = new SqlCommand("sp_Order");
+                SqlCommand com = new SqlCommand("sp_CreditNote");
                 com.CommandType = CommandType.StoredProcedure;
-                com.Parameters.AddWithValue("@OrderId", formCollection["hdDiscountOrderId"]);
+                com.Parameters.AddWithValue("@CreditNoteId", formCollection["hdDiscountOrderId"]);
                 com.Parameters.AddWithValue("@Credit", formCollection["txtTotalCredit"]);
                 com.Parameters.AddWithValue("@Action", "UPDATE-CREDIT");
                 return ConnectionClass.DML(com);
@@ -190,16 +174,14 @@ namespace MVCMarketing.Controllers
         {
             try
             {
-                SqlCommand com = new SqlCommand("sp_Order");
+                SqlCommand com = new SqlCommand("sp_CreditNote");
                 com.CommandType = CommandType.StoredProcedure;
-                com.Parameters.AddWithValue("@OrderId", formCollection["hdOrderId"]);
+                com.Parameters.AddWithValue("@CreditNoteId", formCollection["hdCreditNoteId"]);
+                com.Parameters.AddWithValue("@InvoiceId", formCollection["hdInvoiceId"]);
                 com.Parameters.AddWithValue("@Date", formCollection["txtDate"]);
-                com.Parameters.AddWithValue("@Priority", formCollection["ddPriority"]);
                 com.Parameters.AddWithValue("@DistributorId", formCollection["txtDistributorId"]);
-                com.Parameters.AddWithValue("@TaxMode", formCollection["ddTax"]);
                 com.Parameters.AddWithValue("@Remark", formCollection["txtRemark"]);
-                com.Parameters.AddWithValue("@ReferenceNo", formCollection["txtReference"]);
-                com.Parameters.AddWithValue("@DistributorBy", Session["UserId"].ToString());
+                com.Parameters.AddWithValue("@Type", formCollection["ddType"]);
                 com.Parameters.AddWithValue("@Action", "INSERT");
                 //return Json(ConnectionClass.DML(com));
                 return ConnectionClass.DML(com);
@@ -214,10 +196,10 @@ namespace MVCMarketing.Controllers
         {
             try
             {
-                SqlCommand com = new SqlCommand("sp_OrderItem");
+                SqlCommand com = new SqlCommand("sp_CreditNoteItem");
                 com.CommandType = CommandType.StoredProcedure;
-                com.Parameters.AddWithValue("@OrderItemId", formCollection["hdOrderItemId"]);
-                com.Parameters.AddWithValue("@OrderId", formCollection["hdOrderId2"]);
+                com.Parameters.AddWithValue("@CreditNoteItemId", formCollection["hdCreditNoteItemId"]);
+                com.Parameters.AddWithValue("@CreditNoteId", formCollection["hdCreditNoteId2"]);
                 com.Parameters.AddWithValue("@ItemId", formCollection["hdItemsId"]);
                 com.Parameters.AddWithValue("@Quantity", formCollection["txtQuantity"]);
                 com.Parameters.AddWithValue("@Unit", formCollection["txtItemUnit"]);
@@ -228,7 +210,7 @@ namespace MVCMarketing.Controllers
                 com.Parameters.AddWithValue("@Discount3", formCollection["txtDiscount3"]);
                 com.Parameters.AddWithValue("@Total", formCollection["txtAmount"]);
                 com.Parameters.AddWithValue("@TotalAmount", formCollection["txtFinalAmount"]);
-                com.Parameters.AddWithValue("@Remark", formCollection["txtRemark"]);
+                com.Parameters.AddWithValue("@Remark", formCollection["txtRemarkItem"]);
                 com.Parameters.AddWithValue("@Action", "INSERT");
                 //return Json(ConnectionClass.DML(com));
                 return ConnectionClass.DML(com);
@@ -241,18 +223,18 @@ namespace MVCMarketing.Controllers
 
         public JsonResult DeleteItem(string id)
         {
-            SqlCommand com = new SqlCommand("sp_OrderItem");
+            SqlCommand com = new SqlCommand("sp_CreditNoteItem");
             com.CommandType = CommandType.StoredProcedure;
-            com.Parameters.AddWithValue("@OrderItemId", id);
+            com.Parameters.AddWithValue("@CreditNoteItemId", id);
             com.Parameters.AddWithValue("@Action", "DELETE");
             return ConnectionClass.DML(com);
         }
 
         public JsonResult Delete(string id)
         {
-            SqlCommand com = new SqlCommand("sp_Order");
+            SqlCommand com = new SqlCommand("sp_CreditNote");
             com.CommandType = CommandType.StoredProcedure;
-            com.Parameters.AddWithValue("@OrderId", id);
+            com.Parameters.AddWithValue("@CreditNoteId", id);
             com.Parameters.AddWithValue("@Action", "DELETE");
             return ConnectionClass.DML(com);
         }
@@ -260,9 +242,9 @@ namespace MVCMarketing.Controllers
         [HttpPost]
         public ActionResult LoadDataItem(string id)
         {
-            SqlCommand com = new SqlCommand("sp_OrderItem");
+            SqlCommand com = new SqlCommand("sp_CreditNoteItem");
             com.CommandType = CommandType.StoredProcedure;
-            com.Parameters.AddWithValue("@OrderId", id);
+            com.Parameters.AddWithValue("@CreditNoteId", id);
             com.Parameters.AddWithValue("@Action", "SELECT");
             DataSet ds = ConnectionClass.getDataSet(com);
             if (ds != null)
@@ -293,10 +275,11 @@ namespace MVCMarketing.Controllers
             var length = pagination.data.length;// Request.Form.GetValues("length").FirstOrDefault();
 
             var Date = pagination.data.columns[0].search.value;
-            var Priority = pagination.data.columns[1].search.value;
-            var OrderNumber = pagination.data.columns[2].search.value;
-            var DistributorId = pagination.data.columns[3].search.value;
-            var Status = pagination.data.columns[4].search.value;
+            var CreditNoteNumber = pagination.data.columns[1].search.value;
+            var DistributorId = pagination.data.columns[2].search.value;
+            var Group = pagination.data.columns[3].search.value;
+            var GroupRef = pagination.data.columns[4].search.value;
+            var Type = pagination.data.columns[5].search.value;
 
 
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
@@ -305,7 +288,7 @@ namespace MVCMarketing.Controllers
 
             int page = (skip / pageSize);
 
-            SqlCommand com = new SqlCommand("sp_Order");
+            SqlCommand com = new SqlCommand("sp_CreditNote");
             com.CommandType = CommandType.StoredProcedure;
             com.Parameters.AddWithValue("@sort", pagination.data.order[0].dir);
             com.Parameters.AddWithValue("@column", pagination.data.order[0].column);//.columns[pagination.data.order[0].column].name
@@ -315,10 +298,11 @@ namespace MVCMarketing.Controllers
             com.Parameters.AddWithValue("@Search", pagination.data.search.value);
 
             com.Parameters.AddWithValue("@Date", Date == "" ? null : Date);
-            com.Parameters.AddWithValue("@Priority", Priority == "" ? null : Priority);
-            com.Parameters.AddWithValue("@OrderNumber", OrderNumber == "" ? null : OrderNumber);
-            //com.Parameters.AddWithValue("@DistributorId", Session["UserId"].ToString());
-            com.Parameters.AddWithValue("@Status", Status == "" ? null : Status);
+            com.Parameters.AddWithValue("@CreditNoteNumber", CreditNoteNumber == "" ? null : CreditNoteNumber);
+            com.Parameters.AddWithValue("@DistributorId", DistributorId == "" ? null : DistributorId);
+            com.Parameters.AddWithValue("@Group", Group == "" ? null : Group);
+            com.Parameters.AddWithValue("@GroupRef", GroupRef == "" ? null : GroupRef);
+            com.Parameters.AddWithValue("@Type", Type == "" ? null : Type);
             com.Parameters.AddWithValue("@Action", "SELECT");
             DataSet dataSet = ConnectionClass.getDataSet(com);
             if (dataSet != null)
@@ -337,5 +321,7 @@ namespace MVCMarketing.Controllers
             }
 
         }
+
+
     }
 }

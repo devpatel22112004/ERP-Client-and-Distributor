@@ -32,21 +32,20 @@
                                 <input type="text" class="form-control form-control-sm" id="txtDate" name="txtDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Enter Date">
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="ddPriority">Priority <i class="text-red" title="Required">*</i></label>
-                                <select class="form-control select3  form-control-sm" id="ddPriority" name="ddPriority" data-error="Please Select Type" required>
-                                    <option value="">-- Select Priority ---</option>
-                                    <option selected="selected" value="NORMAL">Normal</option>
-                                    <option value="MEDIUM">Medium</option>
-                                    <option value="HIGH">High</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3">
                                 <label for="txtDistributor">Dealer <i class="text-red" title="Required">*</i></label>
-                                <input type="text" class="form-control form-control-sm" id="txtDistributor" name="txtDistributor" placeholder="Search Dealer" required autofocus>
+                                <span class="form-control form-control-sm" id="txtDistributor" name="txtDistributor" placeholder="Search Dealer"></span>
                                 <input type="hidden" value="" id="txtDistributorId" name="txtDistributorId" />
                                 <input type="hidden" value="" id="ddTax" name="ddTax" />
                             </div>
-
+                            <div class="form-group col-md-3">
+                                <label for="ddPriority">Priority <i class="text-red" title="Required">*</i></label>
+                                <select class="form-control select3  form-control-sm" id="ddPriority" name="ddPriority" data-error="Please Select Type" required>
+                                    <option value="">-- Select Priority ---</option>
+                                    <option selected="selected" value="Normal">Normal</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
                             <div class="form-group col-md-3">
                                 <label for="txtReference">Reference No. </label>
                                 <input type="text" class="form-control form-control-sm" id="txtReference" name="txtReference" placeholder="Enter Reference No." data-error="Please Fill Up Reference No.">
@@ -56,10 +55,8 @@
                                 <input type="text" class="form-control form-control-sm" id="txtRemark" name="txtRemark" placeholder="Enter Remark" data-error="Please Fill Up Remark">
                             </div>
                             <div class="col-12 text-center">
-                                <input type="hidden" value="" id="hdLat" name="hdLat" />
-                                <input type="hidden" value="" id="hdLng" name="hdLng" />
                                 <input type="hidden" value="" id="hdOrderId" name="hdOrderId" />
-                                <button type="submit" class="col-md-2 btn btn-outline-secondary btn-sm ">Save</button>
+                                <button type="submit" class="col-md-2 btn btn-outline-secondary btn-sm">Save</button>
                             </div>
                         </div>
                     </div>
@@ -89,8 +86,8 @@
                                     <thead class="text-capitalize text-center">
                                         <tr>
                                             <th class="sticky-col top col-head col1" style="width:5%">Sr. No.</th>
-                                            <th class="sticky-col top" style="width:12%">Item</th>
-                                            <th class="sticky-col top" style="width:43%">Description</th>
+                                            <th class="sticky-col top" style="width:45%">Description</th>
+                                            <th class="sticky-col top" style="width:15%">Item</th>
                                             <th class="sticky-col top" style="width:5%">HSN</th>
                                             <th class="sticky-col top" style="width:5%">Qty</th>
                                             <th class="sticky-col top" style="width:5%">BOX</th>
@@ -98,8 +95,8 @@
                                             <th class="sticky-col top" style="width:5%">Dis1[%]</th>
                                             <th class="sticky-col top" style="width:5%">Dis2[%]</th>
                                             <th class="sticky-col top" style="width:5%">Dis3[%]</th>
-                                            <th class="sticky-col top" style="width:6%">Dis. Rate</th>
-                                            <th class="sticky-col top" style="width:24%">Total</th>
+                                            <th class="sticky-col top" style="width:5%">Dis. Rate</th>
+                                            <th class="sticky-col top" style="width:20%">Total</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -119,31 +116,31 @@
                                             <th class="sticky-col top footer-total"></th>
                                         </tr>
                                         <!--   <tr>
-                    <th class="sticky-col top col-head col1"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top">Discount[%]</th>
-                    <th class="sticky-col top">
-                        <input type="text" class="form-control form-control-sm col-md-12" id="txtGSTTotalDiscount" name="txtGSTTotalDiscount" autocomplete="off" maxlength="2">
-                    </th>
-                    </tr>-->
+                                        <th class="sticky-col top col-head col1"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top">Discount[%]</th>
+                                        <th class="sticky-col top">
+                                            <input type="text" class="form-control form-control-sm col-md-12" id="txtGSTTotalDiscount" name="txtGSTTotalDiscount" autocomplete="off" maxlength="2">
+                                        </th>
+                                        </tr>-->
                                         <!--<tr>
-                    <th class="sticky-col top col-head col1"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top"></th>
-                    <th class="sticky-col top"></th>-->
+                                        <th class="sticky-col top col-head col1"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top"></th>
+                                        <th class="sticky-col top"></th>-->
                                         @*<th class="sticky-col top"> Credit[%]</th>*@
                                         <!--<th class="sticky-col top">
-                    <input type="text" class="form-control form-control-sm col-md-12" id="txtGSTTotalCredit" name="txtGSTTotalCredit" autocomplete="off" maxlength="2">-->
+                                        <input type="text" class="form-control form-control-sm col-md-12" id="txtGSTTotalCredit" name="txtGSTTotalCredit" autocomplete="off" maxlength="2">-->
                                         <!--disabled-->
                                         <!--</th>-->
                                         <!--</tr>-->
@@ -158,7 +155,7 @@
                                             <th class="sticky-col top"></th>
                                             <th class="sticky-col top"></th>
                                             <th class="sticky-col top"></th>
-                                            @*<th class="sticky-col top">GST</th>*@
+                                            <th class="sticky-col top">GST</th>
                                             <th class="sticky-col top footer-gst"></th>
                                         </tr>
                                         <tr>
@@ -181,9 +178,6 @@
                                     </tfoot>
                                 </table>
                             </form>
-                        </div>
-                        <div class="col-12 text-center">
-                            <button type="button" class="col-md-2 btn btn-outline-secondary btn-sm hidden" id="btnDirectOrder">GoTo Order</button>
                         </div>
                         <div class="table-responsive small hidden" id="tbSummary">
                             <!--class="card-body table-responsive p-0" style="height: 300px;"-->
@@ -244,15 +238,15 @@
                                                     </div>
                                                     <div class="form-group col-md-3">
                                                         <label for="txtDiscount1">Discount 1[%]</label>
-                                                        <input type="text" class="form-control form-control-sm" id="txtDiscount1" name="txtDiscount1" placeholder="Enter Discount1" data-error="Please Fill Up Discount 1" pattern="[0-9]+(\.[0-9]{0,5})?%?" value="0">
+                                                        <input type="text" class="form-control form-control-sm" id="txtDiscount1" name="txtDiscount1" placeholder="Enter Discount1" data-error="Please Fill Up Discount 1" pattern="[0-9]+(\.[0-9]{0,3})?%?" value="0">
                                                     </div>
                                                     <div class="form-group col-md-3">
                                                         <label for="txtDiscount2">Discount 2[%]</label>
-                                                        <input type="text" class="form-control form-control-sm" id="txtDiscount2" name="txtDiscount2" placeholder="Enter Discount 2" data-error="Please Fill Up Discount 2" pattern="[0-9]+(\.[0-9]{0,5})?%?" value="0">
+                                                        <input type="text" class="form-control form-control-sm" id="txtDiscount2" name="txtDiscount2" placeholder="Enter Discount 2" data-error="Please Fill Up Discount 2" pattern="[0-9]+(\.[0-9]{0,3})?%?" value="0">
                                                     </div>
                                                     <div class="form-group col-md-3">
                                                         <label for="txtDiscount3">Discount 3[%]</label>
-                                                        <input type="text" class="form-control form-control-sm" id="txtDiscount3" name="txtDiscount3" placeholder="Enter Discount 3" data-error="Please Fill Up Discount 3" pattern="[0-9]+(\.[0-9]{0,5})?%?" value="0">
+                                                        <input type="text" class="form-control form-control-sm" id="txtDiscount3" name="txtDiscount3" placeholder="Enter Discount 3" data-error="Please Fill Up Discount 3" pattern="[0-9]+(\.[0-9]{0,3})?%?" value="0">
                                                     </div>
                                                     <div class="form-group col-md-3">
                                                         <label for="txtAmount">Total(Exc. GST) <i class="text-red" title="Required">*</i></label>
@@ -267,8 +261,8 @@
                                                         <input type="text" class="form-control form-control-sm" id="txtFinalAmount" name="txtFinalAmount" placeholder="Enter Final Amount" data-error="Please Fill Up Total Amount" readonly required>
                                                     </div>
                                                     <div class="form-group col-md-6">
-                                                        <label for="txtRemarkItem">Remark</label>
-                                                        <input type="text" class="form-control form-control-sm" id="txtRemarkItem" name="txtRemarkItem" placeholder="Enter Remark" data-error="Please Fill Up Remark">
+                                                        <label for="txtRemark">Remark</label>
+                                                        <input type="text" class="form-control form-control-sm" id="txtRemark" name="txtRemark" placeholder="Enter Remark" data-error="Please Fill Up Remark">
                                                     </div>
                                                 </div>
                                             </div>
@@ -292,17 +286,15 @@
 </div>
 @section footer{
     <script>
+
         //const ENTER_KEY_CODE = 9;
         var scrollTo = 0; //scroll To position
         var editMode = false;
         var DistributorId = "";
+        $(function () {
+            $(".Sales,.Sales-Order").addClass('active');
 
-        $(function (){
-            // Check location
-            //GetCurrentLocation($("#hdLat"), $("#hdLng"),$("#formOrder button[type=\"submit\"]"));
-
-
-             //Date picker
+            //Date picker
             $('#txtDate').datepicker({
                 format: "dd-mm-yyyy",
                 todayHighlight: true,
@@ -310,12 +302,11 @@
             }).datepicker("setDate", "0");
 
             //Datemask dd/mm/yyyy
-            $('#txtDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' });
+            $('#txtDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
 
-            //Distributor AutoComplete
-            customAutoCompleteDynamicSort($('#txtDistributor'), $('#txtDistributorId'), "Distributor", AutoCompleteDistributorResult);
+            
 
-             /* Open Model Popup */
+            /* Open Model Popup */
             $("#btnLoadItem").click(function (event) {
                 // get table row position by index
                 scrollTo = $("#tableOrderItems").find("tbody tr").last().index();
@@ -328,31 +319,40 @@
             });
 
 
+            /*Edit Record */
+            var jInfo = @Html.Raw(InfoJson);
+            console.log(jInfo);
+            if (jInfo != null) {
+                $("#txtDistributorId").val(jInfo[0].DistributorId);
+                $("#txtDistributor").text(jInfo[0].Name);
+            }
+            /* end:Edit Record */
+
             /*Delete Action*/
             $('#btnDeleteItem').on('click', function (e) {
                 confirmDialog('Are you sure to delete record ?', function () {
                     var recordId = $("#hdOrderItemId").val();
-                    sendData($("#formDelete"), "/Order/DeleteItem?id=" + recordId, $(this), $(this).text(), "");
-                    $('#myModalItemsForm').modal('hide');
+                    sendData($("#formDelete"), "/DistributorOrder/DeleteItem?id=" + recordId, $(this), $(this).text(), "");
                     BindTableOrderItem();
                 });
             });
 
             /*start : Item Edit*/
             $("#tableOrderItems").on('click', '.row-item', function () {
+
                 // get table row position by index
                 scrollTo = $($(this).closest("tr")).index();
                 console.log(scrollTo);
                 var recordId1 = $(this).closest("tr").attr("data-item-id");
                 console.log(recordId1);
                 var recordTitle = $(this).closest("tr").find("td").eq(1).text();
-                EditData("/Order/EditItem?id=" + recordId1, recordTitle);
+                EditData("/DistributorOrder/EditItem?id=" + recordId1, recordTitle);
             });
             /*stop*/
 
             /* View Print*/
             $("#btnPrint").click(function (event) {
-                viewPartialViewModal('Term & Condition', "/Order/TermCondition?id=" + $("#hdOrderId").val(), "modal-xl");
+                viewPartialViewModal('Term & Condition', "/DistributorOrder/TermCondition?id=" + $("#hdOrderId").val(), "modal-xl");
             });
 
             /* start Form validation & save data */
@@ -368,17 +368,15 @@
                     return;
                 }
                 else {
-                    sendData(f, "/Order/Insert", button, button.text(), redirectUrl).then(function (obj) {
+                    sendData(f, "/DistributorOrder/Insert", button, button.text(), redirectUrl).then(function (obj) {
                         console.log(obj);
                         if (obj.status == 'success') {
                             $('#lbItemTitle').text($('#txtDistributor').val() + ' ' + $('#txtDate').val());
-                            $("#hdOrder,#btnDirectOrder").removeClass("hidden");
+                            $("#hdOrder").removeClass("hidden");
                             $("#hdOrderId").val(obj.idValue);
                             $("#formOrder").find("input, button, submit, textarea, select").attr("disabled", "disabled");
                             $('#myModalItemsForm').modal('show');
-                            BindTableOrder();
-                            //$('input[name=txtItemName]').focus();
-                            
+                            customAutoCompleteDynamic($('#txtItemName'), $('#hdItemsId'), "OrderItem", AutoCompleteOrderItemResult, $("#txtDistributorId").val());
                         }
                     });
                 }
@@ -389,13 +387,8 @@
             $('#btnDeletePI').on('click', function (e) {
                 confirmDialog('Are you sure to delete record ?', function () {
                     var recordId = $("#hdOrderId").val();
-                    sendData($("#formStoreOutwardTraders"), "/Order/Delete?id=" + recordId, $(this), $(this).text(), "/Order/List");
+                    sendData($("#formStoreOutwardTraders"), "/DistributorOrder/Delete?id=" + recordId, $(this), $(this).text(), "/DistributorOrder/List");
                 });
-            });
-
-            $('#btnDirectOrder').click(function () {
-                //model size .modal-sm .modal-lg .modal-xl
-                window.location = "/OrdertoInvoice/List";
             });
 
             /* start Form validation & save data */
@@ -412,7 +405,7 @@
                 }
                 else {
                     $("#hdOrderId2").val($("#hdOrderId").val());
-                    sendData(f1, "/Order/InsertItem", button, button.text(), redirectUrl).then(function (res) {
+                    sendData(f1, "/DistributorOrder/InsertItem", button, button.text(), redirectUrl).then(function (res) {
                         //  $('#myModalItemsForm').modal('hide');
                         $('#hdOrderItemId').val("");
                         f1[0].reset();
@@ -433,7 +426,6 @@
             $("#txtItemGST,#txtQuantity,#txtItemRate,#txtDiscount1,#txtDiscount2").focusout(function () {
                 itemAmount();
             });
-
         });
 
         function itemAmount() {
@@ -485,21 +477,7 @@
             $("#txtFinalAmount").val(withgstAmount.toFixed(2));
         }
 
-        /*start : Custom AutoComplete Profile Result*/
-        function AutoCompleteDistributorResult(e, u) {
-            if (u.item == null) {
-                console.log(u.item);
-                $('#txtDistributor,#txtDistributorId,#ddTax').val('');
-                DistributorId = "";
-            }
-            else {
-                $("#ddTax").val(u.item.TaxMode);
-                DistributorId = (u.item.val);
-                customAutoCompleteDynamic($('#txtItemName'), $('#hdItemsId'), "OrderItem", AutoCompleteOrderItemResult, DistributorId);
-                console.log(u.item);
-            }
-        }
-
+       
         /*start : Custom AutoComplete Profile Result*/
         function AutoCompleteOrderItemResult(e, u) {
             if (u.item == null) {
@@ -517,7 +495,7 @@
 
         /*start: Bind table*/
         function BindTableOrderItem() {
-            var mURL = "/Order/LoadDataItem?id=" + $('#hdOrderId').val();
+            var mURL = "/DistributorOrder/LoadDataItem?id=" + $('#hdOrderId').val();
             console.log(mURL);
             $.ajax({
                 url: mURL,
@@ -539,8 +517,8 @@
                         var row = "";
                         row += "<tr class=\"row-item pointer\" data-item-id=\"" + cell.OrderItemId + "\">";
                         row += "<td class=\"text-center\">" + (i + 1) + "</td>";//"+rowIndex+"
-                        row += "<td>" + cell.Model + "</td>";
                         row += "<td>" + cell.Description + "</td>";
+                        row += "<td>" + cell.Model + "</td>";
                         row += "<td>" + cell.HSN + "</td>";
                         row += "<td>" + cell.Qty + "</td>";
                         row += "<td>" + cell.Box + "</td>";
@@ -572,6 +550,8 @@
         /*stop: Bind table*/
 
         /* start: Edit item*/
+
+
         function EditData($Url, $Title) {
             $.ajax(
                 {
@@ -592,7 +572,7 @@
                         $("#txtAmount").val(d.Total);
                         $("#txtItemGST").val(d.GST);
                         $("#txtFinalAmount").val(d.TotalAmount);
-                        $("#txtRemarkItem").val(d.Remark);
+                        $("#txtRemark").val(d.Remark);
                         $(".divMargin,.divDiscount").removeClass("hidden");
                         editMode = true;
                         $(".divDeleteButton").removeClass("hidden");
@@ -604,7 +584,7 @@
                     }
                 });
         }
-         /*stop: Edit item*/
+                        /*stop: Edit item*/
 
     </script>
 }

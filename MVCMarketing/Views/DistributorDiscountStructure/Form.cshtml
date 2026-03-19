@@ -1,0 +1,78 @@
+﻿@{
+    var InfoJson = ViewBag.JsonData;
+}
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formDistributorDiscountStructure" class="text-sm" novalidate="novalidate">
+        <div class="form-group col-md-12">
+            <label for="txtEffectedDate">Effected Date</label>
+            <input type="text" class="form-control form-control-sm" id="txtEffectedDate" name="txtEffectedDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Enter Effected Date" required>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="txtOverDate">Over Date</label>
+            <input type="text" class="form-control form-control-sm" id="txtOverDate" name="txtOverDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Enter Over Date" data-error="Please Fill Up Over Date">
+        </div>
+        <div class="form-group col-md-12">
+            <label for="txtRemark">Remark</label>
+            <textarea type="text" class="form-control form-control-sm" id="txtRemark" name="txtRemark" placeholder="Enter Remark" rows="2" data-error="Please Fill Up Remark"></textarea>
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <input type="hidden" value="" id="hdDistributorId" name="hdDistributorId" />
+            <input type="hidden" value="" id="hdDiscountStructureId" name="hdDiscountStructureId" />
+            <input type="submit" class="col-md-3 btn btn-outline-secondary btn-sm" value="Save">
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+
+        //Date picker
+        $('#txtEffectedDate').datepicker({
+            format: "dd-mm-yyyy",
+            todayHighlight: true,
+            autoclose: true
+        }).datepicker("setDate", "0");
+
+         //Date picker
+        $('#txtOverDate').datepicker({
+            format: "dd-mm-yyyy",
+            todayHighlight: true,
+            autoclose: true
+        });
+
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdDistributorId").val(jInfo[0].DistributorId);
+            $("#hdDiscountStructureId").val(jInfo[0].DiscountStructureId);
+        }
+        /* end:Edit Record */
+
+        /* start Form validation & save data */
+        var f = $('#formDistributorDiscountStructure');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = ''; // Eg /Brand/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                console.log("Successed");
+                sendData(f, "/DistributorDiscountStructure/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    BindTableDistributorDiscountStructure();
+                    $('#myNestedModalPartialView').modal('hide');
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>
+
+

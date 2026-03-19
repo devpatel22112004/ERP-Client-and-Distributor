@@ -1,0 +1,309 @@
+﻿<style>
+    #myTablebClientList tbody tr.active-row {
+        background-color: #d9edf7 !important;
+    }
+</style>
+
+<div class="col-md-12 small">
+    <div class="row">
+
+        <!-- CLIENT LIST -->
+        <div class="col-md-4 p-2">
+            <span>Client List</span>
+            <div class="small-box bg-white p-2">
+                <div class="table-responsive" style="height:60vh;">
+                    <table class="table table-striped table-sm table-hover" id="myTablebClientList">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Code</th>
+                                <th>Client</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR LIST -->
+        <div class="col-md-8 p-2">
+            <div class="row align-items-center mb-2">
+                <div class="col-8">
+                    <span>Client QR List</span>
+                    <span class="badge bg-secondary ms-2" id="qrCounter">
+                        0 / 50 selected
+                    </span>
+                </div>
+                <div class="col-4 text-end">
+                    <button class="btn btn-xs btn-primary" id="btnDownloadZip">
+                        Download Selected QR (ZIP)
+                    </button>
+                </div>
+            </div>
+
+            <div class="small-box bg-white p-2">
+                <div id="qrLoader" class="text-center p-3" style="display:none;">
+                    <span class="spinner-border spinner-border-sm"></span>
+                    Processing...
+                </div>
+                <div id="qrList" class="row" style="max-height:60vh; overflow-y:auto;"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- LIBRARIES -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+var distributorId = '@Html.Raw(ViewBag.JsonDistributorId)';
+var baseUrl = window.location.protocol + "//" + window.location.host + "/ClientAccess/";
+const MAX_QR = 50;
+let currentRowIndex = 0;
+
+$(function () {
+    BindTableClientList();
+    $("#btnDownloadZip").on("click", downloadSelectedZip);
+
+    // KEYBOARD EVENTS
+    $(document).on("keydown", function (e) {
+        let rows = $("#myTablebClientList tbody tr");
+        if (!rows.length) return;
+
+        // DOWN ARROW
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            currentRowIndex = Math.min(currentRowIndex + 1, rows.length - 1);
+            highlightRow();
+        }
+
+        // UP ARROW
+        if (e.key === "ArrowUp") {
+            e.preventDefault();
+            currentRowIndex = Math.max(currentRowIndex - 1, 0);
+            highlightRow();
+        }
+
+        // SPACE BAR TO TOGGLE CHECKBOX
+        if (e.key === " ") {
+            e.preventDefault();
+            let checkbox = rows.eq(currentRowIndex).find(".client-check");
+            checkbox.prop("checked", !checkbox.prop("checked")).trigger("change");
+        }
+    });
+});
+
+// ===============================
+// LOAD CLIENT TABLE
+// ===============================
+function BindTableClientList() {
+    $("#myTablebClientList tbody").empty();
+
+    $.ajax({
+        type: "POST",
+        url: "/ClientPrintQR/LoadDataClientQR?id=" + distributorId,
+        success: function (res) {
+            var data = JSON.parse(res.data);
+
+            $.each(data, function (i, item) {
+                let row = `
+                    <tr class="pointer">
+                        <td>${item.CreateDate}</td>
+                        <td>${item.Code}</td>
+                        <td>${item.Customer}</td>
+                        <td>
+                            <input type="checkbox"
+                                   class="client-check"
+                                   data-code="${item.Code}"
+                                   data-name="${item.Customer}"
+                                   data-token="${item.Token}">
+                        </td>
+                    </tr>`;
+                $("#myTablebClientList tbody").append(row);
+            });
+
+            highlightRow(); // highlight first row
+        }
+    });
+}
+
+// ===============================
+// HIGHLIGHT ROW
+// ===============================
+function highlightRow() {
+    let rows = $("#myTablebClientList tbody tr");
+    rows.removeClass("active-row");
+    let row = rows.eq(currentRowIndex);
+    row.addClass("active-row");
+
+    // AUTO SCROLL INTO VIEW
+    row[0].scrollIntoView({ block: "nearest" });
+}
+
+// ===============================
+// CREATE / REMOVE QR ON CHECK
+// ===============================
+$(document).on("change", ".client-check", function () {
+
+    let checkedCount = $(".client-check:checked").length;
+
+    if (checkedCount > MAX_QR) {
+        this.checked = false;
+        alert("You can select a maximum of 50 clients.");
+        return;
+    }
+
+    updateCounter();
+
+    let el = $(this);
+    let code  = el.data("code");
+    let name  = el.data("name");
+    let token = el.data("token");
+
+    let safeCode = code.replace(/[^a-zA-Z0-9]/g, "");
+    let qrCardId = "qrCard_" + safeCode;
+    let qrId     = "qr_" + safeCode;
+
+    if (el.is(":checked")) {
+
+        if ($("#" + qrCardId).length) return;
+
+        let html = `
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-3 text-center"
+                 id="${qrCardId}">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="${qrId}" style="width:200px;height:200px;margin:auto;"></div>
+                        <div class="small mt-2">${code} - ${name}</div>
+                    </div>
+                </div>
+            </div>`;
+
+        $("#qrList").prepend(html);
+
+        new QRCode(document.getElementById(qrId), {
+            text: baseUrl + token,
+            width: 200,
+            height: 200,
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }
+    else {
+        $("#" + qrCardId).remove();
+    }
+});
+
+// ===============================
+// UPDATE COUNTER
+// ===============================
+function updateCounter() {
+    let count = $(".client-check:checked").length;
+    $("#qrCounter").text(count + " / 50 selected");
+}
+
+// ===============================
+// DOUBLE CLICK TO START SELECTION (WITH CONFIRM)
+// ===============================
+$(document).on("dblclick", "#myTablebClientList tbody tr", function () {
+
+    let rows = $("#myTablebClientList tbody tr");
+    let startIndex = rows.index(this);
+
+    if (!confirm("Start selection from this client and clear previous selections?")) {
+        return;
+    }
+
+    // 1. Clear all previous selections
+    $(".client-check").prop("checked", false).trigger("change");
+    $("#qrList").empty();
+    /*
+        // 2. Set current row for keyboard navigation
+        currentRowIndex = startIndex;
+        highlightRow();
+
+        // 3. Select from clicked row downward (max 50)
+        let count = 0;
+
+        for (let i = startIndex; i < rows.length; i++) {
+            if (count >= MAX_QR) break;
+
+            let checkbox = rows.eq(i).find(".client-check");
+            if (!checkbox.prop("checked")) {
+                checkbox.prop("checked", true).trigger("change");
+                count++;
+            }
+        }
+
+        updateCounter();
+    */
+});
+
+// ===============================
+// DOWNLOAD ZIP
+// ===============================
+function downloadSelectedZip() {
+
+    let selected = $(".client-check:checked");
+    if (!selected.length) {
+        alert("Please select clients first.");
+        return;
+    }
+
+    $("#qrLoader").show();
+    $(".client-check").prop("disabled", true);
+    $("#btnDownloadZip").prop("disabled", true);
+
+    let zip = new JSZip();
+    let index = 0;
+
+    function captureNext() {
+
+        if (index >= selected.length) {
+            zip.generateAsync({ type: "blob" }).then(function (content) {
+
+                let now = new Date();
+                let timestamp =
+                    now.getFullYear() +
+                    ("0" + (now.getMonth() + 1)).slice(-2) +
+                    ("0" + now.getDate()).slice(-2) + "_" +
+                    ("0" + now.getHours()).slice(-2) +
+                    ("0" + now.getMinutes()).slice(-2) +
+                    ("0" + now.getSeconds()).slice(-2);
+
+                saveAs(content, "Client_QR_Codes_" + timestamp + ".zip");
+
+                $("#qrLoader").hide();
+                $(".client-check").prop("disabled", false);
+                $("#btnDownloadZip").prop("disabled", false);
+                updateCounter();
+            });
+            return;
+        }
+
+        let el = selected.eq(index);
+        let code = el.data("code");
+        let name = el.data("name");
+        let safeCode = code.replace(/[^a-zA-Z0-9]/g, "");
+
+        let card = $("#qrCard_" + safeCode)[0];
+
+        html2canvas(card, { backgroundColor: "#fff", scale: 2 })
+            .then(function (canvas) {
+                canvas.toBlob(function (blob) {
+                    let fileName = code + "_" + name.replace(/\s+/g, "_") + ".png";
+                    zip.file(fileName, blob);
+                    index++;
+                    setTimeout(captureNext, 50);
+                });
+            });
+    }
+
+    captureNext();
+}
+</script>

@@ -1,0 +1,132 @@
+﻿@{
+    var JsonDistributorId = ViewBag.JsonDistributorId;
+}
+<div class="p-0">
+    <form role="form" data-toggle="validator" id="formDistributorItemStock">
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label for="txtDCItems">Item <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control form-control-sm eachWordFirstLetterUpper" id="txtDCItems" name="txtDCItems" placeholder="Search By Items" required>
+                <input type="hidden" value="" id="hdDCItemsId" name="hdDCItemsId" />
+            </div>
+            <div class="form-group col-md-6">
+                <span for="txtRefillQty">Refill<i class="text-red" title="Required">*</i></span>
+                <input type="text" class="form-control form-control-sm" id="txtRefillQty" name="txtRefillQty" placeholder="Enter Refill" pattern="[0-9]+(\.[0-9]{0,3})?%?" required>
+            </div>
+            <div class="form-group col-md-6">
+                <span for="txtEmptyQty">Empty<i class="text-red" title="Required">*</i></span>
+                <input type="text" class="form-control form-control-sm" id="txtEmptyQty" name="txtEmptyQty" placeholder="Enter Empty" pattern="[0-9]+(\.[0-9]{0,3})?%?" required>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <input type="hidden" value="" id="hdDistributorItemStockId" name="hdDistributorItemStockId" />
+            <input type="hidden" value="" id="hdDistributorId" name="hdDistributorId" />
+            <button type="submit" class="col-md-3 btn btn-default btn-sm col-4">Save</button>
+        </div>
+    </form>
+    <div class="col-md-12 small-box">
+        <div class="p-1">
+            <div class="table-responsive" style="height: 25vh;">
+                <table class="table table-striped table-sm small no-footer table-borderless table-hover table-head-fixed nowrap" id="myTableDistributorItemStock">
+                    <thead>
+                        <tr>
+                            <th>Item Code</th>
+                            <th>Description</th>
+                            <th>Refill</th>
+                            <th>Empty</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var distributorId = "";
+    $(function () {
+
+        distributorId = @Html.Raw(JsonDistributorId);
+        $("#hdDistributorId").val(distributorId);
+        console.log($("#hdDistributorId").val());
+
+        BindTableDistributorItemStock();
+
+        /* start Form validation & save data */
+        var f = $('#formDistributorItemStock');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = ''; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                $("#hdDistributorItemStockId").val();
+                sendData(f, "/DistributorItemStock/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    BindTableDistributorItemStock();
+                    $('#formDistributorItemStock')[0].reset();
+                });
+            }
+        });
+        /* end Form */
+
+        customAutoCompleteDynamic($('#txtDCItems'), $('#hdDCItemsId'), "Item", AutoCompleteOrderItemResult);
+    });
+
+    /*start : Custom AutoComplete Profile Result*/
+    function AutoCompleteOrderItemResult(e, u) {
+        if (u.item == null) {
+            console.log(u.item);
+            $('#txtDCItems,#hdDCItemsId').val('');
+        }
+        else {
+        }
+    }
+
+    function BindTableDistributorItemStock() {
+        $("#myTableDistributorItemStock > tbody").html("");
+        $.ajax(
+            {
+                type: "POST", //HTTP POST Method
+                url: "/DistributorItemStock/LoadDataStock?id=" + distributorId,
+                //data: formData,
+                success: function (data) {
+                    console.log(data);
+                    var d = JSON.parse(data.data);
+                    console.log(d);
+                    for (var i = 0; i < d.length; i++) {
+                        var row = "";
+                        row += "<tr>";
+                        row += "<td>" + d[i].ItemCode + "</td>";
+                        row += "<td>" + d[i].Description + "</td>";
+                        row += "<td>" + d[i].EmptyQty + "</td>";
+                        row += "<td>" + d[i].RefillQty + "</td>";
+                        row += "<td  width=\"40px\">";
+                        row += "<span type=\"button\" class=\"fas fa-trash-alt delete-record\" title=\"Delete Record\"></span> <input type=\"hidden\" value='" + d[i].DistributorItemStockId + "'>";
+                        row += "</td>"                       
+                        row += "</tr>";
+                        $('#myTableDistributorItemStock').find("tbody").append(row);
+                    }
+                },
+                error: function () {
+                }
+            });
+
+        //"edit-record,delete-record,view-record,info-record"
+        $("#myTableDistributorItemStock").on('click', '.delete-record', function () {
+            var recordId = $(this).closest("td").find("input[type='hidden']").val();
+            console.log(recordId);
+            confirmDialog('Are you sure to delete record ?', function () {
+                sendData(null, "/DistributorItemStock/DeleteDistributorItemStock?id=" + recordId, $(this), $(this).text(), "").then(function (res) {
+                    BindTableDistributorItemStock();
+                });
+            });
+        });
+    }
+
+</script>

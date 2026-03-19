@@ -1,0 +1,64 @@
+﻿<div class="p-1">
+    <div class="card">
+        <div class="card-header border-0">
+            <div class="card-tools">
+                <div class="input-group input-group-sm">
+                    <div class="text-left"><a id="exporttoexcelinfo" class="btn  btn-sm  btn-default"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Export to Excel</a></div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive small p-2" style="height: 60vh;">
+                <table id="myTablOrderopenItem" class="table table-sm  table-striped table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Item Code</th>
+                            <th>Description</th>
+                            <th>HSN</th>
+                            <th>Qty</th>
+                            <th>Box</th>
+                            <th>Rate</th>
+                            <th>Discount1</th>
+                            <th>Discount2</th>
+                            <th>Discount3</th>
+                            <th>DiscountRate</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+</div>
+
+<script>
+    var orderId;
+    //var oTableToolsReceive;
+    $(function () {
+
+        orderId = @Html.Raw(ViewBag.JsonOrderId);
+        console.log(orderId);
+
+        BindTableOrderItem();
+
+        /* Export To Excel */
+        $("#exporttoexcelinfo").click(function (event) {
+                event.preventDefault();
+               // var parameters = 'ToolsId=' + ToolsId;
+                var parameters = 'OrderId=' + orderId;
+                window.open('/ReportOrderOpen/ExportToExcel1?' + parameters);
+        });
+        /* End Export */
+    });
+
+    function BindTableOrderItem() {
+        //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+        //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+        var activeButtonClass = "";
+        oTableOrderItem = bindTableWithoutPagination($('#myTablOrderopenItem'), activeButtonClass, "/ReportOrderOpen/LoadDataInfo?id=" + orderId); //Bind Table
+    }
+</script>
+
+
+

@@ -1,0 +1,385 @@
+﻿@{
+    ViewBag.Title = "Proforma Invoice";
+    Layout = "~/Views/Shared/_Print.cshtml";
+    var InfoJsonHead = ViewBag.JsonDataHead;
+    var InfoJsonBody = ViewBag.JsonDataBody;
+    var InfoJsonFooter = ViewBag.JsonDataFooter;
+    var InfoJsonTaxCalculation = ViewBag.JsonTaxCalculation;
+}
+
+<div class="col-md-12">
+    <div class="row no-print">
+        <div class="col-md-10"></div>
+        <div class="col-md-2 p-1">
+            <a class="btn btn-default btn-sm" id="btnPrint"><i class="fas fa-print"></i> Print</a>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Page -->
+<div class="invoice p-1 mb-3 dvPrint">
+    <div class="col-12 table-responsive" id="dvPrint">
+        <table>
+            <tbody>
+                <tr>
+                    <td style="width:65%">
+                        <h4>
+                            <img src="~/dist/img/logo_horizontal.png" style="width:270px" />
+                        </h4>
+                    </td>
+                    <td style="width:35%">
+                        <address>
+                            <strong><b><span class="lbcompany" style="font-size: 20px;"></span></b></strong>
+                            <p class="small" style="font-size: 17px;">
+                                <span class="lbcompanyaddress"></span><br>
+                                <span class="lbcompanycontact"></span>
+                                <span class="lbcompanyemail"></span><br>
+                                <span class="lbcompanygst"></span>
+                            </p>
+                        </address>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <h5 class="text-center">GST INVOICE</h5>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm small table-bordered" style="margin-bottom:0px" id="tableOrderItem">
+            <thead>
+                <tr>
+                    <td colspan="7" style="vertical-align: middle;">
+                        <address>
+                            <strong><span id="lbtradersname"></span></strong><br>
+                            <b>Shipping Address : </b><span id="lbaddress"></span><br>
+                            <b>Billing Address : </b><span id="lbbilladdress"></span><br>
+                            <b>State : </b> <span id="lbstate"></span>&nbsp;&nbsp;&nbsp;<b>Code : </b><span id="lbcode"></span><br>
+                            <b>Contact Person : </b> <span id="lbperson"></span>&nbsp;&nbsp;&nbsp;<b>Mobile : </b><span id="lbcontact"></span><br>
+                            <b>GST : </b><span id="lbgst"></span>&nbsp;&nbsp;&nbsp;<b>PAN : </b><span id="lbpan"></span>
+                        </address>
+                    </td>
+                    <td colspan="6" style="vertical-align: top;">
+                        <b>INVOICE NO : </b><span id="lbodno"></span> <br>
+                        <b>DATE : </b><span id="lbdate"></span><br>
+                    </td>
+                </tr>
+                <tr class="text-center">
+                    <th style="vertical-align: middle; width:4%">SR #</th>
+                    <th style="vertical-align: middle; width:10%">CODE</th>
+                    <th style="vertical-align: middle; width:35%">DESCRIPTION</th>
+                    <th style="vertical-align: middle; width:5%">HSN</th>
+                    <th style="vertical-align: middle; width:4%">QTY</th>
+                    <th style="vertical-align: middle; width:4%">BOX</th>
+                    <th style="vertical-align: middle; width:5%">RATE</th>
+                    <th style="vertical-align: middle; width:4%">DIS1</th>
+                    <th style="vertical-align: middle; width:4%">DIS2</th>
+                    <th style="vertical-align: middle; width:4%">DIS3</th>
+                    <th style="vertical-align: middle; width:8%">TOTAL</th>
+                    <th style="vertical-align: middle; width:5%">GST</th>
+                    <th style="vertical-align: middle; width:8%">AMOUNT</th>
+                </tr>
+            </thead>
+            <tbody class="text-center"></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">HSN base GST calculation</td>
+                    <td><b><span class="footer-item-total"></span></b></td>
+                    <td><b><span class="footer-box-total"></span></b></td>
+
+                    <td colspan="6" style="text-align:right;vertical-align: middle;"><b>TOTAL AMOUNT </b> </td>
+                    <td style="text-align:center;vertical-align: middle;">
+                        <b><span class="footer-total"></span></b>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="7"><span id="taxsummary" class="small"></span></td>
+                    <td colspan="6"></td>
+                </tr>
+                <tr>
+                    <td colspan="12" style="text-align:right"><b>ROUND </b></td>
+                    <td style="text-align:center;vertical-align: middle;"><b><span class="footer-round"></span></b></td>
+                </tr>
+                <tr>
+                    <td colspan="10">₹ : <span id="convertDigit"></span></td>
+                    <td colspan="2" style="text-align:right;vertical-align: middle;"><b>FINAL AMOUNT </b> </td>
+                    <td style="text-align:center;vertical-align: middle;">
+                        <b><span class="footer-final"></span></b>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="7" style="text-align:left">
+                        <p>
+                            TERMS & CONDITIONS:<br />
+                            <span id="divTerms"></span>
+                        </p>
+                    </td>
+                    <td colspan="6" class="text-center">
+                        <p>
+                            FOR <span class="lbcompany"></span><br />
+
+                            <img id="imgStamp" style="width:150px;height:150px;visibility:hidden" /><br />
+
+                            AUTHORISED SIGNATORY
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="13" class="small text-center">
+                        THIS IS COMPUTER GENERATED INVOICE DOES NOT REQUIRED <span class="lbcompany"></span> CONFIRMATION.
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>
+</div>
+
+<!-- /.invoice -->
+@section footer{
+    <!--Convert Number to Words-->
+    <script type="text/javascript" language="javascript" src="~/Scripts/jquery.num2words.js"></script>
+    <script>
+        var pdfName = "Default";
+        var total;
+        var totalAfterRoundOf;
+                var roundOf;
+                var gst;
+        $(function () {
+
+            $("#btnPrint").show();
+            $("#btnPrint").click(function () {
+                $("#btnPrint,.main-footer").hide();
+                window.print();
+                $('#btnPrint,.main-footer').delay(500).show(0);
+            });
+
+            $("#btnPdfDownload").click(function () {
+                makePdf("dvPrint", "invoicePrintCss"); //
+            });
+
+            var jInfoHead = JSON.parse(JSON.stringify(@Html.Raw(InfoJsonHead)));
+            var jInfoBody = JSON.parse(JSON.stringify(@Html.Raw(InfoJsonBody)));
+           var jCalculation = JSON.parse(JSON.stringify(@Html.Raw(InfoJsonFooter)));
+           var jTaxCalculation = JSON.parse(JSON.stringify(@Html.Raw(InfoJsonTaxCalculation)));
+
+            //console.log(jTaxCalculation);
+            console.log(jCalculation);
+            if (jCalculation != null) {
+                total = jCalculation[0].Total;
+                totalAfterRoundOf = jCalculation[0].TotalAfterRoundOf;
+                roundOf = jCalculation[0].RoundOf;
+                gst = jCalculation[0].GST;
+                qty = jCalculation[0].Qty;
+                box = jCalculation[0].Box;
+
+                amount = parseFloat(total) + parseFloat(gst);
+                var taxMode = jInfoHead[0].TaxMode;
+
+                var taxArray = "<table class=\"table table-sm table-child table-borderless\">";
+                taxArray += "<tfoot>";
+                taxArray += "<tr>";
+                taxArray += "<td>HSN</td>";
+                taxArray += "<td>TAX</td>";
+                taxArray += "<td>TOTAL</td>";
+                taxArray += "<td>SGST</td>";
+                taxArray += "<td>CGST</td>";
+                taxArray += "<td>IGST</td>";
+                taxArray += "</tr>";
+                $.each(jTaxCalculation, function (index, obj) {
+                    taxArray += "<tr>";
+                    taxArray += "<td>" + obj.HSN + "</td>";
+                    taxArray += "<td>" + obj.Tax + "</td>";
+                    taxArray += "<td>" + obj.Total + "</td>";
+                    taxArray += "<td>" + obj.SGST + "</td>";
+                    taxArray += "<td>" + obj.CGST + "</td>";
+                    taxArray += "<td>" + obj.IGST + "</td>";
+                    taxArray += "</tr>";
+                });
+                taxArray += "</tfoot>";
+                taxArray += "</table>";
+                $("#taxsummary").html(taxArray);
+            }
+
+            /*Edit Record */
+            //console.log(jInfoHead);
+            if (jInfoHead != null) {
+                $("#lbtradersname").html(jInfoHead[0].Name);
+                $("#lbaddress").html(jInfoHead[0].Address);
+                $("#lbperson").html(jInfoHead[0].ContactPerson);
+                $("#lbcontact").html(jInfoHead[0].ContactNumber);
+                $("#lbgst").html(jInfoHead[0].CustomerGST);
+                $("#lbodno").html(jInfoHead[0].OrderNumber);
+                $("#lbdate").html(jInfoHead[0].Date);
+                $(".lbcompany").html(jInfoHead[0].ComapanyName);
+                $(".lbcompanyaddress").html(jInfoHead[0].ComapnyAddress);
+                $(".lbcompanycontact").html("MOBILE : " +jInfoHead[0].Phone);
+                $(".lbcompanyemail").html("EMAIL : " +jInfoHead[0].ComapnyEmail);
+                $(".lbcompanygst").html("GST : " + jInfoHead[0].GSTNumber);
+                $("#divTerms").html(jInfoHead[0].TermCondition.split("\n").join("<br />"));
+
+                 if (jInfoHead[0].Stamp_Image != 'null' || jInfoHead[0].Stamp_Image != null) {
+                    $("#imgStamp").attr("src", "../DOCUMENT/BRANCH-STAMP/" + jInfoHead[0].Stamp_Image);
+                    $("#imgStamp").removeAttr("visibility" ,"hidden");
+                }
+
+                //$("#imgStamp").attr("src", "../DOCUMENT/BRANCH-STAMP/" + jInfoHead[0].Stamp_Image);
+                $("#lbaccountname").html(jInfoHead[0].AccountName);
+                $("#lbaccountnumber").html(jInfoHead[0].AccountNumber);
+                $("#lbaccountemail").html(jInfoHead[0].AccountEmail);
+
+
+                $("#lbstate").html(jInfoHead[0].State);
+                $("#lbcode").html(jInfoHead[0].StateCode);
+
+                pdfName = jInfoHead[0].Name + '_' + jInfoHead[0].OrderNumber;
+                $("title").html(pdfName);
+
+                //$("title").html(jInfoHead[0].CustomerName + '_' + jInfoHead[0].OrderNo);
+
+                printItems(jInfoBody);
+            }
+        /* end:Edit Record */
+        });
+
+        function printItems(jInfoBody) {
+            var table = $("#tableOrderItem");
+            table.find("tbody").html("");
+
+            for (i = 0; i < jInfoBody.length; i++) {
+                var row = "";
+                row += "<tr>";
+                $.each(jInfoBody[i], function (itemKey, itemVal) {
+                    console.log(itemKey);
+                    console.log(itemVal);
+                    if (itemKey === 'Code' || itemKey === 'Description') {
+                        row += "<td style=\"text-align: left\">" + itemVal + "</td>";
+                    }
+                     else {
+                         row += "<td style=\"vertical-align: middle\">" + itemVal + "</td>";
+                     }
+                });
+                row += "</tr>";
+                table.append(row);
+            }
+
+            for (j = i+1; j <= 20; j++) {
+                 var row = "";
+                row += "<tr>";
+                $.each(jInfoBody[0], function (itemKey, itemVal) {
+                     if (itemKey === 'RowNum') {
+                        row += "<td style=\"text-align: middle\">" + j + "</td>";
+                    }
+                     else {
+                         row += "<td></td>";
+                     }
+                });
+                row += "</tr>";
+                table.append(row);
+            }
+
+            var table_footer_total = $(".footer-total");
+            var table_footer_item = $(".footer-item-total");
+            var table_footer_box = $(".footer-box-total");
+            var table_footer_gst = $(".footer-gst");
+            var table_footer_final = $(".footer-final");
+            var table_footer_round = $(".footer-round");
+
+            table_footer_total.html(total); //As Applicable
+            table_footer_item.html(qty);
+            table_footer_box.html(box);
+
+            /*var round = ((total + gst) - Math.floor((total + gst)));
+            console.log(round);
+            var final = (round >= 0.50 ? (amount + (1 - round)) : (amount - round)).toFixed(2);
+            table_footer_gst.html(gst.toFixed(2));*/
+
+            table_footer_round.html(roundOf);
+            table_footer_final.html(totalAfterRoundOf);
+            $('#convertDigit').html(numberToWords(totalAfterRoundOf));
+        }
+
+        function numberToWords(amount) {
+                return RsPaise(amount); /*RsPaise(Math.round(amount.value * 100) / 100);*/
+        }
+
+        function Rs(amount) {
+                var words = new Array();
+                words[0] = 'Zero'; words[1] = 'One'; words[2] = 'Two'; words[3] = 'Three'; words[4] = 'Four'; words[5] = 'Five'; words[6] = 'Six'; words[7] = 'Seven'; words[8] = 'Eight'; words[9] = 'Nine'; words[10] = 'Ten'; words[11] = 'Eleven'; words[12] = 'Twelve'; words[13] = 'Thirteen'; words[14] = 'Fourteen'; words[15] = 'Fifteen'; words[16] = 'Sixteen'; words[17] = 'Seventeen'; words[18] = 'Eighteen'; words[19] = 'Nineteen'; words[20] = 'Twenty'; words[30] = 'Thirty'; words[40] = 'Forty'; words[50] = 'Fifty'; words[60] = 'Sixty'; words[70] = 'Seventy'; words[80] = 'Eighty'; words[90] = 'Ninety'; var op;
+                amount = amount.toString();
+                var atemp = amount.split('.');
+                var number = atemp[0].split(',').join('');
+                var n_length = number.length;
+                var words_string = '';
+                if (n_length <= 9) {
+                    var n_array = new Array(0, 0, 0, 0, 0, 0, 0, 0, 0);
+                    var received_n_array = new Array();
+                    for (var i = 0; i < n_length; i++) {
+                        received_n_array[i] = number.substr(i, 1);
+                    }
+                    for (var i = 9 - n_length, j = 0; i < 9; i++, j++) {
+                        n_array[i] = received_n_array[j];
+                    }
+                    for (var i = 0, j = 1; i < 9; i++, j++) {
+                        if (i == 0 || i == 2 || i == 4 || i == 7) {
+                            if (n_array[i] == 1) {
+                                n_array[j] = 10 + parseInt(n_array[j]);
+                                n_array[i] = 0;
+                            }
+                        }
+                    }
+                    value = '';
+                    for (var i = 0; i < 9; i++) {
+                        if (i == 0 || i == 2 || i == 4 || i == 7) {
+                            value = n_array[i] * 10;
+                        } else {
+                            value = n_array[i];
+                        }
+                        if (value != 0) {
+                            words_string += words[value] + ' ';
+                        }
+                        if ((i == 1 && value != 0) || (i == 0 && value != 0 && n_array[i + 1] == 0)) {
+                            words_string += 'Crores ';
+                        }
+                        if ((i == 3 && value != 0) || (i == 2 && value != 0 && n_array[i + 1] == 0)) {
+                            words_string += 'Lakhs ';
+                        }
+                        if ((i == 5 && value != 0) || (i == 4 && value != 0 && n_array[i + 1] == 0)) {
+                            words_string += 'Thousand ';
+                        }
+                        if (i == 6 && value != 0 && (n_array[i + 1] != 0 && n_array[i + 2] != 0)) {
+                            words_string += 'Hundred and ';
+                        } else if (i == 6 && value != 0) {
+                            words_string += 'Hundred ';
+                        }
+                    }
+                    words_string = words_string.split(' ').join(' ');
+                }
+                return words_string;
+        }
+
+        function RsPaise(n) {
+                nums = n.toString().split('.')
+                var whole = Rs(nums[0])
+                if (nums[1] == null) nums[1] = 0;
+                if (nums[1].length == 1) nums[1] = nums[1] + '0';
+                if (nums[1].length > 2) { nums[1] = nums[1].substring(2, length - 1) }
+                if (nums.length == 2) {
+                    if (nums[0] <= 9) { nums[0] = nums[0] * 10 } else { nums[0] = nums[0] };
+                    var fraction = Rs(nums[1])
+                    if (whole == '' && fraction == '') { op = 'Zero Only'; }
+                    if (whole == '' && fraction != '') { op = 'Paise ' + fraction + ' Only'; }
+                    if (whole != '' && fraction == '') { op = 'Rupees ' + whole + ' Only'; }
+                    if (whole != '' && fraction != '') { op = 'Rupees ' + whole + 'And ' + fraction + ' Paise  Only'; }
+                    /*amt = document.getElementById('amt').value;
+                    if (amt > 999999999.99) { op = 'Oops!!! The amount is too big to convert'; }
+                    if (isNaN(amt) == true) { op = 'Error : Amount in number appears to be incorrect. Please Check.'; }
+                    document.getElementById('op').innerHTML = op;*/
+                    return op;
+                }
+                return 'Error : Amount in number appears to be incorrect. Please Check.';
+            }
+
+
+    </script>
+}

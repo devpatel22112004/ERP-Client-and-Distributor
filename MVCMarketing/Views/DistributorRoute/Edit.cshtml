@@ -1,0 +1,164 @@
+﻿
+
+
+@{
+    var JsonData = ViewBag.JsonData;
+}
+
+<div class="p-1">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="small-box bg-white p-2">
+                <div class="card-header border-0">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <h2 class="text-sm">Unassign Distributor List</h2>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-sm" id="txtSearchDistributor" name="txtSearchDistributor" placeholder="Search Distributor">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-default btn-sm" id="btnListSearchModel" title="Search"><i class="fas fa-filter"></i></button>
+                            &nbsp;
+                            <button type="button" class="btn btn-default btn-sm" id="btnListRefreshModel" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body table-responsive small p-2" style="height: 50vh;">
+                    <table id="myTableDistributor" class="table table-sm  table-striped table-borderless table-hover table-head-fixed">
+                        <thead>
+                            <tr>
+                                <th>Distributor</th>
+                                <th>Area</th>
+                                <th>City</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="small-box bg-white p-2">
+                <h2 class="text-sm">Assign Distributor List</h2>
+                <div class="table-responsive small p-2" style="height: 30vh;">
+                    <table id="myTableAssignDistributor" class="table table-sm  table-striped table-borderless table-hover table-head-fixed">
+                        <thead>
+                            <tr>
+                                <th>Distributor</th>
+                                <th>Area</th>
+                                <th>City</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <form role="form" id="formAssignDistributor">
+            <div class="form-group col-md-6 text-center">
+                <input type="hidden" value="" id="hdId" name="hdId" />
+                <input type="hidden" value="" id="hdEmployeeId" name="hdEmployeeId" />
+                <input type="hidden" value="" id="hdDistributorId" name="hdDistributorId" />
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+
+         $(function () {
+
+             InfoDisId = '@Html.Raw(ViewBag.JsonData)';
+
+
+             console.log(InfoDisId);
+             BindTableDistributorMap();
+
+               $("#myTableDistributor,#myTableAssignDistributor").on("change", "input[type='checkbox']", function () {
+                    $("#hdId").val($(this).attr('data-mapId'));
+                   $("#hdDistributorId").val($(this).attr('data-distributorId'));
+                    $("#hdEmployeeId").val(InfoDisId);
+                    /* start : From Submit */
+                   var button = $("#formAssignDistributor").find(':submit');
+                   sendData($("#formAssignDistributor"), "/DistributorRoute/InsertDistributor", button, button.text(), "").then(function (res) {
+                       BindTableDistributorMap();
+                    });
+                    /* stop : From Submit */
+               });
+
+                  //refresh button
+                 $('#btnListRefreshModel').click(function () {
+                     $('#txtSearchDistributor').val('');
+                     BindTableDistributorMap();
+                 });
+
+               $("#txtSearchDistributor").on('keyup change', function (e) {
+                    var thisId = $(this).attr("Id");
+                    if (e.which == 13 || thisId.includes("dd")) {
+                        $('#btnListSearchModel').trigger('click');
+                    }
+                });
+
+                  //Apply Custom search on jQuery DataTables here
+                  $('#btnListSearchModel').click(function () {
+
+                      BindTableDistributorMap();
+                  });
+         });
+
+      function BindTableDistributorMap() {
+           $("#myTableDistributor > tbody").html("");
+           $("#myTableAssignDistributor > tbody").html("");
+           $.ajax(
+              {
+                type: "POST", //HTTP POST Method
+                   url: "/DistributorRoute/LoadDataAssignDistributor?EmpId=" + InfoDisId + "&Name=" + $("#txtSearchDistributor").val(),
+                success: function (data) {
+
+                    var data1 = data.data1;
+                    var data2 = data.data2;
+                    console.log(data1);
+                    console.log(data2);
+                    //var d = JSON.parse(JSON.stringify(data1));
+                    var d = JSON.parse(data1);
+                    for (var i = 0; i < d.length; i++) {
+                        var row = "";
+                        row += "<tr>";
+                        //    row += "<td>" + d[i].Brand;
+                        row += "</td>";
+                        row += "<td>" + d[i].Name;
+                        row += "</td>";
+                        row += "<td>" + d[i].Area;
+                        row += "</td>";
+                        row += "<td>" + d[i].City;
+                        row += "</td>";
+                        row += "<td><input type=\"checkbox\" id=\"chkstatus\" name=\"chkstatus\" data-distributorId=\"" + d[i].DistributorId + "\" data-mapId=\"" + d[i].MapId + "\"" + (d[i].IsCheck == 'true' ? 'checked' : '') + "></td>";
+                        row += "</tr>";
+                        $('#myTableDistributor tbody').append(row);
+                    }/**/
+                    var d2 = JSON.parse(data2);
+                    for (var i = 0; i < d2.length; i++) {
+                        var row2 = "";
+                        row2 += "<tr>";
+                        row2 += "<td>" + d2[i].Name;
+                        row2 += "</td>";
+                        row2 += "<td>" + d2[i].Area;
+                        row2 += "</td>";
+                        row2 += "<td>" + d2[i].City;
+                        row2 += "</td>";
+                        row2 += "<td><input type=\"checkbox\" id=\"chkstatus\" name=\"chkstatus\" data-distributorId=\"" + d2[i].DistributorId + "\" data-mapId=\"" + d2[i].MapId + "\"" + (d2[i].IsCheck == 'true' ? 'checked' : '') + "></td>";
+                        row2 += "</tr>";
+                        $('#myTableAssignDistributor tbody').append(row2);
+                    }
+                },
+                error: function () {
+                }
+         });
+    }
+
+
+</script>

@@ -1,0 +1,116 @@
+﻿
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_salesInquiry">
+            <span class="text-sm">Search Record</span>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group text-sm">
+                        <input type="text" class="form-control form-control-sm" id="txtSearchName1" name="txtSearchName1" placeholder="Type Distributor Name">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group text-sm">
+                        <input type="text" class="form-control form-control-sm" id="txtSearchArea" name="txtSearchArea" placeholder="Type Area Name">
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <select class="form-control form-control-sm select3" id="ddSearchCity" name="ddSearchCity" title="Please Selected City">
+                        <option value="" selected="selected">---Selected City---</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group text-sm">
+                        <input type="text" class="form-control form-control-sm" id="txtSearchPincode" name="txtSearchPincode" placeholder="Type Pincode Number">
+                    </div>
+                </div>
+                <div class="col-md-2 text-center">
+                    <span id="btnListSearchModel" class="btn btn-outline-secondary btn-sm" title="Filter"><i class="fas fa-filter"></i></span>
+                    <span id="btnListRefreshModel" class="btn btn-outline-secondary btn-sm" title="Reset"><i class="fas fa-sync-alt"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-12">
+    <div class="card">
+        <div class="card-header border-0">
+            <h3 class="card-title">Dealer List</h3>
+        </div>
+        <div class="card-body p-2">
+            <div class="small">
+                <div class="table-responsive p-2" style="height: 60vh;">
+                    <table class="table table-sm  table-striped table-borderless table-hover table-head-fixed table-responsive-card" id="myTableDealer">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>City</th>
+                                <th>Area</th>
+                                <th>Pincode</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+
+        bindDropDownList($('#ddSearchCity'), 'City');
+
+        BindTableDealer();// Bind table
+
+        //Apply Custom search on jQuery DataTables here
+        $('#btnListSearchModel').click(function () {
+            BindTableDealer();
+        });
+
+        //refresh button
+        $('#btnListRefreshModel').click(function () {
+            $('#txtSearchName1,#txtSearchArea,#ddSearchCity,#txtSearchPincode').val('');
+            $('#btnListSearchModel').trigger('click');
+        });
+
+        //Set search trigger
+        $("#txtSearchName1,#txtSearchArea,#ddSearchCity,#txtSearchPincode").on('keyup change', function (e) {
+            var thisId = $(this).attr("Id");
+            if (e.which == 13 || thisId.includes("dd")) {
+                $('#btnListSearchModel').trigger('click');
+            }
+        });
+    });
+
+    function BindTableDealer() {
+        //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+        //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+        var activeButtonClass = "View";
+        oTableDealer = bindTableWithoutPagination($('#myTableDealer'), activeButtonClass, "/TakeOrder/LoadData?Name=" + $("#txtSearchName1").val() + "&Area=" + $("#txtSearchArea").val() + "&PinCode=" + $("#txtSearchPincode").val() + "&CityId=" + $("#ddSearchCity").val()); //Bind Table  //getParam()
+
+        //"edit-record,delete-record,view-record,info-record"
+        oTableDealer.on('click', '.edit-record', function () {
+            //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+            var recordId = $(this).attr('data-id');
+            var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+            viewNestedModalPartialView(recordTitle, "/TakeOrder/Edit?id=" + recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+        });
+
+        //"edit-record,delete-record,view-record,info-record"
+           oTableDealer.on('click', '.view-record', function () {
+               var recordId = $(this).attr('data-id');
+               window.location = "/Order/Form?id=" + recordId;
+               //var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+               //viewNestedModalPartialView(recordTitle, "/Order/Form?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+           });//
+
+    }
+</script>
+
+
+
+
+
+

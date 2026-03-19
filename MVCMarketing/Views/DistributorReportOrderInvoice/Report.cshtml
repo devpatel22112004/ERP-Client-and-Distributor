@@ -1,0 +1,160 @@
+﻿
+@{
+    ViewBag.Title = "Distributor Order Invoice Report";
+    Layout = Session["Layout"].ToString();
+}
+
+<div class="col-md-12">
+    <div class="small-box bg-white p-2" id="filter_OrderOpen">
+        <span class="text-sm">Search Record</span>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="1" id="txtSearchIN" name="txtSearchIN" placeholder="Search Invoice Number">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="2" id="txtDate" name="txtDate" placeholder="Search Date" onkeypress="return false;">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="3" id="txtStartDate" name="txtStartDate" placeholder="Search Start Date" onkeypress="return false;">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="4" id="txtEndDate" name="txtEndDate" placeholder="Search End Date" onkeypress="return false;">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group text-sm">
+                    <select class="form-control form-control-sm select3 column_filter" data-column="5" id="ddTypeUser" name="ddTypeUser" title="Please Selected Create By">
+                        <option value="" selected="selected">-- Create By --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                &nbsp;
+                <button type="button" class="btn btn-default btn-sm" id="btnRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header border-0">
+            <h3 class="card-title">Order Invoice List</h3>
+            <div class="card-tools">
+                <div class="input-group input-group-sm">
+                    <div class="text-left"><a id="exporttoexcel" class="btn  btn-sm  btn-default"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;Export to Excel</a></div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="small">
+                <table id="myTableSalesOrderInvoice" class="table-striped table-sm no-footer table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Invoice #</th>
+                            <th>Order #</th>
+                            <th>Dealer</th>
+                            <th>GST No</th>
+                            <th>Items</th>
+                            <th>Amount</th>
+                            <th>Designation</th>
+                            <th>Created By</th>
+                            <th>Created Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footer{
+
+    <script>
+        var oTableReportSalesOrderInvoice;
+
+        function filterColumn(i, tag) {
+            oTableReportSalesOrderInvoice.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+
+        $(function () {
+            $(".report,.report-sales,.report-invoiceorder").addClass('active');
+
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            /* Bind Brand */
+            bindDropDownList($('#ddTypeUser'), 'Employee');
+
+            //Date picker
+            $('#txtDate,#txtEndDate,#txtStartDate').datepicker({
+                format: "dd-mm-yyyy",
+                //startDate: '-3d',
+                todayHighlight: true,
+                autoclose: true
+            });
+
+            BindTableReportSalesOrderIncoie();//Bind list data
+
+            /* Bind Brand */
+            bindDropDownList($('#ddSearchType'), 'Employee');
+
+            /* Export To Excel */
+            $("#exporttoexcel").click(function (event) {
+                event.preventDefault();
+                var parameters = 'Date=' + $('#txtDate').val() + '&DistributorId=' + $('#hdDistributorId').val() + '&InvoiceNumber=' + $('#txtSearchIN').val() + '&StartDate=' + $('#txtStartDate').val() + '&EndDate=' + $('#txtEndDate').val() + '&UserBy=' + $('#ddTypeUser').val();
+                console.log(parameters);
+                window.open('/ReportOrderInvoice/ExportToExcel?' + parameters);
+            });
+
+            //refresh button
+            $('#btnRefresh').click(function () {
+                oTableReportSalesOrderInvoice.DataTable().state.clear();
+                location.reload();
+            });
+
+            //customAutoComplete($('#txtDistributorName'), $('#hdDistributorId'), "Distributor");
+        });
+
+        /*start : Custom AutoComplete result*/
+        /*function showResult(e, u) {
+            //console("auto complete");
+            if (u == "") {
+                console.log(u.item);
+                $("#hdDistributorId").val("");
+            }
+            else {
+                var searchCustomerId = $('#hdDistributorId');
+                filterColumn(searchCustomerId.attr('data-column'), searchCustomerId);
+            }
+        }*/
+
+        function BindTableReportSalesOrderIncoie() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "View";
+            oTableReportSalesOrderInvoice = bindTableSmart($('#myTableSalesOrderInvoice'), activeButtonClass, "/DistributorReportOrderInvoice/LoadData", "null", $("#filter_OrderOpen"));// //Bind Table
+
+            oTableReportSalesOrderInvoice.on('click', '.view-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                viewPartialViewModal(recordTitle, "Info?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+            });
+        }
+    </script>
+}
+
+
+

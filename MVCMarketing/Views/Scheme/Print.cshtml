@@ -1,0 +1,178 @@
+﻿@{
+    ViewBag.Title = "Print";
+    //  Layout = Session["Layout"].ToString();
+    var InfoJsonHead = ViewBag.JsonDataHead;
+    var InfoJsonBody = ViewBag.JsonDataBody;
+    Layout = "~/Views/Shared/_Print.cshtml";
+}
+
+<!-- Summary Page -->
+<div class="col-md-12">
+    <div class="row no-print">
+        <div class="col-md-10"></div>
+        <div class="col-md-2 p-1">
+            <a class="btn btn-default btn-sm" id="btnPrint"><i class="fas fa-print"></i> Print</a>
+            <a class="btn btn-default btn-sm" id="btnPdfDownload" title="Pdf Download"><i class="fas fa-file-pdf"></i> PDF</a>
+        </div>
+    </div>
+</div>
+
+<div class="invoice p-1 mb-3">
+    <div class="col-12 table-responsive" id="dvPrint">
+        <table class="table-child">
+            <tbody>
+                <tr>
+                    <td style="text-align:center">
+                        <h2><strong><span class="lbcompany"></span></strong></h2>
+                        <p class="small">
+                            <h5>
+                                <span class="lbcompanyaddress"></span><br>
+                                Email: <span class="lbcompanyemail"></span><br>
+                            </h5><hr />
+                        </p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td style="vertical-align: top;">
+                        <p>
+                            Date:<span class="lbstartdate"></span><br />
+                        </p>
+                        <p>
+                            To,<br /> <b>All Dealers,</b><br /> <b>Surat</b><br />
+                        </p>
+                        <p>
+                            <b>
+                                SUB: SCHEME<br />
+                            </b>
+                        </p>
+                        <p>
+                            Dear Dealers,
+                        </p>
+                        <p>
+                            We are glad to announce special Scheme for our dealers; Scheme will start from <span class="lbstartdate"></span> to  <span class="lbenddate"></span>. Details of the scheme are as below.
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered" id="tableItem">
+            <thead>
+                <tr>
+                    <td align="center" colspan="2">
+                        <h4>SALES TARGET</h4><br>
+                    </td>
+                </tr>
+                <tr class="text-center">
+                    <th style="vertical-align: middle; width:5%">Sales Amount Gst Paid</th>
+                    <th style="vertical-align: middle; width:5%">Scheme</th>
+                </tr>
+            </thead>
+            <tbody class="text-center"></tbody>
+        </table>
+        <table class="table-borderless">
+            <tbody>
+                <tr>
+                    <td style="text-align:left">
+                        <p>
+                            <b>
+                                TERMS & CONDITIONS:<br />
+                            </b>
+                            <span id="divTerms"></span>
+
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>
+                            We hope you will take full benefit of the scheme. We assure you of our best service at any time.
+                        </p>
+                        <p>
+                            Thanking you,<br /> Yours truly
+                        </p>
+                        <p>
+                            For <strong><span class="lbcompany"></span></strong>
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- /.invoice -->
+@section footer{
+    <!--Convert Number to Words-->
+    <script type="text/javascript" language="javascript" src="~/Scripts/jquery.num2words.js"></script>
+    <script>
+        var taxMode = 'NO APPLY' , total = 0, discount =0, discountAmount =0,discountTotal = 0, gst = 0,amount = 0,freight = 0;
+        var pdfName = "Default";
+        $(function () {
+            $(".Scheme,.Scheme-Scheme").addClass('active');
+
+            $("#btnPrint").show();
+            $("#btnPrint").click(function () {
+                $("#btnPrint,.main-footer").hide();
+                window.print();
+                $('#btnPrint,.main-footer').delay(500).show(0);
+            });
+
+            $("#btnPdfDownload").click(function () {
+                makePdf("dvPrint", "invoicePrintCss"); //
+            });
+
+            var jInfoHead = JSON.parse(JSON.stringify(@Html.Raw(InfoJsonHead)));
+
+            var jInfoBody = JSON.parse(JSON.stringify(@Html.Raw(InfoJsonBody)));
+
+            /*Edit Record */
+            console.log(jInfoHead);
+            if (jInfoHead != null) {
+
+                $(".lbstartdate").html(jInfoHead[0].StartDate);
+                $(".lbenddate").html(jInfoHead[0].EndDate);
+                $("#lbgracedate").html(jInfoHead[0].Grace);
+                $("#divTerms").html(jInfoHead[0].TermsAndCondition.split("\n").join("<br />"));
+
+                $(".lbcompany").html(jInfoHead[0].CompanyName);
+                $(".lbcompanyaddress").html(jInfoHead[0].CompanyAddress);
+                $(".lbcompanyemail").html(jInfoHead[0].CompanyEmail);
+
+                printItems(jInfoBody);
+            }
+            });
+
+        function printItems(jInfoBody) {
+            var table = $("#tableItem");
+            table.find("tbody").html("");
+            var index = 0;
+            for (j = 0, index = 1; j < jInfoBody.length; j++ , index++) {
+                var row = "";
+                row += "<tr>";
+                //var jsonItemLength = Object.keys(jInfoBody[j]).length;
+                var cellCount = 0;
+                $.each(jInfoBody[j], function (itemKey, itemVal) {
+                    if (cellCount == 3) {
+                        row += "<td style=\"vertical-align: middle; text-align:center\">" + itemVal + "</td>";
+                    }
+                    else
+                        row += "<td style=\"vertical-align: middle\">" + itemVal + "</td>";
+                    cellCount++;
+                });
+                row += "</tr>";
+                table.append(row);
+            }
+            for (iExtra = index; iExtra <= 0;   iExtra++) {
+                var row = "";
+                row += "<tr>";
+                for (jExtra = 0; jExtra <=0; jExtra++) {
+                    row += "<td></td>";
+                }
+                row += "</tr>";
+                table.append(row);
+            }
+
+        }
+    </script>
+}

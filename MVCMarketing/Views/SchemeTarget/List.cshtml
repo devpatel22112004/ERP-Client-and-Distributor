@@ -1,0 +1,105 @@
+﻿@{
+    ViewBag.Title = "Target Scheme List";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" id="txtSearchScheme" name="txtSearchScheme" placeholder="Search Scheme">
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <select class="form-control form-control-sm select3" id="ddSearchSchemeTag" name="ddSearchSchemeTag" title="Please Selected Tag">
+                        <option value="" selected="selected">---Selected Tag---</option>
+                        <option value="Slab1">Slab1</option>
+                        <option value="Slab2">Slab2</option>
+                        <option value="Slab3">Slab3</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="btnRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+
+        </div>
+        <div class="card">
+            <div class="card-header border-0">
+                <h3 class="card-title">Target Scheme List</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <button type="button" id="btnFormSchemeTarget" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body table-responsive small p-2" style="height: 70vh;">
+                <table id="myTableSchemeTarget" class="table table-sm table-striped table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Scheme Amount</th>
+                            <th>Min Amount</th>
+                            <th>Max Amount</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footer{
+    <script>
+
+
+
+        $(function () {
+            $(".Scheme,.Scheme-Target").addClass('active');
+
+            BindTableSchemeTarget(); // Bind table
+
+            //refresh button
+            $('#btnRefresh').click(function () {
+                location.reload();
+            });
+
+            $('#btnFormSchemeTarget').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("New Scheme Target", "/SchemeTarget/Form", "modal-md");
+            });
+        });
+
+        function BindTableSchemeTarget() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit";
+            var oTableSchemeTarget = bindTableWithoutPagination($('#myTableSchemeTarget'), activeButtonClass, "/SchemeTarget/LoadData"); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableSchemeTarget.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+                viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+            });
+            //Search bar
+            $("#txtSearchScheme,#ddSearchSchemeTag").on('keyup change', function (e) {
+                var thisId = $(this).attr("Id");
+                if (e.which == 13 || thisId.includes("dd")) {
+                    $('#btnSearch').trigger('click');
+                }
+            });
+            //Apply Custom search on jQuery DataTables here
+            $('#btnSearch').click(function () {
+                oTableSchemeTarget.columns(0).search($('#txtSearchScheme').val().trim().replaceAll(' ', '%'));
+                oTableSchemeTarget.columns(1).search($('#ddSearchSchemeTag').val());
+                oTableSchemeTarget.draw();
+            });
+
+        }
+    </script>
+}

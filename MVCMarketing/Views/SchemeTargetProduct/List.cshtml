@@ -1,0 +1,108 @@
+﻿@{ ViewBag.Title = "Target Scheme List"; }
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" id="txtSearchLabel" name="txtSearchLabel" placeholder="Search Categoy">
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm" id="txtSearchItem" name="txtSearchItem" placeholder="Search Item">
+                    <input type="hidden" value="" id="txtSearchItemId" name="txtSearchItemId" />
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="btnRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header border-0">
+                <h3 class="card-title">Product List</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <button type="button" id="btnFormSchemeTargetProduct" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body table-responsive small p-2" style="height: 70vh;">
+                <table id="myTableSchemeTargetProduct" class="table table-sm table-striped table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Item</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footer{
+    <script>
+        $(function () {
+            $(".Scheme,.Scheme-TargetProduct").addClass('active');
+
+            BindTableSchemeTargetProduct(); // Bind table
+
+            //refresh button
+            $('#btnRefresh').click(function () {
+                location.reload();
+            });
+
+            $('#btnFormSchemeTargetProduct').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("New SchemeTargetProduct", "/SchemeTargetProduct/Form", "modal-md");
+            });
+            customAutoCompleteDynamic($('#txtSearchItem'), $('#txtSearchItemId'), "Item", AutoCompleteItemResult);
+
+        });
+
+
+        /start : Custom AutoComplete Profile Result/
+        function AutoCompleteItemResult(e, u) {
+            if (u.item == null) {
+                console.log(u.item);
+                $('#txtSearchItemId,#txtSearchItem').val('');
+            }
+            else {
+                $('#btnSearch').trigger('click');
+                console.log(u.item);
+            }
+        }
+
+        function BindTableSchemeTargetProduct() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit";
+            var oTableSchemeTargetProduct = bindTable($('#myTableSchemeTargetProduct'), activeButtonClass, "/SchemeTargetProduct/LoadData"); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableSchemeTargetProduct.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+                viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-md");// Model Size : modal-sm modal-md modal-lg
+            });
+            //Search bar
+            $("#txtSearchLabel,#ddSearchItem").on('keyup change', function (e) {
+                var thisId = $(this).attr("Id");
+                if (e.which == 13 || thisId.includes("dd")) {
+                    $('#btnSearch').trigger('click');
+                }
+            });
+            //Apply Custom search on jQuery DataTables here
+            $('#btnSearch').click(function () {
+                oTableSchemeTargetProduct.columns(0).search($('#txtSearchLabel').val().trim().replaceAll(' ', '%'));
+                oTableSchemeTargetProduct.columns(1).search($('#txtSearchItemId').val());
+                oTableSchemeTargetProduct.draw();
+            });
+
+        }</script>
+}

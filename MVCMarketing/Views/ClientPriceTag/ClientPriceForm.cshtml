@@ -1,0 +1,223 @@
+﻿<div class="p-2">
+    <div class="small-box bg-white mt-2 mb-0 p-2">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-6 col-md-2 mb-1">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" id="txtFilterFloor" name="txtFilterFloor" placeholder="Floor">
+                    </div>
+                </div>
+                <div class="col-6 col-md-2 mb-1">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" id="txtFilterArea" name="txtFilterArea" placeholder="Area">
+                    </div>
+                </div>
+                <div class="col-12 col-md-2 mb-1">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" id="txtFilterItem" name="txtFilterItem" placeholder="Item">
+                    </div>
+                </div>
+                <div class="col-12 col-md-2 mb-1">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" id="txtFilterRemark" name="txtFilterRemark" placeholder="Remark">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="small-box bg-white p-2">
+        <div class="row">
+            <div class="col-12 col-md-12 mb-0 mt-0">
+                <form role="form" data-toggle="validator" id="formClientPriceTag" class="text-sm" novalidate="novalidate">
+                    <div class="table-responsive" style="height: 65vh;">
+                        <table class="table table-sm no-footer table-borderless table-hover table-head-fixed" id="myTableClientPrice">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Details</th>
+                                    <th>Remark</th>
+                                    <th>Unit</th>
+                                    <th>Reserve</th>
+                                    <th>Stock</th>
+                                    <th>Qty</th>
+                                    <th>Dispatched</th>
+                                    <th>Issue</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody class="small"></tbody>
+                        </table>
+                    </div>
+                    <input type="hidden" value="" id="hdStoreOutwardId2" name="hdStoreOutwardId2" />
+                    <input type="hidden" value="" id="hdItemId" name="hdItemId" />
+                    <input type="hidden" value="" id="hdMatrixItemId" name="hdMatrixItemId" />
+                    <input type="hidden" value="" id="hdItemQty" name="hdItemQty" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section footer{
+    <script>
+
+        $(function () {
+            BindTableQuotationItem();
+        });
+
+        async function BindTableQuotationItem() {
+            try {
+                const mURL = "/ClientPriceTag/LoadDataClientPrice?id=" + $("#hdSalesId").val();
+                let itemBind = await fetchData(mURL);
+                itemBind = JSON.parse(itemBind.data);
+                console.log(itemBind);
+                debugger;
+                $('#myTableClientPrice tbody').empty();
+
+                const $tbody = $('#myTableClientPrice tbody');
+
+                // Group by product
+                const grouped = {};
+                itemBind.forEach(row => {
+                    if (!grouped[row.Item]) grouped[row.Item] = [];
+                    grouped[row.Item].push(row);
+                });
+
+                // Render grouped + detail rows
+                Object.keys(grouped).forEach(Item => {
+                    const rows = grouped[Item];
+                    const totalQty = rows.reduce((a, b) => a + parseFloat(b.Qty), 0);
+                    const totalDispatched = rows.reduce((a, b) => a + parseFloat(b.Dispatched), 0);
+
+                    // Use first row for main details
+                    const firstRow = rows[0];
+
+                    // Main grouped row (show Item + CCT/Deg/Body/Ctrl)
+                    const groupRow = `
+                      <tr class="group-row" data-product="${Item}">
+                        <td><strong>${Item}</strong></td>
+                        <td>CCT: ${firstRow.CCT} | Deg: ${firstRow.Degree} | Body: ${firstRow.BodyColour} | Ctrl: ${firstRow.Controller}</td>
+                        <td class="text-center">${firstRow.Remark}</td>
+                        <td class="text-center">${firstRow.Unit}</td>
+                        <td class="text-center">${firstRow.Reserve}</td>
+                        <td class="text-center">${firstRow.Stock}</td>
+                        <td class="text-center">${totalQty}</td>
+                        <td class="text-center total-dispatched">${totalDispatched}</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">
+                          <i class="fas fa-chevron-right pointer expand-icon"></i>
+                        </td>
+                      </tr>
+                    `;
+                    $tbody.append(groupRow);
+
+                    // Detail rows (hidden initially) - show floor and area→subArea
+                    rows.forEach((r, i) => {
+                        const detailRow = `
+                        <tr class="detail-row d-none" data-parent="${Item}" data-matrixitemid="${r.MatrixItemsId}" data-itemid="${r.ItemId}" data-index="${i}">
+                            <td>${r.Floor}</td>
+                            <td>${r.Area} → ${r.SubArea}</td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td class="text-center dispatched-value">${r.Qty}</td>
+                            <td class="text-center dispatched-value">${r.Dispatched}</td>
+                            <td class="text-center">
+                                <input type="number" class="form-control form-control-sm w-50 issue-input" value="0" min="0" max="${r.Qty}">
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-success save-btn"><i class="fas fa-save"></i></button>
+                            </td>
+                        </tr>`;
+                        $tbody.append(detailRow);
+                    });
+                });
+
+            } catch (error) {
+                console.error("Failed to bind quotation items:", error);
+            }
+        }
+
+        function filterTable() {
+            const floorFilter = $("#txtFilterFloor").val().toLowerCase();
+            const areaFilter = $("#txtFilterArea").val().toLowerCase();
+            const itemFilter = $("#txtFilterItem").val().toLowerCase();
+            const remarkFilter = $("#txtFilterRemark").val().toLowerCase();
+            debugger;
+            const $tbody = $('#myTableClientPrice tbody');
+
+            const isAnyFilter =
+                floorFilter !== "" ||
+                areaFilter !== "" ||
+                itemFilter !== "" ||
+                remarkFilter !== "";
+
+            // 🔹 CASE 1: No filters — collapse all groups, hide details, reset icons
+            if (!isAnyFilter) {
+                // Hide all detail rows
+                $tbody.find(".detail-row")
+                    .addClass("d-none")
+                    .removeClass("expanded");
+
+                // Reset all group rows (visible, not expanded)
+                $tbody.find(".group-row")
+                    .removeClass("expanded d-none")
+                    .each(function () {
+                        const $icon = $(this).find(".expand-icon");
+                        $icon.removeClass("fa-chevron-down expanded").addClass("fa-chevron-right");
+                    });
+
+                return;
+            }
+
+            // 🔹 CASE 2: Filters active
+            $tbody.find(".detail-row").each(function () {
+                const $row = $(this);
+                const floor = ($row.find("td:eq(0)").text() || "").toLowerCase();
+                const area = ($row.find("td:eq(1)").text() || "").toLowerCase();
+                const item = ($row.find("td:eq(2)").text() || "").toLowerCase();
+                const remark = ($row.find("td:eq(3)").text() || "").toLowerCase();
+
+                const matches =
+                    (!floorFilter || floor.includes(floorFilter)) &&
+                    (!areaFilter || area.includes(areaFilter)) &&
+                    (!itemFilter || item.includes(itemFilter)) &&
+                    (!remarkFilter || remark.includes(remarkFilter));
+
+                // ✅ Only toggle class, never style
+                $row.toggleClass("d-none", !matches);
+            });
+
+            // 🔹 Update group rows based on visible children
+            $tbody.find(".group-row").each(function () {
+                const $group = $(this);
+                const product = $group.data("product");
+                const $children = $tbody.find(`.detail-row[data-parent='${product}']`);
+                const visibleCount = $children.not(".d-none").length;
+                const $icon = $group.find(".expand-icon");                console.log($icon.attr("class"));
+
+                if (visibleCount > 0) {
+                    // Show and expand matching group
+                    if (!$icon.hasClass("fa-chevron-down")) {
+                        // ✅ Already expanded — keep it as is
+                        $group.removeClass("d-none").addClass("expanded");
+                        $children.removeClass("d-none");
+                    }
+                    // ✅ Set icon to down
+                    //$icon.removeClass("fa-chevron-right").addClass("fa-chevron-down");
+                } else {
+                    // Hide group if no visible children
+                    $group.addClass("d-none").removeClass("expanded");
+
+                    // ✅ Reset icon to right
+                    //$icon.removeClass("fa-chevron-down").addClass("fa-chevron-right");
+                }
+            });
+        }
+
+        // ====== BIND FILTER EVENTS ======
+        $("#txtFilterFloor, #txtFilterArea, #txtFilterItem, #txtFilterRemark").on("input", function () {
+            filterTable();
+        });
+    </script>
+}

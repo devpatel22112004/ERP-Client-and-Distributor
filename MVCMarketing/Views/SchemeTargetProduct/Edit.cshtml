@@ -1,0 +1,118 @@
+﻿
+@{
+    var InfoJson = ViewBag.JsonData;
+}
+<div class="col-12 text-center bg-transparent">
+    <span class="delete-record-message" id="btnDeleteSchemeTargetProduct"> DELETE PERMANENT RECORDS ? CLICK HERE  <i class="far fa-trash-alt delete-record text-red" title="Delete Record"></i></span>
+</div>
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formSchemeTargetProduct" class="text-sm" novalidate="novalidate">
+        <div class="form-group col-md-12">
+            <label for="ddCategory">Category</label>
+            <select class="form-control form-control-sm select3" id="ddCategory" name="ddCategory" data-error="Please Selected Category" readonly>
+                <option value="" selected="selected">-----Selected------</option>
+            </select>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label>SubCategory</label>
+                <select id="ddSubCategoryId" class="form-control select2" multiple="multiple" data-dropdown-css-class="select2-purple" data-placeholder="Select a SubCategory" style="width: 100%;" readonly>
+                </select>
+                <input type="hidden" value="" id="hdSubCategoryIds" name="hdSubCategoryIds" />
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="txtItem">Item </label>
+            <input type="text" class="form-control form-control-sm" id="txtItem" name="txtItem" placeholder="Enter Item" readonly>
+            <input type="hidden" value="" id="txtItemId" name="txtItemId" />
+        </div>
+        <div class="col-12 text-center">
+            <hr />
+            <input type="hidden" value="" id="hdId" name="hdId" />
+            <input type="hidden" value="" id="hdSchemeId" name="hdSchemeId" />
+            <!--<input type="submit" class="col-md-3 btn btn-outline-secondary btn-sm" value="Save">-->
+        </div>
+    </form>
+</div>
+<script>
+
+    $(function () {
+
+        /* Bind Cateory */
+        bindDropDownList($('#ddCategory'), 'Category');
+
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        console.log(jInfo);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].SchemeTargetProductId);
+            $("#txtItemId").val(jInfo[0].ItemId);
+            $("#hdSchemeId").val(jInfo[0].SchemeId);
+            $("#txtItem").val(jInfo[0].ItemCode);
+            $("#ddCategory").val(jInfo[0].CategoryId);
+            var subcategoryIds = jInfo[0].SubCategoryIds.split(',');
+            bindDropDownList($('#ddSubCategoryId'), 'SubCategory', $("#ddCategory").val()).then(function (obj) {
+                $('#ddSubCategoryId').val(subcategoryIds).select2();
+            });
+
+        }
+        /* end:Edit Record */
+
+        /* Bind Sub Cateory */
+        $("#ddCategory").change(function () {
+            var selectedValue = $(this).val();
+             console.log(selectedValue);
+            bindDropDownList($('#ddSubCategoryId'), 'SubCategory', selectedValue).then(function (obj) {
+                $('#ddSubCategoryId').select2();
+            });
+        });
+
+        customAutoCompleteDynamic($('#txtItem'), $('#txtItemId'), "Item", AutoCompleteItemResult);
+
+
+        /*Delete Action*/
+        $('#btnDeleteSchemeTargetProduct').on('click', function (e) {
+            confirmDialog('Are you sure to delete record ?', function () {
+                var recordId = $("#hdId").val();
+                sendData($("#formDelete"), "/SchemeTargetProduct/Delete?id=" + recordId, $(this), $(this).text(), "/Scheme/List");
+            });
+        });
+
+        /* start Form validation & save data */
+        var f = $('#formSchemeTargetProduct');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/Scheme/List'; // Eg /SchemeTargetProduct/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                var subcategory = $('#ddSubCategoryId').select2("val").join(',');
+                $('#hdSubCategoryIds').val(subcategory);
+
+                sendData(f, "/SchemeTargetProduct/Insert", button, button.text(), redirectUrl).then(function (res) {
+                     console.log(res)
+                });
+            }
+        });
+
+    });
+
+    /*start : Custom AutoComplete Profile Result*/
+    function AutoCompleteItemResult(e, u) {
+        if (u.item == null) {
+            console.log(u.item);
+            $('#txtItemId,#txtItem').val('');
+        }
+        else {
+            $('#btnSearch').trigger('click');
+            console.log(u.item);
+        }
+    }
+</script>
+
+

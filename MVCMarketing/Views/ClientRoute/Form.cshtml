@@ -1,0 +1,74 @@
+﻿
+
+<div class="p-2">
+    <form role="form" id="formWeek" data-toggle="validator">
+        <div class="card-body">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label for="ddDealer">Dealer <i class="text-red" title="Required">*</i></label>
+                        <select class="form-control  form-control-sm" id="ddDealer" name="ddDealer" data-error="Please Selected Dealer" required>
+                            <option value="" selected="selected">--Selected Dealer--</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ddWeekDay">Week Day <i class="text-red" title="Required">*</i></label>
+                        <select class="form-control select3  form-control-sm" id="ddWeekDay" name="ddWeekDay" data-error="Please Select Day" required>
+                            <option selected="selected" value="">-- Select Week Day ---</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtRouteNum">Route Number <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control form-control-sm input-sm ui-autocomplete-input" id="txtRouteNum" name="txtRouteNum" placeholder="Enter Route Number" data-error="Please fill up Route Number" required>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="txtRoute">Route Name <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control form-control-sm input-sm ui-autocomplete-input" id="txtRoute" name="txtRoute" placeholder="Enter Route" data-error="Please fill up Route" required>
+                    </div>
+                </div>
+                <div class="col-12 text-center">
+                    <input type="hidden" value="" id="hdClientRouteId" name="hdClientRouteId" />
+                    <button type="submit" class="btn btn-outline-primary" id="btnsave">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+
+        bindDropDownList($('#ddDealer'), 'Distributor');
+
+        /* start Form validation & save data */
+        var f = $('#formWeek');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/ClientRoute/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                /*var returnValue = sendData(f, "/Category/Insert", button, button.text(), redirectUrl);
+                console.log(returnValue);*/
+                sendData(f, "/ClientRoute/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    BindTableRoute();
+                });
+            }
+        });
+        /* end Form */
+    });
+</script>
+
+
+

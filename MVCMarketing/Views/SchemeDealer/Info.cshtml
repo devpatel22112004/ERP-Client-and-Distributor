@@ -1,0 +1,67 @@
+﻿@{
+    var InfoJson = ViewBag.JsonData;
+}
+
+<div class="p-1">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive p-2" style="height: 60vh;">
+                <table id="myTablSchemeDealer" class="table table-sm small table-striped table-borderless table-hover table-head-fixed">
+                    <thead>
+                        <tr>
+                            <th>StartDate</th>
+                            <th>EndDate</th>
+                            <th>Label</th>
+                            <th>Description</th>
+                            <th>InvoiceNumber</th>
+                            <th>Distributor</th>
+                            <th>Category</th>
+                            <th>SubCategory</th>
+                            <th>Quantity</th>
+                            <th>Invoice Amount</th>
+                            <th>Received Amount</th>
+                            <th>Aechive Amount</th> 
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="col-md-12 p-2">
+
+            <div class="row">
+                <div class="col-md-6 text-right"><button type="button" class="btn btn-xs btn-outline-info" id="btnClientInvoice">Covert Scheme To Credit Note</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var distributorId;
+    var schemeId;
+    //var oTableToolsReceive;
+    $(function () {
+
+        /*Edit Record */
+        var jInfo = @Html.Raw(InfoJson);
+        if (jInfo != null) {
+            $("#hdId").val(jInfo[0].SchemeAttachmentId);
+            distributorId=jInfo[0].DistributorId;
+            schemeId=jInfo[0].SchemeId;
+            BindTableSchemeDealer();
+        }
+        /* end:Edit Record */
+
+    });
+
+    function BindTableSchemeDealer() {
+        //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+        //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+        var activeButtonClass = "";
+        oTableOrderItem = bindTableWithoutPagination($('#myTablSchemeDealer'), activeButtonClass, "/SchemeDealer/LoadDataInfo?id=" + distributorId + "&schemeId="+ schemeId ); //Bind Table
+    }
+</script>
+
+
+

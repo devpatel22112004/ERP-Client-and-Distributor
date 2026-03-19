@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewBag.Title = "Client Access Dashboard";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header with-border">
+                <h3 class="card-title">Payments ( Last 10 Transition )</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="card-body no-padding small">
+                <table class="table table-bordered table-sm">
+                    <tbody>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                        </tr>
+                        <tr>
+                            <td>1.</td>
+                            <td>01-09-2025</td>
+                            <td>500</td>
+                        </tr>
+                        <tr>
+                            <td>2.</td>
+                            <td>31-08-2025</td>
+                            <td>100</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header with-border">
+                <h3 class="card-title">Track Delivery ( Last 2 Months )</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="card-body no-padding small" style="height: 40vh;">
+                <table class="table table-striped table-sm small no-footer table-borderless table-hover table-head-fixed" id="myTableDeliverClient">
+                    <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Date</th>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Empty</th>
+                        </tr>
+                    </thead>          
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section footer{
+    <script>
+        var oTableDeliverClient;
+        var token="";
+    $(function () {
+        token = '@Html.Raw(ViewBag.JsonToken)';
+
+        BindTableDeliverClient();// Bind table
+    });
+
+    /*function BindTableDeliverClient() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+        var activeButtonClass = "";
+        debugger;
+        oTableDeliverClient = bindTableWithoutPagination($('#myTableDeliverClient'), activeButtonClass, "/ClientAccess/LoadDataDeliverClient?token=" + token); //Bind Table
+    }*/
+
+        function BindTableDeliverClient() {
+            $("#myTableDeliverClient > tbody").html("");
+            $.ajax(
+                {
+                    type: "POST", //HTTP POST Method
+                    url: "/LoadDataDeliverClient?token=" + token,
+                    //data: formData,
+                    success: function (data) {
+                        debugger;
+                        //var d = JSON.parse(JSON.stringify(data.data));
+                        var d = data.data;
+                        for (var i = 0; i < d.length; i++) {
+                            var row = "";
+                            row += "<tr>";
+                            row += "<td>" + d[i].Date + "</td>";
+                            row += "<td>" + d[i].Item + "</td>";
+                            row += "<td>" + d[i].Qty + "</td>";
+                            row += "<td>" + d[i].EmptyQty + "</td>";
+                            /*row += "<td  width=\"40px\">";
+                            row += "<span type=\"button\" class=\"fas fa-file-alt view-record\" title=\"View Record\"></span> <input type=\"hidden\" value='" + d[i].Id + "'>";
+                            row += "</td>"*/
+                            row += "</tr>";
+
+                            $('#myTableDeliverClient').find("tbody").append(row);
+
+                        }
+                    },
+                    error: function () {
+                        debugger;
+                    }
+                });
+        }
+    </script>
+}

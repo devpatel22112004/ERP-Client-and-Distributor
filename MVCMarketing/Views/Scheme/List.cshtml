@@ -1,0 +1,133 @@
+﻿@{
+    ViewBag.Title = "Scheme List";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="small-box bg-white p-2" id="filter_Scheme">
+            <div class="row">
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="0" id="txtSearchStartDate" name="txtSearchStartDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Search Start Date">
+                </div>
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="1" id="txtSearchEndDate" name="txtSearchEndDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Search End Date">
+                </div>
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="2" id="txtSearchLabel" name="txtSearchLabel" placeholder="Search Scheme">
+                </div>
+                <div class="form-group col-md-2">
+                    <input type="text" class="form-control form-control-sm column_filter" data-column="3" id="txtSearchDes" name="txtSearchDes" placeholder="Search Subject">
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-default btn-sm" id="btnSearch" title="Search"><i class="fas fa-filter"></i></button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="btnListRefresh" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header border-0">
+                <h3 class="card-title">Scheme List</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <button type="button" id="btnFormScheme" class="btn btn-block btn-outline-secondary btn-sm"><i class="glyphicon glyphicon-edit"></i>Add New</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body table-responsive small p-2" style="height: 70vh;">
+                <table id="myTableScheme" class="table table-sm table-striped table-borderless table-hover table-head-fixed table-responsive-card">
+                    <thead>
+                        <tr>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Scheme</th>
+                            <th>Subject</th>
+                            <th>T&C</th>
+                            <th>Grace Period</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footer{
+
+    <script>
+        var oTableScheme;
+        function filterColumn(i, tag) {
+            oTableScheme.DataTable().column(i).search(
+                tag.val()
+            ).draw();
+        }
+        $(function () {
+            $(".Scheme,.Scheme-Scheme").addClass('active');
+
+            /* Aditional Filter */
+            $('input.column_filter,select.column_filter').on('keyup change', function () {
+                filterColumn($(this).attr('data-column'), $(this));
+            });
+
+            BindTableScheme(); // Bind table
+
+            //Date picker
+            $('#txtSearchStartDate,#txtSearchEndDate').datepicker({
+                format: "dd-mm-yyyy",
+                todayHighlight: true,
+                autoclose: true
+            });
+            //Datemask dd/mm/yyyy
+            $('#txtSearchStartDate,#txtSearchEndDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
+
+            //refresh button
+            $('#btnListRefresh').click(function () {
+                oTableScheme.DataTable().state.clear();
+                location.reload();
+            });
+
+            $('#btnFormScheme').click(function () {
+                //model size .modal-sm .modal-lg .modal-xl
+                viewPartialViewModal("New Scheme", "/Scheme/Form", "modal-lg");
+            });
+
+        });
+
+        function BindTableScheme() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Edit,View,Print";
+            oTableScheme = bindTableSmart($('#myTableScheme'), activeButtonClass, "/Scheme/LoadData", "null", $("#filter_Branch")); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableScheme.on('click', '.edit-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordTitle = $(this).closest("tr").find("td").eq(0).text();
+                viewPartialViewModal(recordTitle, "Edit?id=" + recordId, "modal-lg");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableScheme.on('click', '.view-record', function () {
+                //var recordId = $(this).closest("td").find("input[type='hidden']").val();
+                var recordId = $(this).attr('data-id');
+                var recordDate = $(this).closest("tr").find("td").eq(0).text();
+                var recordTitle = $(this).closest("tr").find("td").eq(1).text();
+                viewPartialViewModal(recordDate + ' - ' + recordTitle, "/Scheme/Info?id=" + recordId, "modal-xl");// Model Size : modal-sm modal-md modal-lg
+            });
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableScheme.on('click', '.print-record', function () {
+                var recordId = $(this).attr('data-id');
+              //  modalPrint("/Scheme/Print?id=" + recordId);
+
+                modalPrint("Print Scheme", "/Scheme/Print?id=" + recordId);
+
+            });
+        }
+
+
+    </script>
+
+}

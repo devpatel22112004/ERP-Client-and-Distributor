@@ -1,0 +1,102 @@
+﻿
+<div class="p-2">
+    <form role="form" data-toggle="validator" id="formSchemeAttachment" class="text-sm">
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label for="txtDate">Date <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control form-control-sm" id="txtDate" name="txtDate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" placeholder="Enter Date">
+            </div>
+            <div class="form-group col-md-12">
+                <label for="txtDistributor">Dealer <i class="text-red" title="Required">*</i></label>
+                <input type="text" class="form-control form-control-sm" id="txtDistributor" name="txtDistributor" placeholder="Search Dealer" required>
+                <input type="hidden" value="" id="txtDistributorId" name="txtDistributorId" />
+                <input type="hidden" value="" id="ddTax" name="ddTax" />
+            </div>
+            <div class="form-group col-md-12">
+                <label for="ddScheme">Scheme <i class="text-red" title="Required">*</i></label>
+                <select class="form-control  form-control-sm" id="ddScheme" name="ddScheme" data-error="Please Selected Scheme" required>
+                    <option value="" selected="selected">--Selected Scheme--</option>
+                </select>
+            </div>
+            <div class="form-group col-md-12">
+                <label for="ddTargetAmount">Scheme Amount <i class="text-red" title="Required">*</i></label>
+                <select class="form-control  form-control-sm" id="ddTargetAmount" name="ddTargetAmount" data-error="Please Selected Scheme Amount" required>
+                    <option value="" selected="selected">--Selected Scheme Amount--</option>
+                </select>
+            </div>
+            <div class="form-group col-md-12">
+                <label for="txtRemark">Remark </label>
+                <textarea rows="2" class="form-control  form-control-sm" id="txtRemark" name="txtRemark" placeholder="Enter Remark" data-error="Please Fill Up  Remark"></textarea>
+            </div>
+            <div class="col-12 text-center">
+                <hr />
+                <input type="hidden" value="" id="hdId" name="hdId" />
+                <button type="submit" class="col-md-3 btn btn-outline-secondary btn-sm">Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+
+        //Date picker
+        $('#txtDate').datepicker({
+            format: "dd-mm-yyyy",
+            todayHighlight: true,
+            autoclose: true
+        }).datepicker("setDate", "0");
+
+        //Datemask dd/mm/yyyy
+        $('#txtDate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' })
+
+        bindDropDownList($('#ddScheme'), 'Scheme');
+
+        /* Bind Scheme */
+        $("#ddScheme").change(function () {
+            //var selectedText = $(this).find("option:selected").text();
+            var selectedValue = $(this).val();
+            bindDropDownList($('#ddTargetAmount'), 'SchemeTarget', selectedValue);/*.then(function (res) {
+            });*/
+        });
+
+        //Distributor AutoComplete
+        customAutoCompleteDynamicSort($('#txtDistributor'), $('#txtDistributorId'), "Distributor", AutoCompleteDistributorResult);
+
+        /* start Form validation & save data */
+        var f = $('#formSchemeAttachment');
+        f.validator();// Call validation function
+        f.attr('autocomplete', 'off');//Auto Complete Off
+        f.submit(function (e) {
+            e.preventDefault();
+            var button = f.find(':submit');
+            var isDisabled = button.is('.btn.disabled');
+            var redirectUrl = '/SchemeDealer/List'; // Eg /Category/List
+            if (isDisabled) {
+                return;
+            }
+            else {
+                /*var returnValue = sendData(f, "/Category/Insert", button, button.text(), redirectUrl);
+                console.log(returnValue);*/
+                sendData(f, "/SchemeDealer/Insert", button, button.text(), redirectUrl).then(function (res) {
+                    console.log(res)
+                });
+            }
+        });
+        /* end Form */
+    });
+
+    /*start : Custom AutoComplete Profile Result*/
+    function AutoCompleteDistributorResult(e, u) {
+        if (u.item == null) {
+            console.log(u.item);
+            $('#txtDistributor,#txtDistributorId,#ddTax').val('');
+        }
+        else {
+            $("#ddTax").val(u.item.TaxMode);
+            console.log(u.item);
+        }
+    }
+
+</script>
+
+

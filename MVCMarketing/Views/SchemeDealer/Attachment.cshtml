@@ -1,0 +1,127 @@
+﻿
+@{
+    var InfoJson = ViewBag.JsonData;
+    var JsonDataId = ViewBag.JsonDataId;
+}
+<div class="col-md-12">
+    <div class="p-2">
+        <form role="form" data-toggle="validator" id="formAttachment" class="text-sm">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label for="txtTitle">Title <i class="text-red" title="Required">*</i></label>
+                        <input type="text" class="form-control" id="txtTitle" name="txtTitle" placeholder="Enter Title" data-error="Please Fill Up Title" required>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="ddCategory">Attachment <i class="text-red" title="Required">*</i></label>
+                        <input type="file" name="fileDocument" id="fileDocument" required>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <br />
+                    <input type="hidden" value="" id="hdAttachmentId" name="hdAttachmentId" />
+                    <input type="hidden" value="" id="hdSchemeId" name="hdSchemeId" />
+                    <!--<button type="submit" class="col-md-5 btn btn-outline-secondary btn-sm" id="btnaattachment">UPLOAD</button>-->
+                </div>
+            </div>
+        </form>
+        <div class="card-body p-2 table-responsive" style="height: 45vh;">
+            <table class="table table-striped table-responsive-sm table-sm no-footer table-hover table-head-fixed" id="myTableAttachment">
+                <!--table table-head-fixed-->
+                <thead>
+                    <tr>
+                        <td>Title</td>
+                        <td>Date</td>
+                        <td>Attachment</td>
+                        <td></td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+
+        $("#hdSchemeId").val(@Html.Raw(JsonDataId));
+        console.log($("#hdSchemeId").val());
+
+        $('#formAttachment').validator();// Call validation function
+
+        BindTableAttachment();
+
+       $("#fileDocument").change(function (e) {
+            validateFile($(this), "/SchemeDealer/uploadDocumentAttachment?id=" + $("#hdSchemeId").val(), e.target.files[0].name);//, $rowCellText
+       });
+    });
+
+    // start upload
+    function validateFile($this, $url, $title) {
+        var ext = $this.val().split('.').pop().toLowerCase();
+        if ($.inArray(ext, ['pdf']) == -1) {
+            $this.val("");
+            toastMessage("warning", "The file type is invalid! Please upload only 'pdf'");
+        }
+        else {
+            uploadDataDoument($this, $url, $title.substr(0, $title.lastIndexOf('.')));
+        }
+    }
+
+    function uploadDataDoument($this, $url, $title) {
+        $(".row").find("input, button, submit, textarea, select").attr("disabled", "disabled");
+        /* Start : File Upload Coding */
+        var fileUpload = $this.get(0);
+        var files = fileUpload.files;
+        // Create FormData object
+        var fileData = new FormData();
+        // Looping over all files and add it to FormData object
+        for (var i = 0; i < files.length; i++) {
+            fileData.append(files[i].name, files[i]);
+            console.log("files[i]-" + files[i]);
+        }
+        console.log("fileData" + fileData);
+        // Adding one more key to FormData object
+         fileData.append("Label", $("#txtTitle").val());
+        $("#fileDocument").val('');
+
+        var redirectUrl = '/SchemeDealer/List'; // Eg /Item/List
+        var f = $('#formAttachment');
+        var button = f.find('.custom-file-label');
+        /* start Form validation & save data */
+        uploadDocument(f, fileData, $url, button, button.text(), redirectUrl).then(function (res) {
+            console.log(res)
+            $('#formAttachment')[0].reset();
+            $("#hdAttachmentId").val(""); // Clear items ID
+            BindTableAttachment();
+        });
+    /* end Form */
+    }
+    // End upload
+
+    function BindTableAttachment() {
+            //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+            //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+            var activeButtonClass = "Delete";
+            var oTableAttachment = bindTableWithoutPagination($('#myTableAttachment'), activeButtonClass, "/SchemeDealer/LoadDataAttachment?id=" + $("#hdSchemeId").val()); //Bind Table
+
+            //"edit-record,delete-record,view-record,info-record"
+            oTableAttachment.on('click', '.delete-record', function () {
+                var recordId = $(this).attr('data-id');
+                confirmDialog('Are you sure to delete record ?', function () {
+                    sendData($("#formAttachment"), "/SchemeDealer/DeleteAttachment?id=" + recordId, $(this), $(this).text(), "").then(function (res) {
+                        console.log(res)
+                        BindTableAttachment();
+                    });
+                });
+            });
+        }
+</script>
+
+
+
+
+

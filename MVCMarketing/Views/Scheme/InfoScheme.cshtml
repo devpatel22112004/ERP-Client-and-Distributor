@@ -1,0 +1,36 @@
+﻿<div class="small-box bg-white p-2">
+    <span class="p-1">
+        Scheme List
+    </span>
+    <div class="table-responsive" style="height: 60vh;">
+        <table class="table table-striped table-borderless table-head-fixed border-0" id="myTableScheme">
+            <thead>
+                <tr>
+                    <th>Scheme</th>
+                    <th>StartDate</th>
+                    <th>EndDate</th>
+                    <th>Description</th>
+                    <th>GracePeriod</th>
+                    <td></td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<script>
+    $(function () {
+
+        BindTableScheme();;// Bind table
+
+    });
+
+    function BindTableScheme() {
+        //Button active by class name Eg .edit-record,.delete-record,.view-record,.info-record
+        //action Edit,Delete,View,Info //"class on click edit-record,delete-record,view-record,info-record"
+        var activeButtonClass = "";
+        var oTableScheme = bindTableWithoutPagination($('#myTableScheme'), activeButtonClass, "/Scheme/LoadDataScheme"); //Bind Table
+
+    }
+
+</script>
+
